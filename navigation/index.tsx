@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { ColorSchemeName, Pressable } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
 } from "@react-navigation/native";
+import { getHeaderTitle } from "@react-navigation/elements";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Colors from "@theme/colors";
@@ -35,6 +36,9 @@ import UtilitiesScreen from "@screens/UtilitiesScreen";
 import SettingsScreen from "@screens/SettingsScreen";
 import NotFoundScreen from "@screens/NotFoundScreen";
 import DashboardScreen from "@screens/DashboardScreen";
+import { AuthContext } from "@utils/hooks/useAuthContext";
+import LogoTitle from "@components/common/LogoTitle";
+import { Box, Flex, Icon, IconButton } from "native-base";
 
 export default function Navigation() {
   return (
@@ -50,12 +54,65 @@ export default function Navigation() {
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const isLoggedIn = false;
-
 function RootNavigator() {
+  const { isAuth } = useContext(AuthContext);
+
   return (
-    <Stack.Navigator>
-      {isLoggedIn ? (
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        header: ({ navigation, route, options, back }) => {
+          const title = getHeaderTitle(options, route.name);
+          console.log(options);
+
+          return (
+            <Flex
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              style={{ height: 140 }}
+            >
+              <Box ml={4}>
+                {back && (
+                  <IconButton
+                    onPress={() =>
+                      navigation.canGoBack() && navigation.goBack()
+                    }
+                    variant="ghost"
+                    colorScheme="brand"
+                    borderRadius="full"
+                    _icon={{
+                      as: FontAwesome5,
+                      name: "chevron-left",
+                      color: "brand.500",
+                      size: 5,
+                    }}
+                  />
+                )}
+              </Box>
+              <Box>{options?.headerTitle && options.headerTitle()}</Box>
+              <Box mr={4} w={7}>
+                {isAuth && (
+                  <IconButton
+                    variant="ghost"
+                    colorScheme="brand"
+                    borderRadius="full"
+                    _icon={{
+                      as: Ionicons,
+                      name: "ios-options",
+                      color: "brand.500",
+                      size: 7,
+                    }}
+                  />
+                )}
+              </Box>
+            </Flex>
+          );
+        },
+      }}
+    >
+      {isAuth ? (
         // Screens for logged in users
         <Stack.Group>
           <Stack.Screen
@@ -93,7 +150,13 @@ function RootNavigator() {
 
       <Stack.Screen name="BoardgamesList" component={BoardgamesListScreen} />
       <Stack.Screen name="Boardgame" component={BoardgameScreen} />
-      <Stack.Screen name="Utilities" component={UtilitiesScreen} />
+      <Stack.Screen
+        name="Utilities"
+        component={UtilitiesScreen}
+        options={{
+          headerTitle: (props) => <LogoTitle />,
+        }}
+      />
 
       <Stack.Screen
         name="NotFound"

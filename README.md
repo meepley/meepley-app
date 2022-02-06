@@ -25,9 +25,9 @@ yarn install && expo start
 
 ## Authors
 
-- [Gonçalo Fidalgo](https://twitter.com/dompizzie)
-- [José Soares](https://twitter.com/dompizzie)
-- [Mariana Gomes](https://twitter.com/dompizzie)
+- Gonçalo Fidalgo
+- [José Soares](https://josepsoares.vercel.app/)
+- Mariana Gomes
 
 ## License
 

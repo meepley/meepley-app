@@ -1,6 +1,6 @@
 import React from "react";
-import { StatusBar } from "expo-status-bar";
 import { AppRegistry } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import {
   initialWindowMetrics,
   SafeAreaProvider,
@@ -18,20 +18,14 @@ import {
 } from "@expo-google-fonts/poppins";
 import AppLoading from "expo-app-loading";
 import { NativeBaseProvider } from "native-base";
-
-import useCachedResources from "@utils/hooks/useCachedResources";
-import Navigation from "@navigation/index";
-import OnboardingInitial from "@screens/onboarding/OnboardingInitialScreen";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import { QueryClient, QueryClientProvider } from "react-query";
+
+import Navigation from "@navigation/index";
+import AuthContextProvider from "@utils/hooks/useAuthContext";
 import { nbConfig } from "@utils/config/nativeBaseConfig";
 import theme from "@theme/index";
 
 const queryClient = new QueryClient();
-
-const Stack = createNativeStackNavigator();
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -52,8 +46,10 @@ export default function App() {
       <NativeBaseProvider theme={theme} config={nbConfig}>
         <QueryClientProvider client={queryClient}>
           <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-            <Navigation />
-            <StatusBar />
+            <AuthContextProvider>
+              <Navigation />
+              <StatusBar />
+            </AuthContextProvider>
           </SafeAreaProvider>
         </QueryClientProvider>
       </NativeBaseProvider>

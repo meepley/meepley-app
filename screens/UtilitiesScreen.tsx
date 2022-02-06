@@ -1,62 +1,64 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Box, Flex, Heading, HStack, Stack, Text, VStack } from "native-base";
+
+import { Box, Flex, Heading, Text } from "native-base";
 
 import Container from "@components/common/Container";
+import Emoji from "@components/common/Emoji";
 
 const utilities = [
   {
     name: "Dados",
-    emoji: "",
+    emoji: "🎲",
   },
   {
     name: "Quem joga primeiro?",
-    emoji: "",
+    emoji: "💥",
   },
   {
-    name: "Ampulheta",
-    emoji: "",
+    name: "Cronómetro",
+    emoji: "⏳",
   },
   {
     name: "Calculadora",
-    emoji: "",
+    emoji: "🧮",
   },
 ];
 
 const UtilitiesScreen = () => {
   return (
     <Container>
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      >
-        <Box pb={10}>
-          <Heading textAlign="center">Utilitários</Heading>
-          <Text textAlign="center">
-            Ferramentas para auxiliar as tuas partidas!
-          </Text>
-        </Box>
-
-        <Flex flexWrap="wrap" justifyContent="space-evenly" direction="row">
+      <Box px={10}>
+        <Heading pb={4} textAlign="center">
+          Utilitários
+        </Heading>
+        <Text textAlign="center" pb={10}>
+          Ferramentas para auxiliar as tuas partidas!
+        </Text>
+        <Flex wrap="wrap" justifyContent="space-between" direction="row">
           {utilities.map((item, i) => (
-            <Box key={i} w="40%" mt={3} h={20} bg={"brand.500"} rounded="md">
-              <Text>{item.name}</Text>
-            </Box>
+            <Flex
+              key={i}
+              w="45%"
+              mt={3}
+              h={"40"}
+              bg={"#DADADA"}
+              rounded="md"
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Box style={{ height: 32 }}>
+                <Emoji size={32}>{item.emoji}</Emoji>
+              </Box>
+              <Text pt="4" textAlign="center">
+                {item.name}
+              </Text>
+            </Flex>
           ))}
         </Flex>
-      </View>
+      </Box>
     </Container>
   );
 };
 
 export default UtilitiesScreen;
-
-const styles = StyleSheet.create({});

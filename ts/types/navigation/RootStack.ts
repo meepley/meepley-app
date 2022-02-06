@@ -3,6 +3,7 @@
  */
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { IBoardgame } from "@ts/interfaces/IBoardgame";
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
@@ -19,7 +20,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   BoardgamesList: undefined;
-  Boardgame: undefined;
+  Boardgame: { boardgameId: string; boardgame: IBoardgame };
   Utilities: undefined;
   Modal: undefined;
   NotFound: undefined;

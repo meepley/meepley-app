@@ -1,10 +1,10 @@
-import { View, Text } from "react-native";
 import React from "react";
+import { View, Text } from "react-native";
 
 const ChatScreen = () => {
   return (
     <View>
-      <Text></Text>
+      <Text>asdasdasdsa</Text>
     </View>
   );
 };

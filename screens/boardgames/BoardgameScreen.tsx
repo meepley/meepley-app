@@ -1,8 +1,18 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Text, View } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@ts/types/navigation/RootStack";
+
 import Container from "@components/common/Container";
 
-const BoardgameScreen = () => {
+type TBoardgameScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Boardgame"
+>;
+
+const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
+  const { boardgameId, boardgame } = route.params;
+
   return (
     <Container>
       <View>
@@ -13,5 +23,3 @@ const BoardgameScreen = () => {
 };
 
 export default BoardgameScreen;
-
-const styles = StyleSheet.create({});
