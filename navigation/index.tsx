@@ -11,7 +11,6 @@ import {
 import { getHeaderTitle } from "@react-navigation/elements";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import Colors from "@theme/colors";
 import useColorScheme from "@hooks/useColorScheme";
 
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -39,6 +38,9 @@ import DashboardScreen from "@screens/DashboardScreen";
 import { AuthContext } from "@utils/hooks/useAuthContext";
 import LogoTitle from "@components/common/LogoTitle";
 import { Box, Flex, Icon, IconButton } from "native-base";
+import Header from "@components/Header";
+import AppHeader from "@components/Header";
+import MatchRoomScreen from "@screens/matchRoom/MatchRoomScreen";
 
 export default function Navigation() {
   return (
@@ -64,50 +66,15 @@ function RootNavigator() {
         headerShadowVisible: false,
         header: ({ navigation, route, options, back }) => {
           const title = getHeaderTitle(options, route.name);
-          console.log(options);
 
           return (
-            <Flex
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              style={{ height: 140 }}
-            >
-              <Box ml={4}>
-                {back && (
-                  <IconButton
-                    onPress={() =>
-                      navigation.canGoBack() && navigation.goBack()
-                    }
-                    variant="ghost"
-                    colorScheme="brand"
-                    borderRadius="full"
-                    _icon={{
-                      as: FontAwesome5,
-                      name: "chevron-left",
-                      color: "brand.500",
-                      size: 5,
-                    }}
-                  />
-                )}
-              </Box>
-              <Box>{options?.headerTitle && options.headerTitle()}</Box>
-              <Box mr={4} w={7}>
-                {isAuth && (
-                  <IconButton
-                    variant="ghost"
-                    colorScheme="brand"
-                    borderRadius="full"
-                    _icon={{
-                      as: Ionicons,
-                      name: "ios-options",
-                      color: "brand.500",
-                      size: 7,
-                    }}
-                  />
-                )}
-              </Box>
-            </Flex>
+            <AppHeader
+              navigation={navigation}
+              options={options}
+              back={back}
+              title={title}
+              isAuth={isAuth}
+            />
           );
         },
       }}
@@ -118,21 +85,50 @@ function RootNavigator() {
           <Stack.Screen
             name="CalibrationOnboarding"
             component={OnboardingCalibration}
+            options={{
+              headerTitle: (props) => <LogoTitle />,
+            }}
           />
+
+          <Stack.Screen
+            name="Dashboard"
+            component={DashboardScreen}
+            options={{
+              headerBackVisible: false,
+              headerTitle: (props) => <LogoTitle />,
+            }}
+          />
+          <Stack.Screen
+            name="Place"
+            component={PlaceScreen}
+            options={{ headerBackVisible: true }}
+          />
+
           <Stack.Screen
             name="CreateMatch"
             component={CreateMatchRoomScreen}
-            options={{ title: "Criar partida" }}
+            options={{ title: "Criar partida", headerBackVisible: true }}
           />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Dashboard" component={BottomTabNavigator} />
-          <Stack.Screen name="Place" component={PlaceScreen} />
-          <Stack.Screen name="Chat" component={ChatScreen} />
+          <Stack.Screen
+            name="MatchRoom"
+            component={MatchRoomScreen}
+            options={{ headerBackVisible: true }}
+          />
 
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{ title: "@martasilva95", headerBackVisible: true }}
+          />
+          <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={{ title: "Chat", headerBackVisible: true }}
+          />
           <Stack.Screen
             name="Settings"
             component={SettingsScreen}
-            options={{ title: "Definições" }}
+            options={{ title: "Definições", headerBackVisible: true }}
           />
           {/* <Stack.Group screenOptions={{ presentation: "modal" }}></Stack.Group> */}
         </Stack.Group>
@@ -155,6 +151,7 @@ function RootNavigator() {
         component={UtilitiesScreen}
         options={{
           headerTitle: (props) => <LogoTitle />,
+          headerBackVisible: true,
         }}
       />
 
@@ -178,16 +175,11 @@ function RootNavigator() {
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-function BottomTabNavigator() {
+/* function BottomTabNavigator() {
   const colorScheme = useColorScheme();
 
   return (
-    <BottomTab.Navigator
-      initialRouteName="DashboardScreen"
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}
-    >
+    <BottomTab.Navigator initialRouteName="DashboardScreen">
       <BottomTab.Screen
         name="DashboardScreen"
         component={DashboardScreen}
@@ -204,7 +196,6 @@ function BottomTabNavigator() {
               <FontAwesome
                 name="info-circle"
                 size={25}
-                color={Colors[colorScheme].text}
                 style={{ marginRight: 15 }}
               />
             </Pressable>
@@ -225,6 +216,54 @@ function BottomTabNavigator() {
         options={{
           title: "Criar Partida",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+    </BottomTab.Navigator>
+  );
+} */
+
+function MatchRoomBottomTab() {
+  const colorScheme = useColorScheme();
+
+  return (
+    <BottomTab.Navigator initialRouteName="DashboardScreen">
+      <BottomTab.Screen
+        name="DashboardScreen"
+        component={DashboardScreen}
+        options={({ navigation }: RootTabScreenProps<"DashboardScreen">) => ({
+          title: "Tab One",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerRight: () => (
+            <Pressable
+              onPress={() => navigation.navigate("Modal")}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}
+            >
+              <FontAwesome
+                name="info-circle"
+                size={25}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>
+          ),
+        })}
+      />
+      <BottomTab.Screen
+        name="Utilities"
+        component={UtilitiesScreen}
+        options={{
+          title: "Utilidades",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="CreateMatchroom"
+        component={CreateMatchRoomScreen}
+        options={{
+          title: "Criar Partida",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarStyle: { display: "none" },
         }}
       />
     </BottomTab.Navigator>

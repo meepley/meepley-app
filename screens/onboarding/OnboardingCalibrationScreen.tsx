@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import PagerView, {
   PagerViewOnPageSelectedEvent,
 } from "react-native-pager-view";
 
-import { Button, Heading, Modal, VStack, AlertDialog } from "native-base";
+import {
+  Button,
+  Heading,
+  Modal,
+  VStack,
+  AlertDialog,
+  Box,
+  Text,
+  Flex,
+} from "native-base";
+import Container from "@components/common/Container";
+import Btn from "@components/common/buttons/Btn";
 
 const steps: {
   label: string;
@@ -61,107 +71,115 @@ const steps: {
   },
 ];
 
-const OnboardingCalibrationFooter: React.FC<{ isLastPage: boolean }> = ({
-  isLastPage,
-}) => {
+const OnboardingCalibrationFooter: React.FC<{
+  isLastPage: boolean;
+  setModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ isLastPage, setModal }) => {
   const navigation = useNavigation();
 
   return (
-    <VStack space={4}>
-      <Button variant="outline" onPress={() => null}>
+    <VStack space={4} pt={8}>
+      <Btn
+        variant="solid"
+        onPress={() => (isLastPage ? navigation.navigate("Dashboard") : null)}
+      >
         {isLastPage ? "Terminar calibração" : "Próximo"}
-      </Button>
-      <Button variant="ghost" onPress={() => navigation.navigate("Dashboard")}>
+      </Btn>
+      <Btn variant="ghost" onPress={() => setModal(true)}>
         Cancelar calibração
-      </Button>
+      </Btn>
     </VStack>
   );
 };
 
 const OnboardingCalibrationScreen = () => {
   const navigation = useNavigation();
+  const [selectedFamiliarity, setSelectedFamiliarity] = useState("");
+  const [selectedGenres, setSelectedGenres] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const cancelRef = React.useRef(null);
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
-      <PagerView
-        onPageSelected={(e: PagerViewOnPageSelectedEvent) =>
-          console.log(e.target)
-        }
-        style={{ flex: 1 }}
-      >
-        {steps.map((item, key) => {
-          return (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-                flexDirection: "column",
-              }}
-              key={key++}
-            >
-              {item?.img && <Text></Text>}
-              {item?.title && <Heading>{item.title}</Heading>}
-              <Text>{item.description}</Text>
-              {item?.contents && item.label === "experience" ? (
-                <Heading>{item.title}</Heading>
-              ) : item?.contents && item.label === "genres" ? (
-                <Text></Text>
-              ) : (
-                item?.contents &&
-                item.label === "disponibility" && <Text></Text>
-              )}
+    <Container>
+      <Box minH="90%">
+        <PagerView showPageIndicator={true} style={{ flex: 1 }}>
+          {steps.map((item, key) => {
+            return (
+              <Flex
+                direction="column"
+                justifyContent="center"
+                textAlign="center"
+                px={12}
+                _text={{ textAlign: "center" }}
+                key={key++}
+              >
+                {item?.img && <Text></Text>}
+                {item?.title && (
+                  <Heading pb={8} textAlign="center">
+                    {item.title}
+                  </Heading>
+                )}
+                <Text textAlign="center">{item.description}</Text>
+                {item?.contents && item.label === "experience" ? (
+                  <Heading textAlign="center">{item.title}</Heading>
+                ) : item?.contents && item.label === "genres" ? (
+                  <Text></Text>
+                ) : (
+                  item?.contents &&
+                  item.label === "disponibility" && <Text></Text>
+                )}
 
-              {item?.map && <Heading>{item.title}</Heading>}
-            </View>
-          );
-        })}
-        <OnboardingCalibrationFooter isLastPage={false} />
-      </PagerView>
+                {item?.map && null}
 
+                <OnboardingCalibrationFooter
+                  isLastPage={false}
+                  setModal={() => setModalVisible(!modalVisible)}
+                />
+              </Flex>
+            );
+          })}
+        </PagerView>
+        <AlertDialog
+          leastDestructiveRef={cancelRef}
+          isOpen={modalVisible}
+          onClose={() => setModalVisible(false)}
+          justifyContent="flex-end"
+          bottom="4"
+          size="lg"
+        >
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>Cancelar Calibração?</AlertDialog.Header>
+            <AlertDialog.Body>
+              Sem concluires este processo o MeePley não conseguirá dar-te uma
+              experiência e sugestões de salas personalizadas tendo em conta as
+              tuas características.
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button
+                ref={cancelRef}
+                flex="1"
+                onPress={() => {
+                  setModalVisible(false);
+                }}
+              >
+                Voltar
+              </Button>
+              <Btn
+                flex="1"
+                onPress={() => {
+                  setModalVisible(false);
+                  navigation.navigate("Dashboard");
+                }}
+              >
+                Cancelar
+              </Btn>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+      </Box>
       {/* Modal de confirmação de cancelar calibração */}
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={modalVisible}
-        onClose={() => setModalVisible(false)}
-        justifyContent="flex-end"
-        bottom="4"
-        size="lg"
-      >
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>Cancelar Calibração?</AlertDialog.Header>
-          <AlertDialog.Body>
-            Enter email address and we'll send a link to reset your password.
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button
-              ref={cancelRef}
-              flex="1"
-              onPress={() => {
-                setModalVisible(false);
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              flex="1"
-              onPress={() => {
-                setModalVisible(false);
-              }}
-            >
-              Proceed
-            </Button>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
-    </View>
+    </Container>
   );
 };
 

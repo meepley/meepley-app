@@ -3,10 +3,11 @@ import { View, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import PagerView, {
   PagerViewOnPageSelectedEvent,
+  PageScrollStateChangedNativeEvent,
 } from "react-native-pager-view";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { Box, Text, Button, Flex, Heading, VStack } from "native-base";
+import { Box, Text, Flex, Heading, VStack } from "native-base";
 
 import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
@@ -85,10 +86,7 @@ const OnboardingInitialScreen = () => {
   return (
     <Container>
       <Box minH="full">
-        <PagerView
-          onPageSelected={(e: PagerViewOnPageSelectedEvent) => console.log("z")}
-          style={{ flex: 1 }}
-        >
+        <PagerView showPageIndicator={true} style={{ flex: 1 }}>
           {steps.map((item, key) => {
             return (
               <View

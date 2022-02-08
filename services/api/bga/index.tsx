@@ -5,9 +5,11 @@ import { IBoardgame } from "@ts/interfaces/IBoardgame";
 
 const getBoardGame = () => useQuery("characters", () => fetch(BGG_API));
 
+const getBoardGameVideos = () => useQuery("characters", () => fetch(BGG_API));
+
 const getBoardGameGenres = () => useQuery("characters", () => fetch(BGG_API));
 
-const getBoardGamesList = async ({ pageParam = 1 }) => {
+const getBoardGamesList = async (pageParam = 1) => {
   const skip = 30 * pageParam;
   const getBgs = await axios.get<{
     games: IBoardgame[];
@@ -22,4 +24,4 @@ const getBoardGamesList = async ({ pageParam = 1 }) => {
   };
 };
 
-export { getBoardGame, getBoardGamesList };
+export { getBoardGame, getBoardGamesList, getBoardGameVideos };

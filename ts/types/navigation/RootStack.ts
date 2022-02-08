@@ -11,6 +11,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 export type RootStackParamList = {
   CalibrationOnboarding: undefined;
   CreateMatch: undefined;
+  MatchRoom: { title: string; match: any };
   Profile: undefined;
   Dashboard: undefined;
   Place: undefined;

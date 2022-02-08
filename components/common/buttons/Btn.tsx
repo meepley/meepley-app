@@ -14,7 +14,7 @@ const Btn = ({
   spinnerPlacement = "start",
   ...props
 }: IButtonProps & IBoxProps) => {
-  console.log(props?.minWidth || props?.minW || "1/2");
+  // console.log(props?.minWidth || props?.minW || "1/2");
   return (
     <Button
       {...props}

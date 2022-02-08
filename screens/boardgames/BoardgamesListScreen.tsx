@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "react-query";
 import { useNavigation } from "@react-navigation/native";
 import { Text, Card, Heading, Pressable, Button, Box } from "native-base";
 
-import { getBoardGamesList } from "@services/api/bgg";
+import { getBoardGamesList } from "@services/api/bga";
 import Container from "@components/common/Container";
 import { IBoardgame } from "@ts/interfaces/IBoardgame";
 

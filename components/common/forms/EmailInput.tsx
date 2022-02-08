@@ -21,7 +21,7 @@ const EmailInput: React.FC<FieldProps> = (props) => {
 
       {feedbackInvalid && (
         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          {props?.form?.errors?.password}
+          {props?.form?.errors?.email}
         </FormControl.ErrorMessage>
       )}
     </FormControl>

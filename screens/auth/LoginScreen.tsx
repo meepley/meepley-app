@@ -51,6 +51,7 @@ const LoginScreen = () => {
   }) => {
     console.log(email, password);
     setAuth && setAuth(true);
+    navigation.navigate("CalibrationOnboarding");
   };
 
   return (
@@ -96,9 +97,15 @@ const LoginScreen = () => {
                   actions.setSubmitting(false);
                 }}
               >
-                {({ handleSubmit, isSubmitting }) => (
+                {({
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  values,
+                  isSubmitting,
+                }) => (
                   <VStack space={6} width="100%">
-                    <Field name="email" type="text" component={EmailInput} />
+                    <Field name="email" type="email" component={EmailInput} />
                     <Field
                       name="password"
                       label="Password"
@@ -114,7 +121,7 @@ const LoginScreen = () => {
                         variant="solid"
                         isDisabled={isSubmitting}
                         isLoading={isSubmitting}
-                        onPress={() => handleSubmit}
+                        onPress={handleSubmit}
                       >
                         Entrar
                       </Btn>

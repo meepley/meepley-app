@@ -13,6 +13,7 @@ const linking: LinkingOptions<RootStackParamList> = {
     screens: {
       CalibrationOnboarding: "calibration-onboarding",
       CreateMatch: "create-matchroom",
+      MatchRoom: "matchroom",
       Profile: "profile",
       Dashboard: "dashboard",
       Place: "place",
