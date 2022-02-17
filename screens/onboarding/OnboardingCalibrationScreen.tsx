@@ -158,6 +158,7 @@ const OnboardingCalibrationScreen = () => {
             <AlertDialog.Footer>
               <Button
                 ref={cancelRef}
+                borderRadius={"3xl"}
                 flex="1"
                 onPress={() => {
                   setModalVisible(false);
@@ -166,6 +167,8 @@ const OnboardingCalibrationScreen = () => {
                 Voltar
               </Button>
               <Btn
+                variant = "solid"
+                minWidth={"0.2"}
                 flex="1"
                 onPress={() => {
                   setModalVisible(false);

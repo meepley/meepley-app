@@ -1,12 +1,16 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
 import Container from "@components/common/Container";
 
 const PlaceScreen = () => {
   return (
     <Container>
       <View>
-        <Text>Local</Text>
+        <Text>
+          <image>
+            Local
+          </image>
+        </Text>
       </View>
     </Container>
   );
