@@ -38,10 +38,10 @@ const UtilitiesScreen = () => {
           {utilities.map((item, i) => (
             <Flex
               key={i}
-              w="45%"
               mt={3}
-              h={"40"}
-              bg={"#DADADA"}
+              w="45%"
+              h="40"
+              bg="grays.light"
               rounded="md"
               direction="column"
               justifyContent="center"

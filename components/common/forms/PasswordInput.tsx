@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FieldProps } from "formik";
-import { FormControl, Icon, Input, WarningOutlineIcon } from "native-base";
+import { FormControl, Icon, Input } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface PasswordInputProps extends FieldProps {
@@ -39,7 +39,7 @@ const PasswordInput: React.FC<PasswordInputProps> = (props) => {
       />
 
       {feedbackInvalid && (
-        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+        <FormControl.ErrorMessage>
           {props?.form?.errors?.password}
         </FormControl.ErrorMessage>
       )}

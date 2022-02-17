@@ -11,14 +11,13 @@ import {
   Heading,
   HStack,
   IconButton,
-  Link,
   Modal,
   Button,
   useToast,
   ScrollView,
   Flex,
-  Image,
   VStack,
+  Image,
 } from "native-base";
 
 import Container from "@components/common/Container";
@@ -68,162 +67,198 @@ const RegisterScreen = () => {
   return (
     <Container>
       <ScrollView>
+        <Box position="absolute" top="5" left="250">
+          <Image
+            alt="First Meeple"
+            resizeMode="contain"
+            style={{ zIndex: 200, width: 45, height: 45 }}
+            source={require("@assets/images/meeples/meeple.png")}
+          />
+        </Box>
+        <Box position="absolute" top="200" left="5">
+          <Image
+            alt="Second Meeple"
+            resizeMode="contain"
+            style={[
+              { zIndex: 200, width: 35, height: 35 },
+              { transform: [{ rotate: "-20deg" }] },
+            ]}
+            source={require("@assets/images/meeples/meeple.png")}
+          />
+        </Box>
+        <Box position="absolute" top="250" left="280">
+          <Image
+            alt="Third Meeple"
+            resizeMode="contain"
+            style={[
+              { zIndex: 200, width: 50, height: 50 },
+              { transform: [{ rotate: "-75deg" }] },
+            ]}
+            source={require("@assets/images/meeples/meeple.png")}
+          />
+        </Box>
         <Flex
+          p={16}
+          h="500"
+          w="full"
           direction="column"
           alignItems="center"
-          justifyContent="center"
-          w="full"
+          justifyContent="flex-start"
           bg={{
             linearGradient: {
-              colors: ["brand.300", "brand.800"],
-              start: [0, 0],
-              end: [1, 0],
+              colors: ["#614eca", "rgba(157, 146, 218, 0.5312)"],
+              start: [-1.2, 0],
+              end: [0, 2],
+              location: [0.25, 0.4, 1],
             },
           }}
         >
-          <Box p={16}>
-            <Image
-              alt="MeePley Logo"
-              resizeMode="contain"
-              style={{ width: 250, height: 100 }}
-              source={require("@assets/images/branding/logo-w-slogan.png")}
-            />
-            <Text color="white" pt={4} textAlign="center">
-              Encontra outros jogadores para jogar os teus jogos favoritos
-            </Text>
-          </Box>
-
-          <Box w="full" bgColor="white" borderTopRightRadius={135}>
-            <Box p={12}>
-              <Heading pb={6}>Registo</Heading>
-              <Formik
-                validationSchema={RegisterSchema}
-                initialValues={{
-                  email: "",
-                  password: "",
-                  passwordConfirmation: "",
-                }}
-                onSubmit={async (values, actions) => {
-                  actions.setSubmitting(true);
-                  await _onRegisterFormSubmit(values);
-                  actions.setSubmitting(false);
-                }}
-              >
-                {({ handleSubmit, isSubmitting }) => (
-                  <VStack space={6} width="100%">
-                    <Field name="email" type="text" component={EmailInput} />
-                    <Field
-                      name="password"
-                      label="Password"
-                      placeholder="insere a tua password"
-                      type="password"
-                      component={PasswordInput}
-                    />
-                    <Field
-                      name="passwordConfirmation"
-                      label="Reinserir Password"
-                      placeholder="insere novamente a tua password"
-                      type="password"
-                      component={PasswordInput}
-                    />
-
-                    <Flex direction="row" justifyContent="center" pb={6}>
-                      <Btn
-                        minWidth={40}
-                        width={40}
-                        variant="solid"
-                        isDisabled={isSubmitting}
-                        isLoading={isSubmitting}
-                        onPress={() => handleSubmit}
-                      >
-                        Registar
-                      </Btn>
-                    </Flex>
-                  </VStack>
-                )}
-              </Formik>
-
-              <Text textAlign="center" pb={2}>
-                Não tens conta?{" "}
-                <Text
-                  underline
-                  color="brand.600"
-                  onPress={() => navigation.navigate("Register")}
-                >
-                  Regista-te aqui
-                </Text>
-              </Text>
-              <Text textAlign="center">
-                Ao fazeres o registo concordas com os Termos e aceitas as{" "}
-                <Text
-                  underline
-                  color="brand.600"
-                  onPress={() => setModalVisible(!modalVisible)}
-                >
-                  Políticas de Privacidade
-                </Text>
-              </Text>
-
-              <Divider my={8} />
-
-              <Text
-                textAlign="center"
-                pb={4}
-                textTransform="uppercase"
-                fontWeight="bold"
-              >
-                Registar com
-              </Text>
-              <HStack justifyContent="center" space={2}>
-                <IconButton
-                  bgColor="blue.400"
-                  borderRadius="full"
-                  size="lg"
-                  _icon={{
-                    as: FontAwesome5,
-                    name: "facebook",
-                    color: "white",
-                    size: 7,
-                  }}
-                />
-                <IconButton
-                  _icon={{
-                    as: FontAwesome5,
-                    name: "google",
-                    color: "white",
-                    size: 7,
-                  }}
-                  bgColor="red.400"
-                  borderRadius="full"
-                  size="lg"
-                />
-              </HStack>
-            </Box>
-
-            <Flex direction="row" justifyContent="space-between">
-              <SpeechBubbleBtn
-                color="lYellow.500"
-                direction="left"
-                onNavigate={() => navigation.navigate("BoardgamesList")}
-              >
-                <FontAwesome5 name="list" size={24} color="white" />
-                <Text textAlign="center" pt={2} color="white">
-                  Jogos
-                </Text>
-              </SpeechBubbleBtn>
-              <SpeechBubbleBtn
-                color="lGreen.500"
-                direction="right"
-                onNavigate={() => navigation.navigate("Utilities")}
-              >
-                <FontAwesome5 name="dice-d20" size={24} color="white" />
-                <Text textAlign="center" pt={2} color="white">
-                  Utilidades
-                </Text>
-              </SpeechBubbleBtn>
-            </Flex>
-          </Box>
+          <Image
+            alt="MeePley Logo"
+            resizeMode="contain"
+            style={{ width: 250, height: 100 }}
+            source={require("@assets/images/branding/logo-w-slogan.png")}
+          />
+          <Text color="white" pt={4} textAlign="center">
+            Encontra outros jogadores para jogar os teus jogos favoritos
+          </Text>
         </Flex>
+
+        <Box
+          w="full"
+          bgColor="white"
+          marginTop="-200"
+          borderTopRightRadius={135}
+        >
+          <Box p={12}>
+            <Heading pb={6}>Registo</Heading>
+            <Formik
+              validationSchema={RegisterSchema}
+              initialValues={{
+                email: "",
+                password: "",
+                passwordConfirmation: "",
+              }}
+              onSubmit={async (values, actions) => {
+                actions.setSubmitting(true);
+                await _onRegisterFormSubmit(values);
+                actions.setSubmitting(false);
+              }}
+            >
+              {({ handleSubmit, isSubmitting }) => (
+                <VStack space={6} width="100%">
+                  <Field name="email" type="text" component={EmailInput} />
+                  <Field
+                    name="password"
+                    label="Password"
+                    placeholder="insere a tua password"
+                    type="password"
+                    component={PasswordInput}
+                  />
+                  <Field
+                    name="passwordConfirmation"
+                    label="Reinserir Password"
+                    placeholder="insere novamente a tua password"
+                    type="password"
+                    component={PasswordInput}
+                  />
+
+                  <Flex direction="row" justifyContent="center" pb={6}>
+                    <Btn
+                      minWidth={40}
+                      width={40}
+                      variant="solid"
+                      isDisabled={isSubmitting}
+                      isLoading={isSubmitting}
+                      onPress={() => handleSubmit}
+                    >
+                      Registar
+                    </Btn>
+                  </Flex>
+                </VStack>
+              )}
+            </Formik>
+
+            <Text textAlign="center" pb={2}>
+              Já tens conta?{" "}
+              <Text
+                underline
+                color="brand.600"
+                onPress={() => navigation.navigate("Login")}
+              >
+                Entra aqui
+              </Text>
+            </Text>
+            <Text textAlign="center">
+              Ao fazeres o registo concordas com os Termos e aceitas as{" "}
+              <Text
+                underline
+                color="brand.600"
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                Políticas de Privacidade
+              </Text>
+            </Text>
+
+            <Divider my={8} />
+
+            <Text
+              textAlign="center"
+              pb={4}
+              textTransform="uppercase"
+              fontWeight="bold"
+            >
+              Registar com
+            </Text>
+            <HStack justifyContent="center" space={2}>
+              <IconButton
+                bgColor="blue.400"
+                borderRadius="full"
+                size="lg"
+                _icon={{
+                  as: FontAwesome5,
+                  name: "facebook",
+                  color: "white",
+                  size: 7,
+                }}
+              />
+              <IconButton
+                _icon={{
+                  as: FontAwesome5,
+                  name: "google",
+                  color: "white",
+                  size: 7,
+                }}
+                bgColor="red.400"
+                borderRadius="full"
+                size="lg"
+              />
+            </HStack>
+          </Box>
+
+          <Flex direction="row" justifyContent="space-between">
+            <SpeechBubbleBtn
+              color="lYellow.500"
+              direction="left"
+              onNavigate={() => navigation.navigate("BoardgamesList")}
+            >
+              <FontAwesome5 name="list" size={24} color="white" />
+              <Text textAlign="center" pt={2} color="white">
+                Jogos
+              </Text>
+            </SpeechBubbleBtn>
+            <SpeechBubbleBtn
+              color="lGreen.500"
+              direction="right"
+              onNavigate={() => navigation.navigate("Utilities")}
+            >
+              <FontAwesome5 name="dice-d20" size={24} color="white" />
+              <Text textAlign="center" pt={2} color="white">
+                Utilidades
+              </Text>
+            </SpeechBubbleBtn>
+          </Flex>
+        </Box>
 
         {/* Modal de condições, políticas para o registo */}
         <Modal

@@ -1,5 +1,5 @@
 import { FieldProps } from "formik";
-import { FormControl, Input, WarningOutlineIcon } from "native-base";
+import { FormControl, Input } from "native-base";
 
 const EmailInput: React.FC<FieldProps> = (props) => {
   const feedbackInvalid =
@@ -20,7 +20,7 @@ const EmailInput: React.FC<FieldProps> = (props) => {
       />
 
       {feedbackInvalid && (
-        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+        <FormControl.ErrorMessage>
           {props?.form?.errors?.email}
         </FormControl.ErrorMessage>
       )}

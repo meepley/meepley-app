@@ -49,6 +49,9 @@ const meepleyColorTheme = {
     800: "#8D1D3A",
     900: "#751133",
   },
+  grays: {
+    light: "#FAFAFA",
+  },
 };
 
 const theme = extendTheme({

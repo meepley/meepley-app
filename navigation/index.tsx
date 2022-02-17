@@ -144,8 +144,21 @@ function RootNavigator() {
         </Stack.Group>
       )}
 
-      <Stack.Screen name="BoardgamesList" component={BoardgamesListScreen} />
-      <Stack.Screen name="Boardgame" component={BoardgameScreen} />
+      <Stack.Screen
+        name="BoardgamesList"
+        component={BoardgamesListScreen}
+        options={{
+          headerTitle: (props) => <LogoTitle />,
+          headerBackVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="Boardgame"
+        component={BoardgameScreen}
+        options={{
+          headerBackVisible: true,
+        }}
+      />
       <Stack.Screen
         name="Utilities"
         component={UtilitiesScreen}

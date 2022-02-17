@@ -1,9 +1,10 @@
 import React from "react";
-import { Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@ts/types/navigation/RootStack";
 
 import Container from "@components/common/Container";
+import { Flex, Heading, IconButton } from "native-base";
+import PagerView from "react-native-pager-view";
 
 type TBoardgameScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -15,9 +16,11 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
 
   return (
     <Container>
-      <View>
-        <Text>Individual Boardgame</Text>
-      </View>
+      <Flex>
+        <Heading>{boardgame.name}</Heading>
+        <IconButton />
+      </Flex>
+      <PagerView style={{ flex: 1 }}></PagerView>
     </Container>
   );
 };
