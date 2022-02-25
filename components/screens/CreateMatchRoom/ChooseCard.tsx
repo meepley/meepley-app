@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Center, Flex, Heading, Icon, Text } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-const ChooseCard = () => {
+const ChooseCard = ({title, text}) => {
   return (
     <Flex
       p={6}
@@ -23,9 +23,9 @@ const ChooseCard = () => {
       </Center>
       <Box>
         <Heading fontSize="md" pb={1}>
-          Sem jogo
+          {title}
         </Heading>
-        <Text color="gray.500">Escolhe um jogo para a partida</Text>
+        <Text fontSize={"xs"} color="gray.500">{text}</Text>
       </Box>
     </Flex>
   );

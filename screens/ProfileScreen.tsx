@@ -1,14 +1,15 @@
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import React from "react";
-import { AntDesign } from '@expo/vector-icons';
+import {AntDesign, FontAwesome5} from '@expo/vector-icons';
 import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
 import {
+  View,
   Center,
   VStack,
   Avatar,
   Text,
-  Button, ScrollView,
+  Button, ScrollView, Icon,
 } from "native-base";
 import {Screen} from "react-native-screens";
 
@@ -51,7 +52,7 @@ const ProfileScreen = () => {
         
         {/*Barra Vertical - Separador*/}
         <View>
-          <View style={styles.verticalLign}></View>
+          <View style={styles.verticalLine}></View>
         </View>
         
         {/*Avaliações*/}
@@ -66,7 +67,7 @@ const ProfileScreen = () => {
 
         {/*Barra Vertical - Separador*/}
         <View>
-          <View style={styles.verticalLign}></View>
+          <View style={styles.verticalLine}></View>
         </View>
 
         {/*Seguidores*/}
@@ -89,19 +90,19 @@ const ProfileScreen = () => {
         
  
         <Center paddingTop={5}>
-          <Btn style={styles.badges} variant={"unstyled"} minWidth={"3/4"} borderRadius={"3xl"} borderColor={"gray.200"} borderWidth={0.5}>
+          <Btn style={styles.badges} variant={"ghost"} minWidth={"3/4"} borderRadius={"3xl"} borderColor={"gray.200"} borderWidth={0.5}>
             <View style={styles.content}>
             <Text bold> Descobridor de Aveiro </Text>
             <Text fontWeight={"light"} fontSize={"xs"}>Jogou em 5 espaços diferentes</Text>
             </View>
           </Btn>
-          <Btn marginTop={5} variant={"unstyled"} style={styles.badges} minWidth={"3/4"} borderRadius={"3xl"} borderColor={"gray.200"} borderWidth={0.5}>
+          <Btn marginTop={5} leftIcon={<Icon as={FontAwesome5} size={24} name={"medal"} color={"red"}/>} variant={"ghost"} style={styles.badges} minWidth={"3/4"} borderRadius={"3xl"} borderColor={"gray.200"} borderWidth={0.5}>
             <View style={styles.content}>
               <Text bold> Mestre em Xadrez </Text>
-              <Text fontWeight={"light"} fontSize={"xs"}>Ganhou mais dee 50 partidas</Text>
+              <Text fontWeight={"light"} fontSize={"xs"}>Ganhou mais de 50 partidas</Text>
             </View>
           </Btn>
-          <Btn variant={"unstyled"} marginTop={5} style={styles.badges} minWidth={"3/4"} borderRadius={"3xl"} borderColor={"gray.200"} borderWidth={0.5}>
+          <Btn variant={"ghost"} marginTop={5} style={styles.badges} minWidth={"3/4"} borderRadius={"3xl"} borderColor={"gray.200"} borderWidth={0.5}>
             <View style={styles.content}>
               <Text bold> Exemplo da Comunidade </Text>
               <Text fontWeight={"light"} fontSize={"xs"}>Recebeu 25 vezes 5* na avaliação</Text>
@@ -139,14 +140,14 @@ const styles = StyleSheet.create({
     alignContent: "center",
     height: "22%",
   },
-  verticalLign: {
+  verticalLine: {
     marginTop: 12,
     width: 1,
     backgroundColor: 'rgba(122,122,122,0.35)',
     height: "30%",
   },
   badges: {
-    shadowOffset: {width: 10, height: 10},
+    shadowOffset: {width: 8, height: 8},
     shadowRadius: 100,
     shadowColor: "#282828",
     shadowOpacity: 1,
