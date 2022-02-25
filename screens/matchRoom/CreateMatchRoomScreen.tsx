@@ -24,6 +24,7 @@ import {
 import Container from "@components/common/Container";
 import ChooseCard from "@components/screens/CreateMatchRoom/ChooseCard";
 import Btn from "@components/common/buttons/Btn";
+import {StyleSheet} from "react-native";
 
 const CreateMatchRoomFormSchema = Yup.object().shape({
   email: Yup.string()
@@ -43,13 +44,15 @@ const CreateMatchRoomScreen = () => {
   return (
     <Container>
       <ScrollView>
-        <Box px={10}>
-          <Stack space={4} pb={8}>
-            <ChooseCard />
-            <ChooseCard />
+        <Box px={8}>
+          <Stack space={4} pb={6}>
+            <ChooseCard title={"Local"}
+                        text={"Escolhe o Local"} />
+            <ChooseCard title={"Sem Jogo"}
+                        text={"Escolhe um jogo para a partida"} />
           </Stack>
           <Box>
-            <Heading pb={4}>Detalhes</Heading>
+            <Heading pt={4} pb={6}>Detalhes</Heading>
             <Formik
               validationSchema={CreateMatchRoomFormSchema}
               initialValues={{
@@ -88,21 +91,22 @@ const CreateMatchRoomScreen = () => {
                               Nome da partida
                             </FormControl.Label>
                             <Input
+                              mt={1}
+                              variant={"rounded"}    
                               value={props?.field.value}
                               onChangeText={props?.form.handleChange("email")}
                               onBlur={props?.form.handleBlur("email")}
                               isRequired={true}
                               isInvalid={feedbackInvalid}
-                              type="email"
-                              variant="underlined"
-                              placeholder="insere o teu email"
+                              type="text"
+                              placeholder="Escolhe o nome da tua partida"
                             />
 
                             {feedbackInvalid && (
                               <FormControl.ErrorMessage
                                 leftIcon={<WarningOutlineIcon size="xs" />}
                               >
-                                {props?.form?.errors?.password}
+                                {"Não escolheste um nome para a partida"}
                               </FormControl.ErrorMessage>
                             )}
                           </FormControl>
@@ -110,70 +114,78 @@ const CreateMatchRoomScreen = () => {
                       }}
                     />
 
-                    <FormControl w="100%" maxW="300px">
+                    <FormControl w="50%" maxW="300px">
                       <FormControl.Label>Número de jogadores</FormControl.Label>
                       <Select
+                        variant={"rounded"}
                         selectedValue={values.players_number}
-                        minWidth="200"
-                        accessibilityLabel="Choose Service"
-                        placeholder="Choose Service"
+                        minWidth="100"
+                        accessibilityLabel="Escolhe o número de jogadores"
+                        placeholder="Escolhe o número de jogadores"
                         _selectedItem={{
                           bg: "teal.600",
                           endIcon: <CheckIcon size="5" />,
                         }}
                         mt={1}
-                        onValueChange={() => null}
+                        onValueChange={(itemValue) => itemValue}
                       >
-                        <Select.Item label="UX Research" value="ux" />
-                        <Select.Item label="Web Development" value="web" />
-                        <Select.Item
-                          label="Cross Platform Development"
-                          value="cross"
-                        />
-                        <Select.Item label="UI Designing" value="ui" />
-                        <Select.Item
-                          label="Backend Development"
-                          value="backend"
-                        />
+                        <Select.Item label="2" value="2" />
+                        <Select.Item label="3" value="3" />
+                        <Select.Item label="4" value="4" />
+                        <Select.Item label="5" value="5" />
+                        <Select.Item label="6" value="6" />
                       </Select>
                     </FormControl>
                     {/* <Field name="players_number" type="text" component={} /> */}
 
-                    <FormControl w="100%" maxW="300px">
+
+                  <Stack direction={"row"} mb={2.5} mt={1.5} space={3}>
+                    <FormControl width={"50%"}>
                       <FormControl.Label>Data</FormControl.Label>
+                      <Select borderRadius={"3xl"}>
                       <DateTimePickerModal
                         isVisible={false}
                         mode="date"
                         onConfirm={() => {}}
                         onCancel={() => {}}
                       />
+                      </Select>
                     </FormControl>
 
-                    <FormControl w="100%" maxW="300px">
-                      <FormControl.Label>Hora</FormControl.Label>
-                      <DateTimePickerModal
-                        isVisible={false}
-                        mode="time"
-                        onConfirm={() => {}}
-                        onCancel={() => {}}
-                      />
+                    <FormControl width={"50%"}>
+                      <FormControl.Label textAlign={"center"}>Hora</FormControl.Label>
+                      <Select borderRadius={"3xl"}>
+                        <DateTimePickerModal
+                          isVisible={false}
+                          mode="time"
+                          onConfirm={() => {}}
+                          onCancel={() => {}}
+                        />
+                      </Select>
                     </FormControl>
+                  </Stack>
 
                     {/* <Field name="hour" type="text" component={} /> */}
 
                     <FormControl>
-                      <FormControl.Label>Dificuldade</FormControl.Label>
+                      <FormControl.Label>Tipo de Partida</FormControl.Label>
                       <Radio.Group
-                        name="myRadioGroup"
-                        accessibilityLabel="favorite number"
+                        name="tipoPartida"
+                        accessibilityLabel="tipo de partida"
+                        defaultValue={"publico"}
                         value={value}
                       >
-                        <Radio value="one" my={1} bg="blue.200">
-                          One
+                        <Stack mt={2} direction={{
+                          base: "row",
+                        }} justifyContent={"center"} space={4} w="100%" maxW="300px"
+                        >
+                        <Radio size={"sm"} value="publico" my={1} >
+                          Publico
                         </Radio>
-                        <Radio value="two" my={1} bg="red.200">
-                          Two
+                        <Radio size={"sm"} value="privado" my={1}>
+                          Privado
                         </Radio>
+                        </Stack>
                       </Radio.Group>
                     </FormControl>
 
@@ -181,7 +193,7 @@ const CreateMatchRoomScreen = () => {
                     {/* <Field name="match_difficulty" type="text" component={} /> */}
                   </VStack>
 
-                  <Stack py={8} space={2}>
+                  <Stack py={6} space={2}>
                     <Text
                       underline
                       color="brand.600"
@@ -220,5 +232,7 @@ const CreateMatchRoomScreen = () => {
     </Container>
   );
 };
+
+
 
 export default CreateMatchRoomScreen;
