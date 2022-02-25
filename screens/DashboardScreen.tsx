@@ -182,6 +182,14 @@ const DashboardScreen = () => {
 
         <Box px={12} pb={10}>
           <Heading pb={4}>Locais para jogar</Heading>
+          <Btn
+              onPress={() => navigation.navigate("Place")}
+              minWidth={40}
+            width={40}
+            variant="solid"
+          >
+            Local Teste
+          </Btn>
           <MapView
             style={{ width: 200, height: 400 }}
             provider={PROVIDER_GOOGLE}

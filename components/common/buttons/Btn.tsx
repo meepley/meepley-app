@@ -27,7 +27,8 @@ const Btn = ({
             }
           : undefined
       }
-      borderRadius="3xl"
+      //borderRadius="3xl"
+      borderRadius="30"
       minWidth={props?.minWidth || props?.minW || "1/2"}
       shadow={props?.variant === "solid" ? "4" : "none"}
     >
