@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
@@ -18,24 +18,76 @@ import {
   Select,
   Radio,
   CheckIcon,
-  Stack,
+  Stack, Button,
 } from "native-base";
 
 import Container from "@components/common/Container";
 import ChooseCard from "@components/screens/CreateMatchRoom/ChooseCard";
 import Btn from "@components/common/buttons/Btn";
 import {StyleSheet} from "react-native";
+import {background} from "native-base/lib/typescript/theme/styled-system";
 
 const CreateMatchRoomFormSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Email inválido")
-    .required("Necessita de inserir o seu email para realizar o login"),
+  name: Yup.string().required("Necessita de inserir o seu email para realizar o login"),
+  
   password: Yup.string().required(
     "Necessita de inserir a sua palavra-passe para realizar o login"
   ),
 });
 
 const CreateMatchRoomScreen = () => {
+
+  //Nome Partida  
+  let [nomePartida, setNomePartida] = React.useState("");
+
+  
+  //Form Pessoas
+  let [numPessoas, setNumPessoas] = useState("");
+  
+  //________________
+  //Form Data
+  const [dataText, setDataText] = useState("Escolhe o Dia")
+  
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    let data = date.toString();
+    setDataText(data);
+    hideDatePicker();
+  };
+  
+  
+  //_____________________
+  // Form Hora
+  const [hourText, setHourText] = useState("Escolhe a Hora")
+  const [isHourPickerVisible, setHourPickerVisibility] = useState(false);
+
+  const showHourPicker = () => {
+    setHourPickerVisibility(true);
+  };
+
+  const hideHourPicker = () => {
+    setHourPickerVisibility(false);
+  };
+
+  const hourConfirm = (hour) => {
+    let hora = hour.getHours() + ":" + hour.getMinutes();
+    setHourText(hora);
+    hideHourPicker();
+  }
+  //_____________________
+  //Publico/Privado
+  const [pubPriv, setPubPriv] = React.useState('publico');
+
+  //---------------------
   const toast = useToast();
   const { value, onCopy } = useClipboard();
 
@@ -45,7 +97,7 @@ const CreateMatchRoomScreen = () => {
     <Container>
       <ScrollView>
         <Box px={8}>
-          <Stack space={4} pb={6}>
+          <Stack space={4} pt={1} pb={6}>
             <ChooseCard title={"Local"}
                         text={"Escolhe o Local"} />
             <ChooseCard title={"Sem Jogo"}
@@ -53,6 +105,7 @@ const CreateMatchRoomScreen = () => {
           </Stack>
           <Box>
             <Heading pt={4} pb={6}>Detalhes</Heading>
+            
             <Formik
               validationSchema={CreateMatchRoomFormSchema}
               initialValues={{
@@ -72,18 +125,9 @@ const CreateMatchRoomScreen = () => {
               {({ handleSubmit, isSubmitting, values }) => (
                 <>
                   <VStack space={6} width="100%">
-                    <Field
-                      name="match_name"
-                      type="text"
-                      component={(props) => {
-                        const feedbackInvalid =
-                          props?.form?.touched && props?.form?.errors?.email
-                            ? true
-                            : false;
-
-                        return (
+                    
                           <FormControl
-                            isInvalid={feedbackInvalid}
+                            isRequired
                             w="100%"
                             maxW="300px"
                           >
@@ -93,33 +137,23 @@ const CreateMatchRoomScreen = () => {
                             <Input
                               mt={1}
                               variant={"rounded"}    
-                              value={props?.field.value}
-                              onChangeText={props?.form.handleChange("email")}
-                              onBlur={props?.form.handleBlur("email")}
+                              value={nomePartida}
+                              onChangeText={newValue => setNomePartida(newValue)}
                               isRequired={true}
-                              isInvalid={feedbackInvalid}
                               type="text"
                               placeholder="Escolhe o nome da tua partida"
                             />
-
-                            {feedbackInvalid && (
-                              <FormControl.ErrorMessage
-                                leftIcon={<WarningOutlineIcon size="xs" />}
-                              >
-                                {"Não escolheste um nome para a partida"}
-                              </FormControl.ErrorMessage>
-                            )}
+                            
                           </FormControl>
-                        );
-                      }}
-                    />
+                    
+                    
 
-                    <FormControl w="50%" maxW="300px">
+                    <FormControl w="100%" maxW="300px">
                       <FormControl.Label>Número de jogadores</FormControl.Label>
                       <Select
                         variant={"rounded"}
-                        selectedValue={values.players_number}
-                        minWidth="100"
+                        selectedValue={numPessoas}
+                        w="50%"
                         accessibilityLabel="Escolhe o número de jogadores"
                         placeholder="Escolhe o número de jogadores"
                         _selectedItem={{
@@ -127,7 +161,7 @@ const CreateMatchRoomScreen = () => {
                           endIcon: <CheckIcon size="5" />,
                         }}
                         mt={1}
-                        onValueChange={(itemValue) => itemValue}
+                        onValueChange={itemValue => setNumPessoas(itemValue)}
                       >
                         <Select.Item label="2" value="2" />
                         <Select.Item label="3" value="3" />
@@ -141,27 +175,29 @@ const CreateMatchRoomScreen = () => {
 
                   <Stack direction={"row"} mb={2.5} mt={1.5} space={3}>
                     <FormControl width={"50%"}>
-                      <FormControl.Label>Data</FormControl.Label>
-                      <Select borderRadius={"3xl"}>
-                      <DateTimePickerModal
-                        isVisible={false}
+                      <FormControl.Label textAlign={"center"}>Data</FormControl.Label>
+                      <Button variant={"ghost"} borderWidth={1} borderColor={"gray.200"} height={10} borderRadius={"3xl"} onPress={showDatePicker}>
+                        <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
                         mode="date"
-                        onConfirm={() => {}}
-                        onCancel={() => {}}
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
                       />
-                      </Select>
+                       <Text>{dataText}</Text> 
+                      </Button>
                     </FormControl>
 
                     <FormControl width={"50%"}>
                       <FormControl.Label textAlign={"center"}>Hora</FormControl.Label>
-                      <Select borderRadius={"3xl"}>
-                        <DateTimePickerModal
-                          isVisible={false}
+                      <Button variant={"ghost"} borderWidth={1} borderColor={"gray.200"} height={10} borderRadius={"3xl"} onPress={showHourPicker}>
+                      <DateTimePickerModal
+                          isVisible={isHourPickerVisible}
                           mode="time"
-                          onConfirm={() => {}}
-                          onCancel={() => {}}
+                          onConfirm={hourConfirm}
+                          onCancel={hideHourPicker}
                         />
-                      </Select>
+                      <Text>{hourText}</Text>  
+                      </Button>
                     </FormControl>
                   </Stack>
 
@@ -173,16 +209,17 @@ const CreateMatchRoomScreen = () => {
                         name="tipoPartida"
                         accessibilityLabel="tipo de partida"
                         defaultValue={"publico"}
-                        value={value}
+                        onChange={newValue => setPubPriv(newValue)}
+                        value={pubPriv}
                       >
                         <Stack mt={2} direction={{
                           base: "row",
                         }} justifyContent={"center"} space={4} w="100%" maxW="300px"
                         >
-                        <Radio size={"sm"} value="publico" my={1} >
+                        <Radio size={"sm"} colorScheme={"violet"} value="publico" my={1} >
                           Publico
                         </Radio>
-                        <Radio size={"sm"} value="privado" my={1}>
+                        <Radio size={"sm"} colorScheme={"violet"} value="privado" my={1}>
                           Privado
                         </Radio>
                         </Stack>
@@ -233,6 +270,5 @@ const CreateMatchRoomScreen = () => {
   );
 };
 
-
-
 export default CreateMatchRoomScreen;
+
