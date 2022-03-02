@@ -1,32 +1,24 @@
-import { createContext, useMemo } from "react";
-import axios, { AxiosInstance } from "axios";
+import authStore from "@services/store/authStore";
+import axios from "axios";
 
-export const AxiosContext = createContext<Partial<AxiosInstance>>({});
+const _axios = () => {
+  const _axios = axios.create({
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-export default function AxiosProvider({
-  children,
-}: React.PropsWithChildren<unknown>) {
-  const _axios = useMemo(() => {
-    const _axios = axios.create({
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  _axios.interceptors.request.use((config) => {
+    // Read token for anywhere, in this case directly from localStorage
+    const token = authStore.token;
+    if (config?.headers && token) {
+      config.headers.Authorization = `Bearer ${authStore.token}`;
+    }
 
-    _axios.interceptors.request.use((config) => {
-      // Read token for anywhere, in this case directly from localStorage
-      const token = localStorage.getItem("token");
-      if (config?.headers && token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    return config;
+  });
 
-      return config;
-    });
+  return _axios;
+};
 
-    return _axios;
-  }, []);
-
-  return (
-    <AxiosContext.Provider value={_axios}>{children}</AxiosContext.Provider>
-  );
-}
+export default _axios;

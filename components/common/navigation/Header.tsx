@@ -3,11 +3,22 @@ import {
   NativeStackNavigationOptions,
   NativeStackNavigationProp,
 } from "@react-navigation/native-stack";
-import { ParamListBase } from "@react-navigation/native";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
-import { Box, Center, Flex, Heading, IconButton, Menu } from "native-base";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Icon,
+  IconButton,
+  Menu,
+} from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSnapshot } from "valtio";
+import authStore from "@services/store/authStore";
 
 const AppHeader: React.FC<{
   navigation: NativeStackNavigationProp<ParamListBase, string>;
@@ -19,31 +30,41 @@ const AppHeader: React.FC<{
     | undefined;
   title: string;
   isAuth: boolean;
-}> = ({ navigation, options, back, title, isAuth }) => {
+}> = ({ navigation, options, back, title }) => {
+  const { setAuth, isAuth } = useSnapshot(authStore);
+  const navigationState = navigation.getState();
+
   return (
     <SafeAreaView>
       <Flex
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        style={{ height: 75, backgroundColor: "transparent" }}
+        style={{
+          height: 75,
+          backgroundColor:
+            navigationState.routes[navigationState.routes.length - 1].name ===
+            "BoardgamesList"
+              ? "#FAFAFA"
+              : "transparent",
+        }}
       >
         <Center height={10} width={10} ml={4}>
           {back && options.headerBackVisible && (
-            <IconButton
-              onPress={() => navigation.canGoBack() && navigation.goBack()}
-              width="full"
+            <Button
+              w="12"
+              h="12"
               variant="ghost"
-              colorScheme="brand"
-              borderRadius="full"
-              _icon={{
-                justifyContent: "center",
-                as: FontAwesome5,
-                name: "chevron-left",
-                color: "brand.500",
-                size: 6,
-              }}
-            />
+              backgroundColor="white"
+              onPress={() => navigation.canGoBack() && navigation.goBack()}
+            >
+              <Icon
+                size="7"
+                as={Ionicons}
+                color="brand.500"
+                name="chevron-back"
+              />
+            </Button>
           )}
         </Center>
         <Box>
@@ -57,7 +78,7 @@ const AppHeader: React.FC<{
             ) // @ts-ignore
           }
         </Box>
-        <Flex justifyContent="center" height={10} width={10} mr={4}>
+        <Flex justifyContent="center" height={8} width={8} mr={8}>
           {isAuth && (
             <>
               <Menu
@@ -66,18 +87,19 @@ const AppHeader: React.FC<{
                 placement={"bottom right"}
                 trigger={(triggerProps) => {
                   return (
-                    <IconButton
+                    <Button
                       {...triggerProps}
-                      variant="ghost"
-                      colorScheme="brand"
-                      borderRadius="full"
-                      _icon={{
-                        as: Ionicons,
-                        name: "ios-options",
-                        color: "brand.500",
-                        size: 6,
-                      }}
-                    />
+                      w="12"
+                      h="12"
+                      backgroundColor="white"
+                    >
+                      <Icon
+                        size="6"
+                        as={Ionicons}
+                        color="brand.500"
+                        name="ellipsis-vertical"
+                      />
+                    </Button>
                   );
                 }}
               >
@@ -86,6 +108,7 @@ const AppHeader: React.FC<{
                 </Menu.Item>
                 <Menu.Item
                   onPress={() => {
+                    setAuth(false, "logout");
                     navigation.navigate("Login");
                   }}
                 >

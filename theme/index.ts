@@ -50,7 +50,9 @@ const meepleyColorTheme = {
     900: "#751133",
   },
   grays: {
+    500: "#979797",
     light: "#FAFAFA",
+    bottomBar: "#F4F4F4",
   },
 };
 
@@ -80,6 +82,26 @@ const theme = extendTheme({
     heading: "Poppins",
     body: "Poppins",
     mono: "Poppins",
+  },
+  components: {
+    Text: {
+      variants: {
+        shadow: () => {
+          return {
+            textShadowColor: "rgba(0, 0, 0, 0.25)",
+            textShadowOffset: { width: -1, height: 1 },
+            textShadowRadius: 10,
+          };
+        },
+      },
+    },
+    Input: {
+      baseStyle: {
+        _focus: {
+          borderColor: "#A7C957",
+        },
+      },
+    },
   },
 });
 

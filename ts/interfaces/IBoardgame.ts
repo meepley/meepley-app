@@ -49,6 +49,7 @@ export interface IBoardgame {
   max_playtime: number;
   min_age: number;
   description: string;
+  faq: string;
   thumb_url: string;
   image_url: string;
   matches_specs: null;

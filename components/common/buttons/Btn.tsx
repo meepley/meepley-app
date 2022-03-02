@@ -11,15 +11,18 @@ const Btn = ({
   spinner,
   isDisabled,
   isLoading,
+  padding = 4,
   spinnerPlacement = "start",
   ...props
 }: IButtonProps & IBoxProps) => {
-  // console.log(props?.minWidth || props?.minW || "1/2");
   return (
     <Button
       {...props}
+      p={padding}
+      borderRadius="30"
       colorScheme="brand"
-      p={4}
+      minWidth={props?.minWidth || props?.minW || "1/2"}
+      shadow={props?.variant === "solid" ? "4" : "none"}
       _text={
         props?.variant === "solid"
           ? {
@@ -27,10 +30,6 @@ const Btn = ({
             }
           : undefined
       }
-      //borderRadius="3xl"
-      borderRadius="30"
-      minWidth={props?.minWidth || props?.minW || "1/2"}
-      shadow={props?.variant === "solid" ? "4" : "none"}
     >
       {children}
     </Button>

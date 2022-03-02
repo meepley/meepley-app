@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { FlatList, RefreshControl, useWindowDimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import { useSnapshot } from "valtio";
+
 import {
   Text,
   Heading,
@@ -10,23 +14,23 @@ import {
   Input,
   IconButton,
   Icon,
-  Modal,
   Stack,
 } from "native-base";
+import { EvilIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 
-import Container from "@components/common/Container";
 import bgaStore from "@services/store/bgaStore";
 import { _add } from "@utils/helpers/add";
-import { IBoardgame } from "@ts/interfaces/IBoardgame";
-import { useSnapshot } from "valtio";
-import PaddingWrapper from "@components/common/PaddingWrapper";
-import { EvilIcons, Ionicons } from "@expo/vector-icons";
 import BoardgameCard from "@components/common/BoardgameCard";
-import { FlatList } from "react-native";
+import { IBoardgame } from "@ts/interfaces/IBoardgame";
+import Btn from "@components/common/buttons/Btn";
+
+const colors = ["lYellow.500", "brand.500", "lGreen.500"];
 
 const BoardgamesListScreen = () => {
+  const { height } = useWindowDimensions();
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const { boardgames, isLoading, error, fetchBoardgames } =
     useSnapshot(bgaStore);
@@ -37,16 +41,20 @@ const BoardgamesListScreen = () => {
     }
   }, []);
 
-  console.log(boardgames, !boardgames.items.length, isLoading, error);
-
   return (
-    <Container>
-      <ScrollView>
-        <Box px={10}>
-          <Heading textAlign="center" pb={8}>
+    <>
+      <StatusBar backgroundColor="#FAFAFA" />
+
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => null} />
+        }
+      >
+        <Box minHeight={height} backgroundColor="#FAFAFA">
+          <Heading textAlign="center" py={8}>
             Jogos
           </Heading>
-          <Box alignItems="center">
+          <Box px={10} alignItems="center">
             <Input
               p={4}
               mb={8}
@@ -66,107 +74,109 @@ const BoardgamesListScreen = () => {
               }
               InputRightElement={
                 <IconButton
+                  colorScheme="brand"
+                  rounded="full"
                   _icon={{
                     as: Ionicons,
                     name: "options",
                     size: 5,
                     color: "gray.700",
                   }}
-                  onPress={() => setModalVisible(!modalVisible)}
+                  onPress={() => setShowFilter(!showFilter)}
                   mr="4"
                   color="muted.400"
                 />
               }
             />
           </Box>
-          {isLoading && !boardgames.items.length ? (
-            <Text>Loading...</Text>
-          ) : error && !boardgames.items.length ? (
-            <Text>Error</Text>
-          ) : (
-            <Stack space={6}>
-              {boardgames.items.map((bg: IBoardgame, i: number) => {
-                const bgColor = i % 2 === 0;
-                const marginTop = i % 2 === 0 && i !== 1 ? 0 : 4;
 
-                return (
-                  <Pressable
-                    key={bg.id}
-                    onPress={() =>
-                      navigation.navigate("Boardgame", {
-                        boardgameId: bg.id,
-                        boardgame: bg,
-                      })
-                    }
-                  >
-                    <BoardgameCard
-                      name={bg.name}
-                      img={bg.image_url}
-                      genres={[
-                        ...bg.categories.map(
-                          (genre) =>
-                            boardgames.genres.find(
-                              (item) => item.id === genre.id
-                            )?.name
-                        ),
-                      ]}
-                      players={`${bg.min_players} - ${bg.max_players} jogadores`}
-                      bgColor="lGreen.500"
-                      mt={marginTop}
-                    />
-                  </Pressable>
-                );
-              })}
-            </Stack>
-          )}
-          {boardgames.items.length && !error ? (
-            <Button
-              onPress={() => {
-                fetchBoardgames(_add(boardgames.page, 1));
-              }}
-              disabled={!boardgames.hasMore || isLoading}
+          {showFilter ? (
+            <Box
+              bgColor="#f5edff"
+              borderTopRadius="50"
+              minHeight={height * 0.7}
+              p={10}
             >
-              {isLoading ? (
-                <Text>"Loading more..."</Text>
-              ) : boardgames.hasMore ? (
-                <Text>"Ver Mais"</Text>
-              ) : (
-                <Text>"Nothing more to load"</Text>
-              )}
-            </Button>
-          ) : null}
-          {error ? !boardgames.items.length && <Text>Error...</Text> : null}
+              <Heading>Filtros</Heading>
+              <Btn colorScheme="brand" variant="ghost">
+                Restaurar Filtros Predefinidos
+              </Btn>
+              <Btn variant="solid" colorScheme="brand">
+                Alterar Filtros
+              </Btn>
+            </Box>
+          ) : isLoading && !boardgames.items.length ? (
+            <Box px={10}>
+              <Text>A carregar...</Text>
+            </Box>
+          ) : error && !boardgames.items.length ? (
+            <Box px={10}>
+              <Text>Error</Text>
+            </Box>
+          ) : (
+            <Box px={10}>
+              <Stack space={6}>
+                {boardgames.items.map((bg: IBoardgame, i: number) => {
+                  const bgColor = colors[(i + 1) % colors.length];
+                  const marginTop = i % 2 === 0 && i !== 1 ? 0 : 4;
 
-          {/* Modal for filtering the boardgames */}
-          <Modal
-            isOpen={modalVisible}
-            onClose={() => setModalVisible(false)}
-            avoidKeyboard
-            bottom="4"
-            size="lg"
-          >
-            <Modal.Content>
-              <Modal.CloseButton />
-              <Modal.Header>Forgot Password?</Modal.Header>
-              <Modal.Body>
-                Enter email address and we'll send a link to reset your
-                password.
-              </Modal.Body>
-              <Modal.Footer>
+                  return (
+                    <Pressable
+                      key={bg.id}
+                      onPress={() =>
+                        navigation.navigate("Boardgame", {
+                          boardgameId: bg.id,
+                          boardgame: bg,
+                          boardgameGenres: boardgames.genres,
+                        })
+                      }
+                    >
+                      <BoardgameCard
+                        name={bg.name}
+                        img={bg.image_url}
+                        genres={[
+                          ...bg.categories.map(
+                            (genre) =>
+                              boardgames.genres.find(
+                                (item) => item.id === genre.id
+                              )?.name
+                          ),
+                        ]}
+                        players={`${bg.min_players} - ${bg.max_players} jogadores`}
+                        bgColor={bgColor}
+                        mt={marginTop}
+                      />
+                    </Pressable>
+                  );
+                })}
+              </Stack>
+              {boardgames.items.length && !error ? (
                 <Button
-                  flex="1"
+                  my={8}
+                  variant="ghost"
+                  colorScheme="brand"
                   onPress={() => {
-                    setModalVisible(false);
+                    fetchBoardgames(_add(boardgames.page, 1));
                   }}
+                  leftIcon={
+                    boardgames.hasMore ? (
+                      <Icon as={FontAwesome5} name="plus" size="3" />
+                    ) : undefined
+                  }
+                  disabled={!boardgames.hasMore || isLoading}
                 >
-                  Proceed
+                  {isLoading
+                    ? "A carregar..."
+                    : boardgames.hasMore
+                    ? "Ver mais Jogos"
+                    : "Não existem mais jogos de tabuleiro para mostrar"}
                 </Button>
-              </Modal.Footer>
-            </Modal.Content>
-          </Modal>
+              ) : null}
+            </Box>
+          )}
         </Box>
       </ScrollView>
-    </Container>
+    </>
   );
 };
 

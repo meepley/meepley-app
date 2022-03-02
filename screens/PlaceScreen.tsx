@@ -1,118 +1,130 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import {
-  EvilIcons,
-  MaterialCommunityIcons,
-  Fontisto,
-  MaterialIcons,
-  Ionicons
-} from "@expo/vector-icons";
-import MatchRoomCard from "@components/common/MatchRoomCard";
-import Container from "@components/common/Container";
-import Btn from "@components/common/buttons/Btn";
-import { useNavigation } from "@react-navigation/native";
+import { RefreshControl, useWindowDimensions } from "react-native";
 
 import {
   Box,
   Flex,
   Heading,
-  Icon,
   Image,
-  Modal,
-  Pressable,
   ScrollView,
   Text,
+  VStack,
 } from "native-base";
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Ionicons,
+} from "@expo/vector-icons";
 
-const PlaceScreen = () => {
+import TransparentHeader from "@components/common/navigation/TransparentHeader";
+import Container from "@components/common/Container";
+import Btn from "@components/common/buttons/Btn";
+import MatchRoomCarousel from "@components/common/MatchRoomCarousel";
+import TextWithIcon from "@components/common/TextWithIcon";
+import Emoji from "@components/common/Emoji";
 
-  const navigation = useNavigation();
+import { PlaceProps } from "@ts/types/navigation/RootStack";
+
+const PlaceScreen: React.FC<PlaceProps> = ({ route, navigation }) => {
+  const { place } = route.params;
+  const { height } = useWindowDimensions();
+  const [refreshing, setRefreshing] = useState(false);
 
   return (
     <Container>
-      <ScrollView marginTop={"-20"}>
-        <View>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => null} />
+        }
+      >
+        {/* Place Image Section + Transparent Header */}
+        <Box height={height * 0.5}>
+          <TransparentHeader />
           <Image
-            source={{
-              uri: "https://imagens.publico.pt/imagens.aspx/1387318?tp=UH&db=IMAGENS&type=JPG",
-            }}
-            style={{ width: 400, height: 400, opacity: 0.7 }}
+            source={{ uri: place.img }}
+            alt={`${place.name} Imagem`}
+            style={{ width: 400, height: "100%", opacity: 0.7 }}
           />
+        </Box>
 
-          <Flex bgColor="white" borderTopRadius={"50"} p={"10"} mt={"-20"}>
-            <Heading marginBottom={2}>Avenida Café-Concerto</Heading>
-
-            <View style={styles.verticalAlign}>
-              <Icon
-                as={Ionicons}
-                name="location-outline"
-                size="5"
-                color={"brand.500"}
+        <Flex
+          bgColor="white"
+          borderTopRadius="50"
+          minHeight={height * 0.6}
+          mt="-20"
+        >
+          {/* Place Details Section */}
+          <Box p={10}>
+            <Heading pb={4}>{place.name}</Heading>
+            <VStack space={1}>
+              <TextWithIcon
+                w="100%"
+                iconName="location-outline"
+                iconLibrary={Ionicons}
+                text={place.address}
               />
-                <Text fontSize={11}> Praça do Mercado nº1, 3800-224 Aveiro</Text>
-
-            </View>
-
-            <View style={styles.verticalAlign}>
-            <Icon as={MaterialCommunityIcons} name="clock-outline" size="5" color={"brand.500"} />
-                <Text fontSize={11}> Seg-Sab, 09:00 às 01:00</Text>
-
-            </View>
-
-            <View style={styles.verticalAlign}>
-              <Icon
-                as={MaterialCommunityIcons}
-                name="storefront-outline"
-                size="5"
-                color={"brand.500"}
+              <TextWithIcon
+                w="100%"
+                iconName="clock-outline"
+                iconLibrary={MaterialCommunityIcons}
+                text={`${place.daysOpen} - ${place.hoursOpen}`}
               />
-                <Text fontSize={11}> Café-restaurante</Text>
-
-            </View>
-
-            <View style={styles.verticalAlign}>
-              <Icon
-                as={MaterialIcons}
-                name="attach-money"
-                size="5"
-                color={"brand.500"}
+              <TextWithIcon
+                w="100%"
+                iconName="storefront-outline"
+                iconLibrary={MaterialCommunityIcons}
+                text={place.type.filter((item) => item).join(", ")}
               />
-                <Text fontSize={11}> 1.5€ consumo mínimo no local</Text>
+              {place.minimum_consumption && (
+                <TextWithIcon
+                  w="100%"
+                  iconName="attach-money"
+                  iconLibrary={MaterialIcons}
+                  text={`${place.minimum_consumption}€ consumo mínimo no local`}
+                />
+              )}
+            </VStack>
+          </Box>
 
-            </View>
+          {/* Matchroom Section */}
+          <Heading px={10} pb={4}>
+            Partidas neste local
+          </Heading>
 
-          </Flex>
-        </View>
-
-        <MatchRoomCard />
-
-        <Flex flex={1}  alignItems="center">
-
-        <Btn
-            onPress={() => navigation.navigate("CreateMatch")}
-            minWidth={40}
-            width={40}
-            variant="solid"
-            marginBottom={10}
-            marginTop={7}
-          >
-            Criar partida
-          </Btn>
+          {/* Check if there are actual matches occuring in the place in question */}
+          {place.matches.length > 0 ? (
+            <MatchRoomCarousel matchRooms={place.matches} />
+          ) : (
+            <Flex
+              px={10}
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text mt={2}>
+                Não existe nenhuma partida de momento neste local, mas ninguém
+                te impede de criar uma a partir do botão abaixo{" "}
+                <Emoji size={22}>👇</Emoji>
+              </Text>
             </Flex>
+          )}
 
-
+          <Flex flex={1} alignItems="center">
+            <Btn
+              mt={8}
+              mb={10}
+              width={40}
+              minWidth={40}
+              variant="solid"
+              onPress={() => navigation.navigate("CreateMatch")}
+            >
+              Criar partida
+            </Btn>
+          </Flex>
+        </Flex>
       </ScrollView>
     </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  verticalAlign: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 7,
-  },
-});
 
 export default PlaceScreen;

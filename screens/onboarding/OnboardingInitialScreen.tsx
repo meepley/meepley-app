@@ -1,4 +1,4 @@
-import React from "react";
+import React, { LegacyRef, useRef, useState } from "react";
 import { View, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import PagerView, {
@@ -7,7 +7,15 @@ import PagerView, {
 } from "react-native-pager-view";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { Box, Text, Flex, Heading, VStack } from "native-base";
+import {
+  Box,
+  Text,
+  Flex,
+  Heading,
+  VStack,
+  HStack,
+  Pressable,
+} from "native-base";
 
 import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
@@ -83,10 +91,12 @@ const OnboardingInitialFooter = () => {
 };
 
 const OnboardingInitialScreen = () => {
+  const pageViewerRef = useRef<PagerView>(null);
+
   return (
     <Container>
       <Box minH="full">
-        <PagerView showPageIndicator={true} style={{ flex: 1 }}>
+        <PagerView initialPage={0} style={{ flex: 1 }} ref={pageViewerRef}>
           {steps.map((item, key) => {
             return (
               <View
@@ -111,6 +121,20 @@ const OnboardingInitialScreen = () => {
                 </LinearGradient>
 
                 <Flex justifyContent="center" textAlign="center" px={12}>
+                  <HStack pt={4} pb={8} space={3} justifyContent="center">
+                    {steps.map((_, dotKey) => (
+                      <Pressable
+                        key={dotKey}
+                        height="2.5"
+                        width="2.5"
+                        borderRadius="full"
+                        backgroundColor={
+                          dotKey === key ? "brand.500" : "gray.300"
+                        }
+                        onPress={() => pageViewerRef.current?.setPage(dotKey)}
+                      />
+                    ))}
+                  </HStack>
                   <Heading pb={8} textAlign="center">
                     {item.title}
                   </Heading>

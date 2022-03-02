@@ -16,4 +16,5 @@ export interface IUser {
   avatar: string;
   average_rating: number;
   favorite_games: string[];
+  did_finish_calibration: boolean;
 }

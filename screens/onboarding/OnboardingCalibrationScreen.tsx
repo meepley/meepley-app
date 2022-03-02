@@ -1,28 +1,46 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import PagerView, {
-  PagerViewOnPageSelectedEvent,
-} from "react-native-pager-view";
+import React, { useRef, useState } from "react";
+import {
+  BackHandler,
+  ImageSourcePropType,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import PagerView from "react-native-pager-view";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import {
   Button,
   Heading,
-  Modal,
   VStack,
   AlertDialog,
   Box,
   Text,
   Flex,
+  HStack,
+  Pressable,
+  Image,
+  Divider,
+  Checkbox,
+  Icon,
+  IconButton,
+  useToast,
 } from "native-base";
-import Container from "@components/common/Container";
+import { EvilIcons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+
 import Btn from "@components/common/buttons/Btn";
+import Emoji from "@components/common/Emoji";
+
+import { places } from "@services/api/meepley";
+import mapStyle from "@utils/config/googleMapsThemeConfig.json";
+import { _add } from "@utils/helpers/add";
 
 const steps: {
   label: string;
   title?: string;
   description: string;
-  img?: string;
-  contents?: string[] | { name: string; emoji: string }[];
+  img?: ImageSourcePropType;
+  contents?: string[] | { name: string; emoji: JSX.Element }[];
   map?: boolean;
 }[] = [
   {
@@ -36,9 +54,9 @@ const steps: {
     label: "experience",
     description: "Qual é o teu nível de experiência com jogos de tabuleiro?",
     contents: [
-      { name: "Iniciante", emoji: "" },
-      { name: "Intermediário", emoji: "" },
-      { name: "Avançando", emoji: "" },
+      { name: "Iniciante", emoji: <Emoji size={30}>🐣</Emoji> },
+      { name: "Médio", emoji: <Emoji size={30}>🦸</Emoji> },
+      { name: "Avançado", emoji: <Emoji size={30}>🧙</Emoji> },
     ],
     img: require("@assets/images/illustration-playing.png"),
   },
@@ -46,7 +64,17 @@ const steps: {
     label: "genres",
     title: "O teu estilo",
     description: "Seleciona os teus géneros de jogos favoritos!",
-    contents: [],
+    contents: [
+      { name: "Ação", emoji: <Emoji size={30}>⚔️</Emoji> },
+      { name: "Clássico", emoji: <Emoji size={30}>♟️</Emoji> },
+      { name: "Fantasia", emoji: <Emoji size={30}>🦄</Emoji> },
+      { name: "Magia", emoji: <Emoji size={30}>🔮</Emoji> },
+      { name: "Medieval", emoji: <Emoji size={30}>👑</Emoji> },
+      { name: "Mistério", emoji: <Emoji size={30}>🔍</Emoji> },
+      { name: "Cooperativo", emoji: <Emoji size={30}>🤝</Emoji> },
+      { name: "Ficção", emoji: <Emoji size={30}>🧬</Emoji> },
+      { name: "Horror", emoji: <Emoji size={30}>👻</Emoji> },
+    ],
   },
   {
     label: "disponibility",
@@ -73,17 +101,26 @@ const steps: {
 
 const OnboardingCalibrationFooter: React.FC<{
   isLastPage: boolean;
+  changePage: () => void;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ isLastPage, setModal }) => {
+}> = ({ isLastPage, changePage, setModal }) => {
   const navigation = useNavigation();
+  const toast = useToast();
 
   return (
-    <VStack space={4} pt={8}>
+    <VStack alignItems="center" space={4} pt={8}>
       <Btn
+        width="40"
         variant="solid"
-        onPress={() => (isLastPage ? navigation.navigate("Dashboard") : null)}
+        onPress={() => {
+          if (isLastPage) {
+            navigation.navigate("Dashboard");
+          } else {
+            changePage();
+          }
+        }}
       >
-        {isLastPage ? "Terminar calibração" : "Próximo"}
+        {isLastPage ? "Concluir" : "Próximo"}
       </Btn>
       <Btn variant="ghost" onPress={() => setModal(true)}>
         Cancelar calibração
@@ -94,72 +131,424 @@ const OnboardingCalibrationFooter: React.FC<{
 
 const OnboardingCalibrationScreen = () => {
   const navigation = useNavigation();
+  const { height } = useWindowDimensions();
+  const toast = useToast();
+
+  //* States related to the user choices in the various steps of the calibration
   const [selectedFamiliarity, setSelectedFamiliarity] = useState("");
-  const [selectedGenres, setSelectedGenres] = useState("");
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [selectedPlaces, setSelectedPlaces] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const cancelRef = React.useRef(null);
+
+  const pageViewerRef = useRef<PagerView>(null);
+  const cancelRef = useRef(null);
+
+  //* Function to conclude the calibration of the user
+  const completeCalibration = () => {
+    const didCompleteCalibration =
+      selectedFamiliarity !== "" &&
+      selectedGenres !== [] &&
+      selectedDays !== [] &&
+      selectedPlaces !== [];
+
+    if (didCompleteCalibration) {
+    } else {
+      toast.show({
+        title: "Não concluíste todos os passos da calibração...",
+        status: "warning",
+      });
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   return (
-    <Container>
-      <Box minH="90%">
-        <PagerView showPageIndicator={true} style={{ flex: 1 }}>
+    <>
+      <Box pb={20} backgroundColor="white" minH={height}>
+        <PagerView style={{ flex: 1 }} ref={pageViewerRef}>
           {steps.map((item, key) => {
             return (
-              <Flex
-                direction="column"
-                justifyContent="center"
-                textAlign="center"
-                px={12}
-                _text={{ textAlign: "center" }}
-                key={key++}
-              >
-                {item?.img && <Text></Text>}
-                {item?.title && (
-                  <Heading pb={8} textAlign="center">
-                    {item.title}
-                  </Heading>
-                )}
-                <Text textAlign="center">{item.description}</Text>
-                {item?.contents && item.label === "experience" ? (
-                  <Heading textAlign="center">{item.title}</Heading>
-                ) : item?.contents && item.label === "genres" ? (
-                  <Text></Text>
-                ) : (
-                  item?.contents &&
-                  item.label === "disponibility" && <Text></Text>
-                )}
+              <ScrollView>
+                <Flex
+                  px={10}
+                  my={10}
+                  key={key++}
+                  direction="column"
+                  textAlign="center"
+                  backgroundColor="white"
+                  _text={{ textAlign: "center" }}
+                >
+                  {item?.img && (
+                    <Image
+                      resizeMode="contain"
+                      source={item.img}
+                      h={"56"}
+                      alt={item.label}
+                    />
+                  )}
 
-                {item?.map && null}
+                  {item?.title && (
+                    <Heading textAlign="center">{item.title}</Heading>
+                  )}
 
-                <OnboardingCalibrationFooter
-                  isLastPage={false}
-                  setModal={() => setModalVisible(!modalVisible)}
-                />
-              </Flex>
+                  <Text pt={8} textAlign="center">
+                    {item.description}
+                  </Text>
+
+                  {item?.contents && item.label === "experience" ? (
+                    <HStack pt={4} space={2} justifyContent="space-between">
+                      {item.contents.map(
+                        (
+                          expItem: { name: string; emoji: JSX.Element },
+                          expI
+                        ) => {
+                          const isSelectedExp =
+                            selectedFamiliarity === expItem.name;
+                          return (
+                            <Pressable
+                              key={expItem.name}
+                              width="28%"
+                              height="20"
+                              onPress={() =>
+                                setSelectedFamiliarity(expItem.name)
+                              }
+                            >
+                              <Flex
+                                justifyContent="center"
+                                alignItems="center"
+                                borderRadius="30"
+                                height="20"
+                                borderWidth="1"
+                                position="relative"
+                                borderColor={
+                                  isSelectedExp ? "brand.500" : "gray.200"
+                                }
+                              >
+                                {isSelectedExp && (
+                                  <Flex
+                                    width="30"
+                                    height="30"
+                                    position="absolute"
+                                    top="-5%"
+                                    left="75%"
+                                    rounded="full"
+                                    borderWidth="4"
+                                    borderColor="white"
+                                    backgroundColor="brand.500"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                  >
+                                    <Icon
+                                      color="white"
+                                      size="3"
+                                      shadow="2"
+                                      as={Feather}
+                                      name="check"
+                                    />
+                                  </Flex>
+                                )}
+                                {expItem.emoji}
+                              </Flex>
+                              <Text
+                                pt={2}
+                                fontSize="12"
+                                textAlign="center"
+                                color={isSelectedExp ? "brand.500" : "gray.300"}
+                              >
+                                {expItem.name}
+                              </Text>
+                            </Pressable>
+                          );
+                        }
+                      )}
+                    </HStack>
+                  ) : item?.contents && item.label === "genres" ? (
+                    <Flex
+                      pt={6}
+                      flexWrap="wrap"
+                      flexDirection="row"
+                      justifyContent="space-between"
+                    >
+                      {item.contents.map(
+                        (
+                          genItem: { name: string; emoji: JSX.Element },
+                          genI
+                        ) => {
+                          const isGenreSelected = selectedGenres.find(
+                            (genre) => genre === genItem.name
+                          );
+                          return (
+                            <Pressable
+                              key={genItem.name}
+                              width="28%"
+                              mb={genI < item.contents.length - 4 ? 4 : 0}
+                              onPress={() =>
+                                isGenreSelected
+                                  ? setSelectedGenres([
+                                      ...selectedGenres.filter(
+                                        (item) => item !== genItem.name
+                                      ),
+                                    ])
+                                  : setSelectedGenres([
+                                      ...selectedGenres,
+                                      genItem.name,
+                                    ])
+                              }
+                            >
+                              <Flex
+                                justifyContent="center"
+                                alignItems="center"
+                                borderRadius="30"
+                                height="24"
+                                borderWidth="1"
+                                position="relative"
+                                borderColor={
+                                  isGenreSelected ? "brand.500" : "gray.200"
+                                }
+                              >
+                                {isGenreSelected && (
+                                  <Flex
+                                    width="30"
+                                    height="30"
+                                    position="absolute"
+                                    top="-5%"
+                                    left="75%"
+                                    rounded="full"
+                                    borderWidth="4"
+                                    borderColor="white"
+                                    backgroundColor="brand.500"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                  >
+                                    <Icon
+                                      color="white"
+                                      size="3"
+                                      shadow="2"
+                                      as={Feather}
+                                      name="check"
+                                    />
+                                  </Flex>
+                                )}
+                                {genItem.emoji}
+                              </Flex>
+                              <Text
+                                mt={2}
+                                textAlign="center"
+                                fontSize="12"
+                                color={
+                                  isGenreSelected ? "brand.500" : "gray.300"
+                                }
+                              >
+                                {genItem.name}
+                              </Text>
+                            </Pressable>
+                          );
+                        }
+                      )}
+                    </Flex>
+                  ) : (
+                    item?.contents &&
+                    item.label === "disponibility" && (
+                      <Checkbox.Group
+                        pt={8}
+                        mx="auto"
+                        width="75%"
+                        onChange={setSelectedDays}
+                        value={selectedDays}
+                        accessibilityLabel="Escolher dias da semana"
+                      >
+                        {item.contents.map((dispItem: string, dispI) => {
+                          const lastI =
+                            item.contents && item.contents.length - 1;
+                          return (
+                            <>
+                              <Box key={dispI} mx="auto" width="70%">
+                                <Checkbox
+                                  colorScheme="brand"
+                                  value={dispItem.toLowerCase()}
+                                  my={2}
+                                  style={{
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    width: 18,
+                                    height: 18,
+                                    marginRight: 20,
+                                  }}
+                                  _text={{
+                                    fontSize: "11",
+                                    color: "gray.400",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  {dispItem}
+                                </Checkbox>
+                              </Box>
+                              {lastI !== dispI && <Divider width="100%" />}
+                            </>
+                          );
+                        })}
+                      </Checkbox.Group>
+                    )
+                  )}
+
+                  {item?.map && (
+                    <Box
+                      shadow="8"
+                      style={{
+                        borderRadius: 25,
+                        overflow: "hidden",
+                        marginTop: 30,
+                      }}
+                    >
+                      <MapView
+                        style={{ width: "100%", height: 300 }}
+                        provider={PROVIDER_GOOGLE}
+                        mapType="mutedStandard"
+                        loadingEnabled={true}
+                        loadingIndicatorColor="#A69BEA"
+                        customMapStyle={mapStyle}
+                        initialRegion={{
+                          latitude: 40.642114497340515,
+                          longitude: -8.654069429068207,
+                          latitudeDelta: 0.01,
+                          longitudeDelta: 0.0421,
+                        }}
+                      >
+                        {places.map((place, index) => {
+                          const isPlaceSelected = selectedPlaces.find(
+                            (p) => p === place.name
+                          );
+
+                          return (
+                            <Marker
+                              key={index}
+                              coordinate={place.latlng}
+                              title={place.name}
+                              description={place.name}
+                              onPress={() =>
+                                isPlaceSelected
+                                  ? setSelectedPlaces([
+                                      ...selectedPlaces.filter(
+                                        (item) => item !== place.name
+                                      ),
+                                    ])
+                                  : setSelectedPlaces([
+                                      ...selectedPlaces,
+                                      place.name,
+                                    ])
+                              }
+                            >
+                              <Flex
+                                justifyContent="center"
+                                alignItems="center"
+                                borderWidth={3}
+                                borderColor="white"
+                                rounded="full"
+                                height="10"
+                                width="10"
+                                position="relative"
+                                backgroundColor={
+                                  isPlaceSelected ? "brand.500" : "gray.400"
+                                }
+                              >
+                                <Icon
+                                  size="6"
+                                  color="white"
+                                  name="map-marker-outline"
+                                  as={MaterialCommunityIcons}
+                                />
+                              </Flex>
+                            </Marker>
+                          );
+                        })}
+                      </MapView>
+                    </Box>
+                  )}
+                  <HStack pt={16} space={3} justifyContent="center">
+                    {steps.map((_, dotKey) => (
+                      <Pressable
+                        key={dotKey}
+                        height="2.5"
+                        width="2.5"
+                        borderRadius="full"
+                        backgroundColor={
+                          dotKey === key ? "brand.500" : "gray.300"
+                        }
+                        onPress={() => pageViewerRef.current?.setPage(dotKey)}
+                      />
+                    ))}
+                  </HStack>
+                  <OnboardingCalibrationFooter
+                    isLastPage={key === steps.length - 1 ? true : false}
+                    changePage={() =>
+                      pageViewerRef.current?.setPage(_add(key, 1))
+                    }
+                    setModal={() => setModalVisible(!modalVisible)}
+                  />
+                </Flex>
+              </ScrollView>
             );
           })}
         </PagerView>
+
+        {/* Cancel Calibration Dialog */}
         <AlertDialog
           leastDestructiveRef={cancelRef}
           isOpen={modalVisible}
           onClose={() => setModalVisible(false)}
-          justifyContent="flex-end"
+          justifyContent="center"
           bottom="4"
           size="lg"
         >
-          <AlertDialog.Content>
-            <AlertDialog.CloseButton />
-            <AlertDialog.Header>Cancelar Calibração?</AlertDialog.Header>
-            <AlertDialog.Body>
+          <AlertDialog.Content p={5}>
+            {/* Header of the Dialog */}
+            <Flex
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+              pb={4}
+            >
+              <Heading fontSize="16">Cancelar Calibração</Heading>
+              <IconButton
+                onPress={() => setModalVisible(false)}
+                icon={
+                  <Icon
+                    as={EvilIcons}
+                    name="close"
+                    size="6"
+                    color="brand.500"
+                  />
+                }
+              />
+            </Flex>
+
+            {/* Dialog Content */}
+            <Text pb={6}>
               Sem concluires este processo o MeePley não conseguirá dar-te uma
               experiência e sugestões de salas personalizadas tendo em conta as
               tuas características.
-            </AlertDialog.Body>
-            <AlertDialog.Footer>
+            </Text>
+
+            {/* Dialog Footer */}
+            <HStack justifyContent="flex-end" space={2}>
               <Button
                 ref={cancelRef}
+                variant="ghost"
+                colorScheme="brand"
                 borderRadius={"3xl"}
-                flex="1"
+                px={5}
                 onPress={() => {
                   setModalVisible(false);
                 }}
@@ -167,9 +556,9 @@ const OnboardingCalibrationScreen = () => {
                 Voltar
               </Button>
               <Btn
-                variant = "solid"
+                variant="solid"
                 minWidth={"0.2"}
-                flex="1"
+                px={5}
                 onPress={() => {
                   setModalVisible(false);
                   navigation.navigate("Dashboard");
@@ -177,12 +566,11 @@ const OnboardingCalibrationScreen = () => {
               >
                 Cancelar
               </Btn>
-            </AlertDialog.Footer>
+            </HStack>
           </AlertDialog.Content>
         </AlertDialog>
       </Box>
-      {/* Modal de confirmação de cancelar calibração */}
-    </Container>
+    </>
   );
 };
 

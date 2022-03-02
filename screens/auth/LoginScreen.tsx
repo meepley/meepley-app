@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Field, Formik } from "formik";
+import { useSnapshot } from "valtio";
 import * as Yup from "yup";
 
 import {
@@ -20,13 +21,12 @@ import {
   Image,
 } from "native-base";
 
-import { AuthContext } from "@utils/hooks/useAuthContext";
 import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
 import PasswordInput from "@components/common/forms/PasswordInput";
 import EmailInput from "@components/common/forms/EmailInput";
 import SpeechBubbleBtn from "@components/common/buttons/SpeechBubbleBtn";
-import { LinearGradient } from "expo-linear-gradient";
+import authStore from "@services/store/authStore";
 
 const LogInSchema = Yup.object().shape({
   email: Yup.string()
@@ -40,7 +40,7 @@ const LogInSchema = Yup.object().shape({
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth, isAuth } = useSnapshot(authStore);
 
   const _onLoginFormSubmit = async ({
     email,
@@ -49,15 +49,16 @@ const LoginScreen = () => {
     email: string;
     password: string;
   }) => {
-    console.log(email, password);
-    setAuth && setAuth(true);
-    navigation.navigate("CalibrationOnboarding");
+    setAuth && setAuth(true, "login");
+    if (isAuth) {
+      navigation.navigate("CalibrationOnboarding");
+    }
   };
 
   return (
     <Container>
       <ScrollView>
-        <Box position="absolute" top="35" left="290">
+        <Box position="absolute" top="2%" left="80%">
           <Image
             alt="First Meeple"
             resizeMode="contain"
@@ -68,7 +69,7 @@ const LoginScreen = () => {
             source={require("@assets/images/meeples/meeple.png")}
           />
         </Box>
-        <Box position="absolute" top="45" left="-20">
+        <Box position="absolute" top="10%" left="-5%">
           <Image
             alt="Second Meeple"
             resizeMode="contain"
@@ -76,7 +77,7 @@ const LoginScreen = () => {
             source={require("@assets/images/meeples/meeple.png")}
           />
         </Box>
-        <Box position="absolute" top="290" left="255">
+        <Box position="absolute" top="28%" left="75%">
           <Image
             alt="Third Meeple"
             resizeMode="contain"
@@ -128,7 +129,6 @@ const LoginScreen = () => {
               onSubmit={async (values, actions) => {
                 actions.setSubmitting(true);
                 await _onLoginFormSubmit(values);
-                actions.setSubmitting(false);
               }}
             >
               {({

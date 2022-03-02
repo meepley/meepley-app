@@ -1,5 +1,15 @@
 import React from "react";
-import { AspectRatio, Box, Heading, Image, Stack, Text } from "native-base";
+import {
+  AspectRatio,
+  Box,
+  Heading,
+  HStack,
+  Icon,
+  Image,
+  Stack,
+  Text,
+} from "native-base";
+import { EvilIcons, FontAwesome5 } from "@expo/vector-icons";
 
 const BoardgameCard: React.FC<{
   name: string;
@@ -15,45 +25,71 @@ const BoardgameCard: React.FC<{
   );
 
   return (
-    <Box alignItems="center">
-      <Box
-        backgroundColor={bgColor}
-        rounded="lg"
-        overflow="hidden"
-        _dark={{
-          borderColor: "coolGray.600",
-        }}
-        _web={{
-          shadow: 2,
-          borderWidth: 0,
-        }}
-      >
-        <Box>
-          <AspectRatio w="100%" ratio={16 / 9}>
-            <Image
-              source={{
-                uri: img,
-              }}
-              alt={`${name} Image`}
-            />
-          </AspectRatio>
-        </Box>
-        <Stack p="4" space={3}>
-          <Heading color="white" size="md" ml="-1">
-            {name}
-          </Heading>
-          {genresString !== undefined && (
-            <Box>
-              <Text fontStyle="italic" color="white">
-                {genresString}
-              </Text>
-            </Box>
-          )}
-          <Box>
-            <Text color="white">{players}</Text>
-          </Box>
-        </Stack>
+    <Box
+      backgroundColor={bgColor}
+      borderRadius="20"
+      overflow="hidden"
+      _dark={{
+        borderColor: "coolGray.600",
+      }}
+      _web={{
+        shadow: 2,
+        borderWidth: 0,
+      }}
+    >
+      <Box>
+        <Image
+          source={{
+            uri: img,
+          }}
+          alt={`${name} Image`}
+        />
       </Box>
+      <Stack p={6} space={3}>
+        <Heading
+          style={{
+            textShadowColor: "rgba(0, 0, 0, 0.25)",
+            textShadowOffset: { width: 0, height: 1 },
+            textShadowRadius: 2,
+          }}
+          color="white"
+          size="md"
+          ml="-1"
+        >
+          {name}
+        </Heading>
+        {genresString !== undefined && (
+          <HStack space="2" alignItems="flex-start">
+            <Icon as={FontAwesome5} name="star" size="5" color="white" />
+            <Text
+              style={{
+                textShadowColor: "rgba(0, 0, 0, 0.25)",
+                textShadowOffset: { width: 0, height: 1 },
+                textShadowRadius: 2,
+                flexShrink: 1,
+              }}
+              numberOfLines={2}
+              fontStyle="italic"
+              color="white"
+            >
+              {genresString}
+            </Text>
+          </HStack>
+        )}
+        <HStack space="2">
+          <Icon as={FontAwesome5} name="user" size="5" color="white" />
+          <Text
+            style={{
+              textShadowColor: "rgba(0, 0, 0, 0.25)",
+              textShadowOffset: { width: 0, height: 1 },
+              textShadowRadius: 2,
+            }}
+            color="white"
+          >
+            {players}
+          </Text>
+        </HStack>
+      </Stack>
     </Box>
   );
 };

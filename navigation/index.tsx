@@ -1,24 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 
-import { ColorSchemeName, Pressable } from "react-native";
-import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { getHeaderTitle } from "@react-navigation/elements";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import useColorScheme from "@hooks/useColorScheme";
+import { useSnapshot } from "valtio";
 
 import LinkingConfiguration from "./LinkingConfiguration";
 import { RootStackParamList } from "@ts/types/navigation/RootStack";
-import {
-  RootTabParamList,
-  RootTabScreenProps,
-} from "@ts/types/navigation/RootTab";
 
 /* screens */
 import PlaceScreen from "@screens/PlaceScreen";
@@ -35,12 +23,11 @@ import UtilitiesScreen from "@screens/UtilitiesScreen";
 import SettingsScreen from "@screens/SettingsScreen";
 import NotFoundScreen from "@screens/NotFoundScreen";
 import DashboardScreen from "@screens/DashboardScreen";
-import { AuthContext } from "@utils/hooks/useAuthContext";
-import LogoTitle from "@components/common/LogoTitle";
-import { Box, Flex, Icon, IconButton } from "native-base";
-import Header from "@components/Header";
-import AppHeader from "@components/Header";
 import MatchRoomScreen from "@screens/matchRoom/MatchRoomScreen";
+
+import LogoTitle from "@components/common/LogoTitle";
+import AppHeader from "@components/common/navigation/Header";
+import authStore from "@services/store/authStore";
 
 export default function Navigation() {
   return (
@@ -57,7 +44,7 @@ export default function Navigation() {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
-  const { isAuth } = useContext(AuthContext);
+  const { isAuth, user } = useSnapshot(authStore);
 
   return (
     <Stack.Navigator
@@ -82,13 +69,15 @@ function RootNavigator() {
       {isAuth ? (
         // Screens for logged in users
         <Stack.Group>
-          <Stack.Screen
-            name="CalibrationOnboarding"
-            component={OnboardingCalibration}
-            options={{
-              headerTitle: (props) => <LogoTitle />,
-            }}
-          />
+          {!user?.did_finish_calibration ? (
+            <Stack.Screen
+              name="CalibrationOnboarding"
+              component={OnboardingCalibration}
+              options={{
+                headerTitle: (props) => <LogoTitle />,
+              }}
+            />
+          ) : null}
 
           <Stack.Screen
             name="Dashboard"
@@ -101,7 +90,7 @@ function RootNavigator() {
           <Stack.Screen
             name="Place"
             component={PlaceScreen}
-            options={{ headerBackVisible: true }}
+            options={{ headerShown: false }}
           />
 
           <Stack.Screen
@@ -112,7 +101,7 @@ function RootNavigator() {
           <Stack.Screen
             name="MatchRoom"
             component={MatchRoomScreen}
-            options={{ headerBackVisible: true }}
+            options={{ headerShown: false }}
           />
 
           <Stack.Screen
@@ -148,7 +137,7 @@ function RootNavigator() {
         name="BoardgamesList"
         component={BoardgamesListScreen}
         options={{
-          headerTitle: (props) => <LogoTitle />,
+          headerTitle: () => <LogoTitle />,
           headerBackVisible: true,
         }}
       />
@@ -156,14 +145,14 @@ function RootNavigator() {
         name="Boardgame"
         component={BoardgameScreen}
         options={{
-          headerBackVisible: true,
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="Utilities"
         component={UtilitiesScreen}
         options={{
-          headerTitle: (props) => <LogoTitle />,
+          headerTitle: () => <LogoTitle />,
           headerBackVisible: true,
         }}
       />
@@ -180,115 +169,4 @@ function RootNavigator() {
       </Stack.Group> */}
     </Stack.Navigator>
   );
-}
-
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
-
-/* function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <BottomTab.Navigator initialRouteName="DashboardScreen">
-      <BottomTab.Screen
-        name="DashboardScreen"
-        component={DashboardScreen}
-        options={({ navigation }: RootTabScreenProps<"DashboardScreen">) => ({
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate("Modal")}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}
-            >
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
-      />
-      <BottomTab.Screen
-        name="Utilities"
-        component={UtilitiesScreen}
-        options={{
-          title: "Utilidades",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name="CreateMatchroom"
-        component={CreateMatchRoomScreen}
-        options={{
-          title: "Criar Partida",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
-  );
-} */
-
-function MatchRoomBottomTab() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <BottomTab.Navigator initialRouteName="DashboardScreen">
-      <BottomTab.Screen
-        name="DashboardScreen"
-        component={DashboardScreen}
-        options={({ navigation }: RootTabScreenProps<"DashboardScreen">) => ({
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate("Modal")}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}
-            >
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
-      />
-      <BottomTab.Screen
-        name="Utilities"
-        component={UtilitiesScreen}
-        options={{
-          title: "Utilidades",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name="CreateMatchroom"
-        component={CreateMatchRoomScreen}
-        options={{
-          title: "Criar Partida",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          tabBarStyle: { display: "none" },
-        }}
-      />
-    </BottomTab.Navigator>
-  );
-}
-
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

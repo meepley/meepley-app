@@ -4,6 +4,7 @@ export interface IMatchRoom {
     name: string;
   }[];
   name: string;
+  img: string;
   users: {
     id: number;
     slug: string;

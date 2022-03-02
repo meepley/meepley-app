@@ -5,7 +5,7 @@ import { IMatchRoom } from "@ts/interfaces/IMatchRoom";
 import { IUser } from "@ts/interfaces/IUser";
 
 /* This is fake data stuff */
-let users = [
+export let users = [
   {
     id: 1,
     slug: "@martasilva95",
@@ -29,6 +29,7 @@ let users = [
     avatar: "persona4.png",
     average_rating: 5,
     favorite_games: ["Pandemic", "Azul", "Xadrez"],
+    did_finish_calibration: false,
   },
   {
     id: 2,
@@ -60,6 +61,7 @@ let users = [
       "Cascadia",
       "Istanbul",
     ],
+    did_finish_calibration: false,
   },
   {
     id: 3,
@@ -84,6 +86,7 @@ let users = [
     avatar: "persona2.png",
     average_rating: 5,
     favorite_games: ["Liboa", "Codenames", "The Isle of Cats"],
+    did_finish_calibration: false,
   },
   {
     id: 4,
@@ -103,14 +106,16 @@ let users = [
     avatar: "persona3.png",
     average_rating: 4,
     favorite_games: ["Wingspan", "Root", "Powergrid"],
+    did_finish_calibration: false,
   },
 ];
 
-let matchRooms = [
+export let matchRooms = [
   {
     id: 1,
     games: [{ name: "Gloomhaven" }],
     name: "Partida de Gloomhaven",
+    img: "https://849310.smushcdn.com/1803394/wp-content/uploads/2017/12/gloomhaven-overview-header.jpg?lossy=1&strip=1&webp=1",
     users: [
       {
         id: 2,
@@ -147,6 +152,7 @@ let matchRooms = [
     id: 2,
     games: [{ name: "Azul" }, { name: "Patchworks" }],
     name: "Jogatina na UA",
+    img: "https://spikeybits.com/wp-content/uploads/2018/02/azul-cover.jpg",
     users: [
       {
         id: 2,
@@ -171,6 +177,7 @@ let matchRooms = [
     id: 3,
     games: [{ name: "Pandemic" }],
     name: "Combater a Pandemia",
+    img: "https://assets.nintendo.com/image/upload/ar_16:9,b_auto,c_pad,dpr_3.0,f_auto,q_auto,w_500/b_rgb:ffffff/v1/ncom/en_US/games/switch/p/pandemic-switch/hero",
     users: [
       {
         id: 3,
@@ -193,9 +200,10 @@ let matchRooms = [
   },
 ];
 
-let places = [
+export let places = [
   {
     id: 1,
+    address: "R. de Anadia 69, 3810-208 Aveiro",
     name: "FriendZone Lounge",
     type: ["Café", "Estabelecimento Comercial", "Cultura Geek"],
     latlng: {
@@ -204,25 +212,15 @@ let places = [
     },
     daysOpen: "Quartas, Sextas e Sábados",
     hoursOpen: "21:30-01:00",
-    matches: [
-      {
-        id: 3,
-        games: [{ name: "Pandemic" }],
-        name: "Combater a Pandemia",
-        required_level: "beginner",
-        estimated_duration: "20min",
-        privacy: "public",
-        date: "2022/02/22",
-        hour: "20:30",
-      },
-    ],
+    matches: [matchRooms[2]],
     minimum_consumption: 1.5,
-    img: "friendzone.jpeg",
+    img: "https://scontent.fopo4-1.fna.fbcdn.net/v/t39.30808-6/273992287_1775030719368556_767887764963893554_n.jpg?_nc_cat=103&ccb=1-5&_nc_sid=0debeb&_nc_ohc=oxtomaZ5QzAAX-FJG7m&_nc_ht=scontent.fopo4-1.fna&oh=00_AT_2diGFFZA1HPwZihaY-kaAPEouLhWdoe7qCVVvQ94O4Q&oe=62228DB4",
     averageRating: 4.6,
     city: "Aveiro",
   },
   {
     id: 2,
+    address: "Praça do Mercado nº1, 3800-224 Aveiro",
     name: "Avenida Café-Concerto",
     type: ["Café", "Estabelecimento Comercial"],
     latlng: {
@@ -231,25 +229,15 @@ let places = [
     },
     daysOpen: "Todos os dias excepto Terças-feiras",
     hoursOpen: "17:00-02:00",
-    matches: [
-      {
-        id: 1,
-        games: [{ name: "Gloomhaven" }],
-        name: "Partida de Gloomhaven",
-        required_level: "beginner",
-        estimated_duration: "30-45 min",
-        privacy: "public",
-        date: "2022/02/20",
-        hour: "14:30",
-      },
-    ],
+    matches: [matchRooms[0]],
     minimum_consumption: 1.5,
-    img: "avenidacafeconcerto.png",
+    img: "https://imagens.publico.pt/imagens.aspx/1387318?tp=UH&db=IMAGENS&type=JPG",
     averageRating: 4.7,
     city: "Aveiro",
   },
   {
     id: 3,
+    address: "Universidade de Aveiro, 3810-193 Aveiro",
     name: "Universidade de Aveiro",
     type: ["Instituição", "Local Público"],
     latlng: {
@@ -258,25 +246,15 @@ let places = [
     },
     daysOpen: "Todos os dias",
     hoursOpen: "09:00-18:00",
-    matches: [
-      {
-        id: 2,
-        games: [{ name: "Azul" }, { name: "Patchworks" }],
-        name: "Jogatina na UA",
-        required_level: "beginner",
-        estimated_duration: "2h",
-        privacy: "public",
-        date: "2022/03/02",
-        hour: "16:15",
-      },
-    ],
+    matches: [matchRooms[1]],
     minimum_consumption: null,
-    img: "ua.jpeg",
+    img: "https://api-assets.ua.pt/files/imgs/000/000/048/original.jpg",
     averageRating: 5,
     city: "Aveiro",
   },
   {
     id: 4,
+    address: "R. de Aires Barbosa 11, 3810-049 Aveiro",
     name: "Convívio",
     type: ["Café", "Estabelecimento Comercial"],
     latlng: {
@@ -287,12 +265,13 @@ let places = [
     hoursOpen: "09:00-02:00",
     matches: [],
     minimum_consumption: 1.5,
-    img: "convivio.jpeg",
+    img: "https://www.evasoes.pt/files/2019/01/33370087_BINARY_GL23122018_MARIAJOAOGALA17_resultado-960x640_c.jpg",
     averageRating: 4.5,
     city: "Aveiro",
   },
   {
     id: 5,
+    address: "R. do Batalhão de Caçadores 10, 3810-064 Aveiro",
     name: "Forum Aveiro",
     type: ["Espaço Público", "Superfície Comercial"],
     latlng: {
@@ -303,7 +282,7 @@ let places = [
     hoursOpen: "",
     matches: [],
     minimum_consumption: null,
-    img: "forum.jpeg",
+    img: "https://forumaveiro.com/wp-content/uploads/2019/04/forum_default_banner.jpg",
     averageRating: 4.2,
     city: "Aveiro",
   },
@@ -322,6 +301,15 @@ const meepleyAPI = {
     });
   },
   updateUserProfile: () => {},
+  getPlaces: (): any[] => {
+    new Promise<any[]>((resolve, reject) => {
+      if (!places) {
+        return setTimeout(() => reject(new Error("Matchrooms not found")), 250);
+      }
+
+      setTimeout(() => resolve(places), 350);
+    });
+  },
   getMatchRooms: (): IMatchRoom[] => {
     new Promise<IMatchRoom[]>((resolve, reject) => {
       if (!matchRooms) {

@@ -10,13 +10,17 @@ const EmailInput: React.FC<FieldProps> = (props) => {
       <FormControl.Label>Email</FormControl.Label>
       <Input
         value={props?.field.value}
-        onChangeText={props?.form.handleChange("email")}
+        onChangeText={(val) => props?.form.setFieldValue("email", val.trim())}
         onBlur={props?.form.handleBlur("email")}
         isRequired={true}
         isInvalid={feedbackInvalid}
         type="email"
         variant="underlined"
         placeholder="insere o teu email"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+        autoCompleteType="email"
+        autoCapitalize="none"
       />
 
       {feedbackInvalid && (

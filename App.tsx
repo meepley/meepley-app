@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppRegistry } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -18,17 +18,17 @@ import {
 } from "@expo-google-fonts/poppins";
 import AppLoading from "expo-app-loading";
 import { NativeBaseProvider } from "native-base";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 import Navigation from "@navigation/index";
 import AuthContextProvider from "@utils/hooks/useAuthContext";
 import { nbConfig } from "@utils/config/nativeBaseConfig";
 import theme from "@theme/index";
-
-const queryClient = new QueryClient();
+import { useSnapshot } from "valtio";
+import authStore from "@services/store/authStore";
 
 export default function App() {
-  let [fontsLoaded] = useFonts({
+  const { hydrateState, hydrated } = useSnapshot(authStore);
+  const [fontsLoaded] = useFonts({
     Poppins_300Light,
     Poppins_300Light_Italic,
     Poppins_400Regular,
@@ -39,19 +39,21 @@ export default function App() {
     Poppins_700Bold_Italic,
   });
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    hydrateState();
+  }, []);
+
+  if (!fontsLoaded || !hydrated) {
     return <AppLoading />;
   } else {
     return (
       <NativeBaseProvider theme={theme} config={nbConfig}>
-        <QueryClientProvider client={queryClient}>
-          <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-            <AuthContextProvider>
-              <Navigation />
-              <StatusBar />
-            </AuthContextProvider>
-          </SafeAreaProvider>
-        </QueryClientProvider>
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+          <AuthContextProvider>
+            <Navigation />
+            <StatusBar backgroundColor="white" />
+          </AuthContextProvider>
+        </SafeAreaProvider>
       </NativeBaseProvider>
     );
   }
