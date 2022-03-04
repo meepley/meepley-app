@@ -23,6 +23,7 @@ import { _add } from "@utils/helpers/add";
 import BoardgameCard from "@components/common/BoardgameCard";
 import { IBoardgame } from "@ts/interfaces/IBoardgame";
 import Btn from "@components/common/buttons/Btn";
+import Loading from "@components/feedback/Loading";
 
 const colors = ["lYellow.500", "brand.500", "lGreen.500"];
 
@@ -107,7 +108,7 @@ const BoardgamesListScreen = () => {
             </Box>
           ) : isLoading && !boardgames.items.length ? (
             <Box px={10}>
-              <Text>A carregar...</Text>
+              <Loading isBgWhite={false} />
             </Box>
           ) : error && !boardgames.items.length ? (
             <Box px={10}>

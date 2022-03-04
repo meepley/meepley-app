@@ -37,22 +37,34 @@ import { _add } from "@utils/helpers/add";
 
 const steps: {
   label: string;
-  title?: string;
-  description: string;
+  title?: JSX.Element;
+  description: JSX.Element;
   img?: ImageSourcePropType;
   contents?: string[] | { name: string; emoji: JSX.Element }[];
   map?: boolean;
 }[] = [
   {
     label: "start",
-    title: "Bem-vindo ao MeePley",
-    description:
-      "Vamos fazer-te algumas perguntas para podermos apresentar as melhores funcionalidades que o MeePley tem a oferecer.",
+    title: (
+      <>
+        Olá! Sê bem-vindo ao MeePley{"  "}
+        <Emoji size={25}>👋</Emoji>
+      </>
+    ),
+    description: (
+      <>
+        <Text textAlign="left">
+          Vamos fazer-te algumas perguntas para podermos personalizar o MeePley
+          tendo em conta as tuas preferências.{"\n"} Os dados guardados das tuas
+          preferência não serão visivéis para ninguém
+        </Text>
+      </>
+    ),
     img: require("@assets/images/illustration-playing-family.png"),
   },
   {
     label: "experience",
-    description: "Qual é o teu nível de experiência com jogos de tabuleiro?",
+    description: <>Qual é o teu nível de experiência com jogos de tabuleiro?</>,
     contents: [
       { name: "Iniciante", emoji: <Emoji size={30}>🐣</Emoji> },
       { name: "Médio", emoji: <Emoji size={30}>🦸</Emoji> },
@@ -62,8 +74,13 @@ const steps: {
   },
   {
     label: "genres",
-    title: "O teu estilo",
-    description: "Seleciona os teus géneros de jogos favoritos!",
+    title: (
+      <>
+        O teu estilo{"  "}
+        <Emoji size={25}>😎</Emoji>
+      </>
+    ),
+    description: <>Seleciona os teus géneros de jogos favoritos!</>,
     contents: [
       { name: "Ação", emoji: <Emoji size={30}>⚔️</Emoji> },
       { name: "Clássico", emoji: <Emoji size={30}>♟️</Emoji> },
@@ -78,9 +95,15 @@ const steps: {
   },
   {
     label: "disponibility",
-    title: "Disponibilidade",
-    description:
-      "Escolhe os dias da semana que tens disponibilidade para jogar",
+    title: (
+      <>
+        Disponibilidade{"  "}
+        <Emoji size={25}>⌚</Emoji>
+      </>
+    ),
+    description: (
+      <>Escolhe os dias da semana que tens disponibilidade para jogar</>
+    ),
     contents: [
       "Segunda-feira",
       "Terça-feira",
@@ -93,8 +116,13 @@ const steps: {
   },
   {
     label: "places",
-    title: "Locais",
-    description: "Seleciona os teus locais favoritos para jogar",
+    title: (
+      <>
+        Locais{"  "}
+        <Emoji size={25}>🗺️</Emoji>
+      </>
+    ),
+    description: <>Seleciona os teus locais favoritos para jogar</>,
     map: true,
   },
 ];
@@ -180,11 +208,10 @@ const OnboardingCalibrationScreen = () => {
         <PagerView style={{ flex: 1 }} ref={pageViewerRef}>
           {steps.map((item, key) => {
             return (
-              <ScrollView>
+              <ScrollView key={`Screen ${key}`}>
                 <Flex
                   px={10}
                   my={10}
-                  key={key++}
                   direction="column"
                   textAlign="center"
                   backgroundColor="white"
@@ -238,22 +265,22 @@ const OnboardingCalibrationScreen = () => {
                               >
                                 {isSelectedExp && (
                                   <Flex
-                                    width="30"
-                                    height="30"
-                                    position="absolute"
                                     top="-5%"
                                     left="75%"
+                                    width="30"
+                                    height="30"
                                     rounded="full"
                                     borderWidth="4"
                                     borderColor="white"
+                                    position="absolute"
                                     backgroundColor="brand.500"
                                     justifyContent="center"
                                     alignItems="center"
                                   >
                                     <Icon
-                                      color="white"
                                       size="3"
                                       shadow="2"
+                                      color="white"
                                       as={Feather}
                                       name="check"
                                     />
@@ -293,7 +320,11 @@ const OnboardingCalibrationScreen = () => {
                             <Pressable
                               key={genItem.name}
                               width="28%"
-                              mb={genI < item.contents.length - 4 ? 4 : 0}
+                              mb={
+                                item.contents && genI < item.contents.length - 4
+                                  ? 4
+                                  : 0
+                              }
                               onPress={() =>
                                 isGenreSelected
                                   ? setSelectedGenres([
@@ -369,7 +400,7 @@ const OnboardingCalibrationScreen = () => {
                         value={selectedDays}
                         accessibilityLabel="Escolher dias da semana"
                       >
-                        {item.contents.map((dispItem: string, dispI) => {
+                        {item.contents.map((dispItem, dispI) => {
                           const lastI =
                             item.contents && item.contents.length - 1;
                           return (
@@ -377,7 +408,11 @@ const OnboardingCalibrationScreen = () => {
                               <Box key={dispI} mx="auto" width="70%">
                                 <Checkbox
                                   colorScheme="brand"
-                                  value={dispItem.toLowerCase()}
+                                  value={
+                                    typeof dispItem === "string"
+                                      ? dispItem.toLowerCase()
+                                      : `${dispI}`
+                                  }
                                   my={2}
                                   style={{
                                     alignItems: "center",

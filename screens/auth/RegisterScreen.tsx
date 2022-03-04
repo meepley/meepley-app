@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -55,7 +55,7 @@ const RegisterScreen = () => {
     password: string;
     passwordConfirmation: string;
   }) => {
-    console.log(email, password);
+    // console.log(email, password);
     toast.show({
       title: "Conta registada com sucesso!",
       status: "success",
@@ -117,11 +117,20 @@ const RegisterScreen = () => {
             alt="MeePley Logo"
             resizeMode="contain"
             style={{ width: 250, height: 100 }}
-            source={require("@assets/images/branding/logo-w-slogan.png")}
+            source={require("@assets/images/branding/logo-w-slogan-white.png")}
           />
           <Text color="white" pt={4} textAlign="center">
-            Encontra outros jogadores para jogar os teus jogos favoritos
+            Diversão nos tabuleiros de Aveiro para todos os{" "}
+            <Text fontStyle="italic">boardgamers</Text>
           </Text>
+          <Center pt={2}>
+            <Image
+              alt="Aveiro 2027 Logo"
+              resizeMode="contain"
+              style={{ width: 100, height: 60 }}
+              source={require("@assets/images/branding/aveiro-full-white.png")}
+            />
+          </Center>
         </Flex>
 
         <Box
@@ -242,7 +251,7 @@ const RegisterScreen = () => {
               direction="left"
               onNavigate={() => navigation.navigate("BoardgamesList")}
             >
-              <FontAwesome5 name="list" size={24} color="white" />
+              <FontAwesome5 name="dice-d20" size={24} color="white" />
               <Text textAlign="center" pt={2} color="white">
                 Jogos
               </Text>
@@ -252,7 +261,7 @@ const RegisterScreen = () => {
               direction="right"
               onNavigate={() => navigation.navigate("Utilities")}
             >
-              <FontAwesome5 name="dice-d20" size={24} color="white" />
+              <Ionicons name="list-outline" size={24} color="white" />
               <Text textAlign="center" pt={2} color="white">
                 Utilidades
               </Text>

@@ -21,6 +21,9 @@ const Btn = ({
       p={padding}
       borderRadius="30"
       colorScheme="brand"
+      leftIcon={leftIcon ? leftIcon : undefined}
+      rightIcon={rightIcon ? rightIcon : undefined}
+      startIcon={startIcon ? startIcon : undefined}
       minWidth={props?.minWidth || props?.minW || "1/2"}
       shadow={props?.variant === "solid" ? "4" : "none"}
       _text={

@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { BackHandler, RefreshControl } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
-import { Box, Flex, Heading, Icon, ScrollView } from "native-base";
+import { Box, Flex, Heading, Icon, ScrollView, Text } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import BottomTab from "@components/common/navigation/BottomTab";
 import mapStyle from "@utils/config/googleMapsThemeConfig.json";
 import { matchRooms, places } from "@services/api/meepley";
 import MatchRoomCarousel from "@components/common/MatchRoomCarousel";
+import Emoji from "@components/common/Emoji";
 
 const filters = [];
 
 const colors = ["lYellow.500", "brand.500", "lGreen.500"];
 
-const wait = (timeout) => {
+const wait = (timeout: number) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
@@ -57,14 +58,24 @@ const DashboardScreen = () => {
         }
       >
         {/* Matchroom Section */}
-        <Heading px={12} pt={8} pb={4}>
-          Partidas abertas
-        </Heading>
+        <Box px={12} pt={8} pb={4}>
+          <Heading pb={2}>Partidas abertas</Heading>
+          <Text fontSize={13}>
+            Começa já a jogar ao encontrar uma partida ideal para ti!{" "}
+            <Emoji size={15}>🎲</Emoji>
+          </Text>
+        </Box>
+
         <MatchRoomCarousel matchRooms={matchRooms} />
 
         {/* Map with Places Section */}
         <Box px={10} pb={40} pt={8}>
           <Heading pb={2}>Locais para jogar</Heading>
+          <Text fontSize={13}>
+            Explora a seleção de locais de referência para jogares em Aveiro!{" "}
+            <Emoji size={15}>🗺️</Emoji>
+          </Text>
+
           <Box
             shadow="8"
             style={{
@@ -125,6 +136,20 @@ const DashboardScreen = () => {
               })}
             </MapView>
           </Box>
+          <Text fontSize={13} pt={8}>
+            Sabias que ao jogar boardgames em Aveiro estás a ajudar a cidade
+            para a sua candidatura a Capital Europeia da Cultura em 2027?{" "}
+            <Emoji size={15}>😊</Emoji>{" "}
+            <Text
+              mt={2}
+              underline
+              fontSize={11}
+              color="brand.600"
+              textAlign="center"
+            >
+              (saber mais)
+            </Text>
+          </Text>
         </Box>
       </ScrollView>
 

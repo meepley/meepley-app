@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { RefreshControl, useWindowDimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   Box,
@@ -17,7 +18,6 @@ import {
 } from "@expo/vector-icons";
 
 import TransparentHeader from "@components/common/navigation/TransparentHeader";
-import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
 import MatchRoomCarousel from "@components/common/MatchRoomCarousel";
 import TextWithIcon from "@components/common/TextWithIcon";
@@ -31,7 +31,7 @@ const PlaceScreen: React.FC<PlaceProps> = ({ route, navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   return (
-    <Container>
+    <SafeAreaView>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => null} />
@@ -123,7 +123,7 @@ const PlaceScreen: React.FC<PlaceProps> = ({ route, navigation }) => {
           </Flex>
         </Flex>
       </ScrollView>
-    </Container>
+    </SafeAreaView>
   );
 };
 

@@ -1,10 +1,7 @@
-import React, { LegacyRef, useRef, useState } from "react";
-import { View, ImageBackground } from "react-native";
+import React, { useRef } from "react";
+import { ImageBackground, useWindowDimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import PagerView, {
-  PagerViewOnPageSelectedEvent,
-  PageScrollStateChangedNativeEvent,
-} from "react-native-pager-view";
+import PagerView from "react-native-pager-view";
 import { LinearGradient } from "expo-linear-gradient";
 
 import {
@@ -15,11 +12,13 @@ import {
   VStack,
   HStack,
   Pressable,
+  ScrollView,
 } from "native-base";
 
 import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
 import Emoji from "@components/common/Emoji";
+import openUrl from "@utils/helpers/openUrl";
 
 const steps = [
   {
@@ -33,11 +32,11 @@ const steps = [
     img: require("@assets/images/onboarding/gt1.png"),
   },
   {
-    title: "Em qualquer lado",
+    title: <>Boardgames e Aveiro!</>,
     description: (
       <>
-        Vê os locais disponíveis para jogar na tua localização ou procura por
-        outros pontos através do nosso mapa <Emoji>🗺️</Emoji>
+        Vê os locais disponíveis de referência para jogar boardgames e desfrutar
+        em Aveiro <Emoji>🗺️</Emoji>
       </>
     ),
 
@@ -73,6 +72,26 @@ const steps = [
     ),
     img: require("@assets/images/onboarding/gt5.png"),
   },
+  {
+    title: "Aveiro 2027",
+    description: (
+      <>
+        Joga connosco boardgames e partilha a candidatura de Aveiro a Capital
+        Europeia da Cultura em 2027! <Emoji>🌟</Emoji>{" "}
+        <Text
+          mt={2}
+          underline
+          fontSize={11}
+          color="brand.600"
+          textAlign="center"
+          onPress={async () => await openUrl("https://aveiro2027.pt")}
+        >
+          (saber mais)
+        </Text>
+      </>
+    ),
+    img: require("@assets/images/onboarding/gt6.jpg"),
+  },
 ];
 
 const OnboardingInitialFooter = () => {
@@ -92,20 +111,15 @@ const OnboardingInitialFooter = () => {
 
 const OnboardingInitialScreen = () => {
   const pageViewerRef = useRef<PagerView>(null);
+  const { height } = useWindowDimensions();
 
   return (
     <Container>
-      <Box minH="full">
-        <PagerView initialPage={0} style={{ flex: 1 }} ref={pageViewerRef}>
-          {steps.map((item, key) => {
-            return (
-              <View
-                style={{
-                  height: "100%",
-                  flexDirection: "column",
-                }}
-                key={key++}
-              >
+      <PagerView initialPage={0} style={{ flex: 1 }} ref={pageViewerRef}>
+        {steps.map((item, key) => {
+          return (
+            <ScrollView key={key}>
+              <Box key={key++} minH={height}>
                 <LinearGradient
                   style={{ height: "45%" }}
                   // Background Linear Gradient
@@ -143,11 +157,11 @@ const OnboardingInitialScreen = () => {
                   </Text>
                   <OnboardingInitialFooter />
                 </Flex>
-              </View>
-            );
-          })}
-        </PagerView>
-      </Box>
+              </Box>
+            </ScrollView>
+          );
+        })}
+      </PagerView>
     </Container>
   );
 };

@@ -29,6 +29,7 @@ const BoardgameCard: React.FC<{
       backgroundColor={bgColor}
       borderRadius="20"
       overflow="hidden"
+      shadow={4}
       _dark={{
         borderColor: "coolGray.600",
       }}
@@ -43,6 +44,9 @@ const BoardgameCard: React.FC<{
             uri: img,
           }}
           alt={`${name} Image`}
+          w="full"
+          resizeMode="cover"
+          h="40"
         />
       </Box>
       <Stack p={6} space={3}>

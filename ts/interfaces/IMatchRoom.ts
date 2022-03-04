@@ -2,6 +2,7 @@ export interface IMatchRoom {
   id: number;
   games: {
     name: string;
+    description: string;
   }[];
   name: string;
   img: string;
@@ -10,6 +11,7 @@ export interface IMatchRoom {
     slug: string;
     username: string;
     avatar: string;
+    role: string;
   }[];
   required_level: string;
   place: {
@@ -22,4 +24,5 @@ export interface IMatchRoom {
   hour: string;
   code: string;
   isOn: boolean;
+  max_players: number;
 }

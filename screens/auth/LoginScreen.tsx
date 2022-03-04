@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Field, Formik } from "formik";
 import { useSnapshot } from "valtio";
 import * as Yup from "yup";
@@ -19,6 +19,7 @@ import {
   Flex,
   ScrollView,
   Image,
+  Center,
 } from "native-base";
 
 import Container from "@components/common/Container";
@@ -26,6 +27,7 @@ import Btn from "@components/common/buttons/Btn";
 import PasswordInput from "@components/common/forms/PasswordInput";
 import EmailInput from "@components/common/forms/EmailInput";
 import SpeechBubbleBtn from "@components/common/buttons/SpeechBubbleBtn";
+
 import authStore from "@services/store/authStore";
 
 const LogInSchema = Yup.object().shape({
@@ -88,10 +90,10 @@ const LoginScreen = () => {
         <Flex
           p={16}
           h="500"
+          w="full"
           direction="column"
           alignItems="center"
           justifyContent="flex-start"
-          w="full"
           bg={{
             linearGradient: {
               colors: ["#614eca", "rgba(157, 146, 218, 0.5312)"],
@@ -105,11 +107,20 @@ const LoginScreen = () => {
             alt="MeePley Logo"
             resizeMode="contain"
             style={{ width: 250, height: 100 }}
-            source={require("@assets/images/branding/logo-w-slogan.png")}
+            source={require("@assets/images/branding/logo-w-slogan-white.png")}
           />
           <Text color="white" pt={4} textAlign="center">
-            Encontra outros jogadores para jogar os teus jogos favoritos
+            Diversão nos tabuleiros de Aveiro para todos os{" "}
+            <Text fontStyle="italic">boardgamers</Text>
           </Text>
+          <Center pt={2}>
+            <Image
+              alt="Aveiro 2027 Logo"
+              resizeMode="contain"
+              style={{ width: 100, height: 60 }}
+              source={require("@assets/images/branding/aveiro-full-white.png")}
+            />
+          </Center>
         </Flex>
 
         <Box
@@ -131,31 +142,25 @@ const LoginScreen = () => {
                 await _onLoginFormSubmit(values);
               }}
             >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                isSubmitting,
-              }) => (
+              {({ handleSubmit, isSubmitting }) => (
                 <VStack space={6} width="100%">
                   <Field name="email" type="email" component={EmailInput} />
                   <Field
                     name="password"
                     label="Password"
-                    placeholder="insere a tua password"
                     type="password"
                     component={PasswordInput}
+                    placeholder="insere a tua password"
                   />
 
                   <Flex direction="row" justifyContent="center" pb={6}>
                     <Btn
-                      minWidth={40}
                       width={40}
+                      minWidth={40}
                       variant="solid"
-                      isDisabled={isSubmitting}
                       isLoading={isSubmitting}
-                      onPress={handleSubmit}
+                      isDisabled={isSubmitting}
+                      onPress={handleSubmit as (values: any) => void}
                     >
                       Entrar
                     </Btn>
@@ -227,7 +232,7 @@ const LoginScreen = () => {
               direction="left"
               onNavigate={() => navigation.navigate("BoardgamesList")}
             >
-              <FontAwesome5 name="list" size={24} color="white" />
+              <FontAwesome5 name="dice-d20" size={24} color="white" />
               <Text textAlign="center" pt={2} color="white">
                 Jogos
               </Text>
@@ -237,7 +242,7 @@ const LoginScreen = () => {
               direction="right"
               onNavigate={() => navigation.navigate("Utilities")}
             >
-              <FontAwesome5 name="dice-d20" size={24} color="white" />
+              <Ionicons name="list-outline" size={24} color="white" />
               <Text textAlign="center" pt={2} color="white">
                 Utilidades
               </Text>

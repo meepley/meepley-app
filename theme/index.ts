@@ -102,6 +102,13 @@ const theme = extendTheme({
         },
       },
     },
+    Radio: {
+      baseStyle: {
+        _checked: {
+          borderColor: `gray.300`,
+        },
+      },
+    },
   },
 });
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
+import { StatusBar } from "expo-status-bar";
 
 import {
   Box,
@@ -20,13 +21,12 @@ import {
   CheckIcon,
   Stack,
   Button,
+  HStack,
 } from "native-base";
 
-import Container from "@components/common/Container";
 import ChooseCard from "@components/screens/CreateMatchRoom/ChooseCard";
 import Btn from "@components/common/buttons/Btn";
-import { StyleSheet } from "react-native";
-import { background } from "native-base/lib/typescript/theme/styled-system";
+import { StyleSheet, useWindowDimensions } from "react-native";
 
 const CreateMatchRoomFormSchema = Yup.object().shape({
   name: Yup.string().required(
@@ -39,6 +39,8 @@ const CreateMatchRoomFormSchema = Yup.object().shape({
 });
 
 const CreateMatchRoomScreen = () => {
+  const { height } = useWindowDimensions();
+
   //Nome Partida
   let [nomePartida, setNomePartida] = React.useState("");
 
@@ -47,7 +49,7 @@ const CreateMatchRoomScreen = () => {
 
   //________________
   //Form Data
-  const [dataText, setDataText] = useState("Escolhe o Dia");
+  const [dataText, setDataText] = useState("Dia");
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -67,7 +69,7 @@ const CreateMatchRoomScreen = () => {
 
   //_____________________
   // Form Hora
-  const [hourText, setHourText] = useState("Escolhe a Hora");
+  const [hourText, setHourText] = useState("Hora");
   const [isHourPickerVisible, setHourPickerVisibility] = useState(false);
 
   const showHourPicker = () => {
@@ -93,15 +95,37 @@ const CreateMatchRoomScreen = () => {
 
   const _onCreateMatchRoomFormSubmit = () => {};
 
+  //Change Local
+  let [didChoosePlace, setDidChoosePlace] = useState(false);
+  let [didChooseGame, setDidChooseGame] = useState(false);
+
   return (
-    <Container>
+    <>
+      <StatusBar backgroundColor="#FAFAFA" />
       <ScrollView>
-        <Box px={8}>
+        <Box p={10} minHeight={height} backgroundColor="#FAFAFA">
           <Stack space={4} pt={1} pb={6}>
-            <ChooseCard title={"Local"} text={"Escolhe o Local"} />
             <ChooseCard
-              title={"Sem Jogo"}
-              text={"Escolhe um jogo para a partida"}
+              onPressCard={() => setDidChoosePlace(!didChoosePlace)}
+              didChoose={didChoosePlace}
+              asset={
+                !didChoosePlace
+                  ? "map-marker-outline"
+                  : "https://www.eurodicas.com.br/wp-content/uploads/2021/07/universidade-de-aveiro-1200x675.jpg"
+              }
+              title={!didChoosePlace ? "Local" : "Universidade de Aveiro"}
+              text={!didChoosePlace ? "Escolhe o Local" : null}
+            />
+            <ChooseCard
+              onPressCard={() => setDidChooseGame(!didChooseGame)}
+              didChoose={didChooseGame}
+              asset={
+                !didChooseGame
+                  ? "dice-d20"
+                  : "https://www.continente.pt/on/demandware.static/-/Sites-col-master-catalog/default/dwd523a974/images/col/745/7454064-frente.jpg"
+              }
+              title={!didChooseGame ? "Jogo" : "Dixit"}
+              text={!didChooseGame ? "Escolhe um jogo para a partida" : null}
             />
           </Stack>
           <Box>
@@ -128,30 +152,36 @@ const CreateMatchRoomScreen = () => {
               {({ handleSubmit, isSubmitting, values }) => (
                 <>
                   <VStack space={6} width="100%">
-                    <FormControl isRequired w="100%" maxW="300px">
-                      <FormControl.Label>Nome da partida</FormControl.Label>
+                    <FormControl isRequired w="100%">
+                      <FormControl.Label fontWeight="bold">
+                        <Heading fontSize={14}>Nome da partida</Heading>
+                      </FormControl.Label>
                       <Input
-                        mt={1}
+                        px={4}
                         variant={"rounded"}
                         value={nomePartida}
+                        backgroundColor="white"
                         onChangeText={(newValue) => setNomePartida(newValue)}
                         isRequired={true}
                         type="text"
-                        placeholder="Escolhe o nome da tua partida"
+                        placeholder="Nome da tua partida"
                       />
                     </FormControl>
 
-                    <FormControl w="100%" maxW="300px">
-                      <FormControl.Label>Número de jogadores</FormControl.Label>
+                    <FormControl w="100%">
+                      <FormControl.Label>
+                        <Heading fontSize={14}>Número de jogadores</Heading>
+                      </FormControl.Label>
                       <Select
+                        backgroundColor="white"
                         variant={"rounded"}
                         selectedValue={numPessoas}
-                        w="50%"
-                        accessibilityLabel="Escolhe o número de jogadores"
-                        placeholder="Escolhe o número de jogadores"
+                        px={4}
+                        accessibilityLabel="O número de jogadores"
+                        placeholder="Número de jogadores"
                         _selectedItem={{
-                          bg: "teal.600",
-                          endIcon: <CheckIcon size="5" />,
+                          bg: "brand.500",
+                          startIcon: <CheckIcon mr={2} size="4" />,
                         }}
                         mt={1}
                         onValueChange={(itemValue) => setNumPessoas(itemValue)}
@@ -168,17 +198,21 @@ const CreateMatchRoomScreen = () => {
                     <Stack direction={"row"} mb={2.5} mt={1.5} space={3}>
                       <FormControl width={"50%"}>
                         <FormControl.Label textAlign={"center"}>
-                          Data
+                          <Heading fontSize={14}>Data</Heading>
                         </FormControl.Label>
                         <Button
+                          px={4}
+                          backgroundColor="white"
                           variant={"ghost"}
                           borderWidth={1}
                           borderColor={"gray.200"}
                           height={10}
                           borderRadius={"3xl"}
+                          colorScheme="brand"
                           onPress={showDatePicker}
                         >
                           <DateTimePickerModal
+                            locale="pt_PT"
                             isVisible={isDatePickerVisible}
                             mode="date"
                             onConfirm={handleConfirm}
@@ -190,17 +224,21 @@ const CreateMatchRoomScreen = () => {
 
                       <FormControl width={"50%"}>
                         <FormControl.Label textAlign={"center"}>
-                          Hora
+                          <Heading fontSize={14}>Hora</Heading>
                         </FormControl.Label>
                         <Button
+                          px={4}
+                          backgroundColor="white"
                           variant={"ghost"}
                           borderWidth={1}
                           borderColor={"gray.200"}
                           height={10}
                           borderRadius={"3xl"}
+                          colorScheme="brand"
                           onPress={showHourPicker}
                         >
                           <DateTimePickerModal
+                            locale="pt_PT"
                             isVisible={isHourPickerVisible}
                             mode="time"
                             onConfirm={hourConfirm}
@@ -214,7 +252,9 @@ const CreateMatchRoomScreen = () => {
                     {/* <Field name="hour" type="text" component={} /> */}
 
                     <FormControl>
-                      <FormControl.Label>Tipo de Partida</FormControl.Label>
+                      <FormControl.Label>
+                        <Heading fontSize={14}>Tipo de Partida</Heading>
+                      </FormControl.Label>
                       <Radio.Group
                         name="tipoPartida"
                         accessibilityLabel="tipo de partida"
@@ -222,33 +262,14 @@ const CreateMatchRoomScreen = () => {
                         onChange={(newValue) => setPubPriv(newValue)}
                         value={pubPriv}
                       >
-                        <Stack
-                          mt={2}
-                          direction={{
-                            base: "row",
-                          }}
-                          justifyContent={"center"}
-                          space={4}
-                          w="100%"
-                          maxW="300px"
-                        >
-                          <Radio
-                            size={"sm"}
-                            colorScheme={"violet"}
-                            value="publico"
-                            my={1}
-                          >
-                            Publico
+                        <HStack mt={2} space={4} w="100%">
+                          <Radio size="sm" colorScheme="brand" value="publico">
+                            Pública
                           </Radio>
-                          <Radio
-                            size={"sm"}
-                            colorScheme={"violet"}
-                            value="privado"
-                            my={1}
-                          >
-                            Privado
+                          <Radio size="sm" colorScheme="brand" value="privado">
+                            Privada
                           </Radio>
-                        </Stack>
+                        </HStack>
                       </Radio.Group>
                     </FormControl>
 
@@ -274,7 +295,7 @@ const CreateMatchRoomScreen = () => {
                       Convidar conexões
                     </Text>
                   </Stack>
-                  <Flex direction="row" justifyContent="center" pb={16}>
+                  <Flex direction="row" justifyContent="center">
                     <Btn
                       minWidth={40}
                       width={40}
@@ -292,7 +313,7 @@ const CreateMatchRoomScreen = () => {
           </Box>
         </Box>
       </ScrollView>
-    </Container>
+    </>
   );
 };
 

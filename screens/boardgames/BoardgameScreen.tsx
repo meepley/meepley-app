@@ -24,6 +24,8 @@ import TextWithIcon from "@components/common/TextWithIcon";
 import TransparentHeader from "@components/common/navigation/TransparentHeader";
 import openUrl from "@utils/helpers/openUrl";
 import { regexHtml } from "@utils/helpers/regex";
+import { useSnapshot } from "valtio";
+import authStore from "@services/store/authStore";
 
 type TBoardgameScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -33,6 +35,7 @@ type TBoardgameScreenProps = NativeStackScreenProps<
 const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
   const { height } = useWindowDimensions();
   const { boardgameId, boardgame, boardgameGenres } = route.params;
+  const { isAuth } = useSnapshot(authStore);
   const [section, setSection] = useState("Detalhes");
 
   const genres = [
@@ -54,7 +57,7 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
             <TransparentHeader />
             <Image
               source={{
-                uri: "https://imagens.publico.pt/imagens.aspx/1387318?tp=UH&db=IMAGENS&type=JPG",
+                uri: boardgame.image_url,
               }}
               alt={`${boardgame.name} Image`}
               style={{ width: 400, height: "100%", opacity: 0.7 }}
@@ -99,25 +102,28 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                     : "Jogo Fácil"
                 }
               />
-              {genresString !== undefined && (
+              {genresString !== undefined ? (
                 <TextWithIcon
                   w="100%"
                   iconName="star"
                   text={genresString}
                   fontStyle="italic"
                 />
-              )}
+              ) : null}
             </Flex>
 
             <HStack alignItems="center" space={2}>
               <Heading mr={2}>{boardgame.name}</Heading>
-              <IconButton
-                size="sm"
-                rounded="full"
-                backgroundColor="gray.100"
-                icon={<Icon as={EvilIcons} name="heart" color="lRed.400" />}
-              />
-              {boardgame.official_url && (
+              {isAuth ? (
+                <IconButton
+                  size="sm"
+                  rounded="full"
+                  backgroundColor="gray.100"
+                  icon={<Icon as={EvilIcons} name="heart" color="lRed.400" />}
+                />
+              ) : null}
+
+              {boardgame.official_url ? (
                 <IconButton
                   size="sm"
                   rounded="full"
@@ -127,7 +133,7 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                     boardgame.official_url && openUrl(boardgame.official_url)
                   }
                 />
-              )}
+              ) : null}
             </HStack>
 
             <HStack pt={4} pb={8} space={2}>
@@ -189,6 +195,7 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                         iconName="clock"
                         text={`Artista(s): ${boardgame.artists?.map(
                           (artist, i) =>
+                            boardgame.artists &&
                             i === boardgame.artists.length - 1
                               ? artist
                               : `${artist}, `

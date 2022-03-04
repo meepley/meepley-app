@@ -5,6 +5,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { IBoardgame } from "@ts/interfaces/IBoardgame";
 import { IMatchRoom } from "@ts/interfaces/IMatchRoom";
+import { IUser } from "@ts/interfaces/IUser";
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
@@ -13,7 +14,7 @@ export type RootStackParamList = {
   CalibrationOnboarding: undefined;
   CreateMatch: undefined;
   MatchRoom: { matchRoom: IMatchRoom };
-  Profile: undefined;
+  Profile: { profile: IUser | { username: string } };
   Dashboard: undefined;
   Place: {
     place: {
@@ -51,6 +52,10 @@ export type RootStackParamList = {
 };
 
 export type PlaceProps = NativeStackScreenProps<RootStackParamList, "Place">;
+export type ProfileProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Profile"
+>;
 export type BoardgameProps = NativeStackScreenProps<
   RootStackParamList,
   "Boardgame"

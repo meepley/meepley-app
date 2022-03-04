@@ -20,7 +20,6 @@ import AppLoading from "expo-app-loading";
 import { NativeBaseProvider } from "native-base";
 
 import Navigation from "@navigation/index";
-import AuthContextProvider from "@utils/hooks/useAuthContext";
 import { nbConfig } from "@utils/config/nativeBaseConfig";
 import theme from "@theme/index";
 import { useSnapshot } from "valtio";
@@ -49,10 +48,8 @@ export default function App() {
     return (
       <NativeBaseProvider theme={theme} config={nbConfig}>
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <AuthContextProvider>
-            <Navigation />
-            <StatusBar backgroundColor="white" />
-          </AuthContextProvider>
+          <Navigation />
+          <StatusBar backgroundColor="white" />
         </SafeAreaProvider>
       </NativeBaseProvider>
     );

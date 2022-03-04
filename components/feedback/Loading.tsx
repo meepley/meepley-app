@@ -1,31 +1,47 @@
 import React from "react";
-import { Box, Image, Text } from "native-base";
+import { StyleSheet } from "react-native";
+import LottieView from "lottie-react-native";
+
+import { Center, Heading } from "native-base";
+
 import { rnd } from "@utils/helpers/random";
-import BouncingPreloader from "react-native-bouncing-preloaders";
 
-const loadingMessages = ["", "", "", "", ""];
+const loadingMessages = [
+  "A carregar estratégias...",
+  "A lançar os dados...",
+  "A procurar party players...",
+  "A preparar o tabuleiro...",
+  "A mergulhar em mundos distantes...",
+];
 
-const Loading = () => {
+const Loading: React.FC<{
+  isBgWhite?: boolean;
+  hasMessage?: true;
+  size?: number;
+}> = ({ isBgWhite = true, hasMessage = true, size = 150 }) => {
   const randomMessage = loadingMessages[rnd(loadingMessages.length - 1)];
 
   return (
-    <Box>
-      <BouncingPreloader
-        icons={[
-          "https://www.shareicon.net/data/256x256/2016/05/04/759946_bar_512x512.png",
-          "https://www.shareicon.net/data/256x256/2016/05/04/759946_bar_512x512.png",
-          "https://www.shareicon.net/data/256x256/2016/05/04/759946_bar_512x512.png",
-        ]}
-        leftRotation="-680deg"
-        rightRotation="360deg"
-        leftDistance={-180}
-        rightDistance={-250}
-        speed={1200}
+    <Center>
+      <LottieView
+        autoPlay
+        style={styles.animation}
+        source={
+          isBgWhite
+            ? require("@assets/animations/dice-animation-white.json")
+            : require("@assets/animations/dice-animation-gray.json")
+        }
       />
-      <Text>Loading</Text>
-      <Text>{randomMessage}</Text>
-    </Box>
+      <Heading fontSize="20">{randomMessage}</Heading>
+    </Center>
   );
 };
+
+const styles = StyleSheet.create({
+  animation: {
+    width: 150,
+    height: 150,
+  },
+});
 
 export default Loading;

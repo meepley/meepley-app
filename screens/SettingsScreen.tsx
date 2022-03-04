@@ -1,17 +1,19 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import Container from "@components/common/Container";
+import { useWindowDimensions } from "react-native";
+
+import { Box, Heading, ScrollView } from "native-base";
 
 const SettingsScreen = () => {
+  const { height } = useWindowDimensions();
+
   return (
-    <Container>
-      <View>
-        <Text>Settings</Text>
-      </View>
-    </Container>
+    <ScrollView>
+      {/* Place Image Section + Transparent Header */}
+      <Box bgColor="white" minHeight={height}>
+        <Heading>Definições</Heading>
+      </Box>
+    </ScrollView>
   );
 };
 
 export default SettingsScreen;
-
-const styles = StyleSheet.create({});

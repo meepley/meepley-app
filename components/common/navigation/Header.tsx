@@ -44,7 +44,11 @@ const AppHeader: React.FC<{
           height: 75,
           backgroundColor:
             navigationState.routes[navigationState.routes.length - 1].name ===
-            "BoardgamesList"
+              "BoardgamesList" ||
+            navigationState.routes[navigationState.routes.length - 1].name ===
+              "Profile" ||
+            navigationState.routes[navigationState.routes.length - 1].name ===
+              "CreateMatch"
               ? "#FAFAFA"
               : "transparent",
         }}
@@ -55,7 +59,8 @@ const AppHeader: React.FC<{
               w="12"
               h="12"
               variant="ghost"
-              backgroundColor="white"
+              rounded="full"
+              colorScheme="brand"
               onPress={() => navigation.canGoBack() && navigation.goBack()}
             >
               <Icon
@@ -68,15 +73,15 @@ const AppHeader: React.FC<{
           )}
         </Center>
         <Box>
-          {
-            options?.title ? (
-              <Heading color="brand.500" fontSize="lg">
-                {options.title}
-              </Heading>
-            ) : (
-              options?.headerTitle && options.headerTitle()
-            ) // @ts-ignore
-          }
+          {options?.title ? (
+            <Heading color="brand.500" fontSize="lg">
+              {options.title}
+            </Heading>
+          ) : (
+            options?.headerTitle &&
+            typeof options.headerTitle !== "string" &&
+            options.headerTitle({ children: "" }) // @ts-ignore
+          )}
         </Box>
         <Flex justifyContent="center" height={8} width={8} mr={8}>
           {isAuth && (
@@ -91,7 +96,9 @@ const AppHeader: React.FC<{
                       {...triggerProps}
                       w="12"
                       h="12"
-                      backgroundColor="white"
+                      rounded="full"
+                      variant="ghost"
+                      colorScheme="brand"
                     >
                       <Icon
                         size="6"

@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Image } from "react-native";
 import { Flex, Heading, Text } from "native-base";
 import { useNavigation } from "@react-navigation/native";
+import { useSnapshot } from "valtio";
 
-import { AuthContext } from "@utils/hooks/useAuthContext";
 import Btn from "@components/common/buttons/Btn";
+
 import { rnd } from "@utils/helpers/random";
+import authStore from "@services/store/authStore";
 
 interface ISpecificError {
   text: string;
@@ -49,7 +51,7 @@ const errorImgs = [
 
 const Error: React.FC<{ type: string }> = ({ type }) => {
   const navigation = useNavigation();
-  const { isAuth } = useContext(AuthContext);
+  const { isAuth } = useSnapshot(authStore);
   const { [type as keyof IErrors]: err } = errors;
 
   const randomImg = rnd(errorImgs.length);

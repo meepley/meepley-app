@@ -28,15 +28,23 @@ const MatchRoomCarousel: React.FC<{
         data={matchRooms}
         renderItem={({ item, index }) => {
           const bgColor = colors[(index + 1) % colors.length];
+          const isActive = sliderActiveItem === index;
 
-          return <MatchRoomCard item={item} index={index} bgColor={bgColor} />;
+          return (
+            <MatchRoomCard
+              item={item}
+              isActive={isActive}
+              index={index}
+              bgColor={bgColor}
+            />
+          );
         }}
         sliderWidth={sliderWidth}
         itemWidth={itemWidth}
         hasParallaxImages={true}
         firstItem={1}
-        inactiveSlideScale={0.94}
-        inactiveSlideOpacity={0.7}
+        inactiveSlideScale={0.8}
+        inactiveSlideOpacity={0.4}
         loop={true}
         loopClonesPerSide={2}
         autoplay={false}

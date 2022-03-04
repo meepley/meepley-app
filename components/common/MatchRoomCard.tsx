@@ -11,34 +11,39 @@ const MatchRoomCard: React.FC<{
   item: IMatchRoom;
   index: number;
   bgColor: string;
-}> = ({ item, index, bgColor }) => {
+  isActive: boolean;
+}> = ({ item, index, bgColor, isActive }) => {
   const navigation = useNavigation();
 
   return (
     <Pressable
       key={index}
-      mx={2}
+      mx={1}
       onPress={() => navigation.navigate("MatchRoom", { matchRoom: item })}
     >
       <Box
         my={4}
         borderRadius="40"
         bgColor={bgColor}
-        style={{
-          elevation: 2,
-          shadowRadius: 5,
-          shadowColor: "#000",
-          shadowOffset: { width: 4, height: 4 },
-        }}
+        style={
+          isActive
+            ? {
+                elevation: 5,
+                shadowRadius: 5,
+                shadowColor: "#000",
+                shadowOffset: { width: 4, height: 4 },
+              }
+            : null
+        }
       >
         <Image
-          borderTopRadius="40"
           h="170"
           w="full"
+          alt={item.name}
+          borderTopRadius="40"
           source={{
             uri: item.img,
           }}
-          alt={item.name}
         />
         <Box px={6} pt={4} pb={6}>
           <Text
@@ -55,10 +60,10 @@ const MatchRoomCard: React.FC<{
           <Flex flexDirection="row" pb={2}>
             <Icon
               mr={1}
-              as={Ionicons}
-              name="location-outline"
               size="4"
               color="white"
+              as={Ionicons}
+              name="location-outline"
             />
             <Text fontSize={11} color="white" style={styles.textWithShadow}>
               {item.place.name}
@@ -68,10 +73,10 @@ const MatchRoomCard: React.FC<{
           <Flex flexDirection="row">
             <Text pr={1} pb={2} fontSize={11} style={styles.textWithShadow}>
               <Icon
+                size="4"
+                color="white"
                 as={MaterialCommunityIcons}
                 name="calendar-blank-outline"
-                color="white"
-                size="4"
               />
             </Text>
             <Text fontSize={11} color="white" style={styles.textWithShadow}>

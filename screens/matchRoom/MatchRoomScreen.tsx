@@ -1,181 +1,241 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 import {
-  EvilIcons,
-  MaterialCommunityIcons,
-  Fontisto,
-  MaterialIcons,
-  Ionicons,
-} from "@expo/vector-icons";
-import MatchRoomCard from "@components/common/MatchRoomCard";
-import Container from "@components/common/Container";
-import Btn from "@components/common/buttons/Btn";
-import { useNavigation } from "@react-navigation/native";
+  useWindowDimensions,
+  TouchableOpacity,
+  RefreshControl,
+  Alert,
+} from "react-native";
 
 import {
   Avatar,
   Box,
   Flex,
   Heading,
-  Icon,
   Image,
-  Modal,
-  Pressable,
   ScrollView,
   Text,
   HStack,
+  VStack,
+  Center,
+  Stack,
+  useClipboard,
 } from "native-base";
-import { color } from "native-base/lib/typescript/theme/styled-system";
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Ionicons,
+} from "@expo/vector-icons";
 
-const MatchRoomScreen = () => {
-  const navigation = useNavigation();
+import TransparentHeader from "@components/common/navigation/TransparentHeader";
+import Btn from "@components/common/buttons/Btn";
+import BottomTab from "@components/common/navigation/BottomTab";
+import TextWithIcon from "@components/common/TextWithIcon";
+
+import { MatchRoomProps } from "@ts/types/navigation/RootStack";
+import Container from "@components/common/Container";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
+  const { matchRoom } = route.params;
+  const { height } = useWindowDimensions();
+  const { value, onCopy } = useClipboard();
+
+  const [isInMatch, setIsInMatch] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        if (!isInMatch) {
+          return;
+        }
+
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+
+        // Prompt the user before leaving the screen
+        Alert.alert(
+          "Abandonar Partida?",
+          "You have unsaved changes. Are you sure to discard them and leave the screen?",
+          [
+            { text: "Cancelar", style: "cancel", onPress: () => {} },
+            {
+              text: "Sair",
+              style: "destructive",
+              // If the user confirmed, then we dispatch the action we blocked earlier
+              // This will continue the action that had triggered the removal of the screen
+              onPress: () => navigation.dispatch(e.data.action),
+            },
+          ]
+        );
+      }),
+    [navigation, isInMatch]
+  );
 
   return (
-    <Container>
-      <ScrollView marginTop={"-20"}>
-        <View>
+    <SafeAreaView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => null} />
+        }
+      >
+        {/* Place Image Section + Transparent Header */}
+        <Box height={height * 0.5}>
+          <TransparentHeader />
           <Image
-            source={{
-              uri: "https://imagens.publico.pt/imagens.aspx/1387318?tp=UH&db=IMAGENS&type=JPG",
-            }}
-            style={{ width: 400, height: 400, opacity: 0.7 }}
+            source={{ uri: matchRoom.img }}
+            alt={`${matchRoom.name} Imagem`}
+            style={{ width: 400, height: "100%", opacity: 0.7 }}
           />
+        </Box>
 
-          <Flex bgColor="white" borderTopRadius={"50"} p={"10"} mt={"-20"}>
-            <Heading marginBottom={2}>Avenida Café-Concerto</Heading>
+        <Flex
+          mt="-20"
+          bgColor="white"
+          borderTopRadius="50"
+          minHeight={height * 0.6}
+        >
+          <Box p={10}>
+            <Heading pb={4}>{matchRoom.name}</Heading>
+            {isInMatch ? <Text>teste</Text> : null}
 
-            <View style={styles.verticalAlign}>
-              <Icon
-                as={Ionicons}
-                name="location-outline"
-                size="5"
-                color={"brand.500"}
+            <VStack space={1}>
+              <HStack justifyContent="space-between">
+                <TextWithIcon
+                  w="45%"
+                  iconName="calendar"
+                  iconLibrary={MaterialCommunityIcons}
+                  text={`${matchRoom.date} - ${matchRoom.hour}`}
+                />
+                <TextWithIcon
+                  w="45%"
+                  iconName="clock-outline"
+                  iconLibrary={MaterialCommunityIcons}
+                  text={`${matchRoom.estimated_duration}`}
+                />
+              </HStack>
+
+              <TextWithIcon
+                w="100%"
+                iconName="location-outline"
+                iconLibrary={Ionicons}
+                text={matchRoom.place.name}
               />
-              <Text fontSize={11}> Praça do Mercado nº1, 3800-224 Aveiro</Text>
-            </View>
+              {matchRoom.place.minimum_consumption ? (
+                <TextWithIcon
+                  w="100%"
+                  iconName="attach-money"
+                  iconLibrary={MaterialIcons}
+                  text={`${matchRoom.place.minimum_consumption}€ consumo mínimo no local`}
+                />
+              ) : null}
+            </VStack>
 
-            <View style={styles.verticalAlign}>
-              <Icon
-                as={MaterialCommunityIcons}
-                name="clock-outline"
-                size="5"
-                color={"brand.500"}
-              />
-              <Text fontSize={11}> Seg-Sab, 09:00 às 01:00</Text>
-            </View>
+            <Box pt={8}>
+              <Heading
+                mb={2}
+                fontSize="sm"
+                color="brand.500"
+                textTransform="uppercase"
+              >
+                Sobre o jogo
+              </Heading>
+              <Text fontSize={11} justifyContent="center" numberOfLines={8}>
+                {matchRoom.games[0].description}
+              </Text>
+            </Box>
 
-            <View style={styles.verticalAlign}>
-              <Icon
-                as={MaterialCommunityIcons}
-                name="storefront-outline"
-                size="5"
-                color={"brand.500"}
-              />
-              <Text fontSize={11}> Café-restaurante</Text>
-            </View>
+            <Box pt={8} pb={10}>
+              <Flex flexDirection="row">
+                <Heading pb={4}>Jogadores</Heading>
+                <Box ml={1} bgColor="lGreen.300" borderRadius="3xl">
+                  <Text color="lGreen.500" fontSize="8">
+                    {matchRoom?.users.length}/{matchRoom.max_players}
+                  </Text>
+                </Box>
+              </Flex>
+              <HStack space={4}>
+                {matchRoom?.users.map((following) => (
+                  <TouchableOpacity
+                    key={following.slug}
+                    onPress={() =>
+                      navigation.navigate("Profile", {
+                        profile: { username: following.username },
+                      })
+                    }
+                  >
+                    <Center
+                      style={{ height: 80, width: 80 }}
+                      rounded="full"
+                      borderWidth="4"
+                      borderColor="brand.500"
+                    >
+                      <Avatar
+                        h="97%"
+                        w="97%"
+                        borderWidth={2}
+                        borderColor="#FAFAFA"
+                        source={following.avatar}
+                      />
+                    </Center>
+                  </TouchableOpacity>
+                ))}
+              </HStack>
+            </Box>
 
-            <View style={styles.verticalAlign}>
-              <Icon
-                as={MaterialIcons}
-                name="attach-money"
-                size="5"
-                color={"brand.500"}
-              />
-              <Text fontSize={11}> 1.5€ consumo mínimo no local</Text>
-            </View>
-          </Flex>
-        </View>
+            {isInMatch ? (
+              <>
+                <Stack pt={6} pb={40} space={2}>
+                  <Text
+                    underline
+                    color="brand.600"
+                    textAlign="center"
+                    onPress={() => onCopy(matchRoom.code)}
+                  >
+                    Copiar código de convite
+                  </Text>
+                  <Text
+                    underline
+                    color="brand.600"
+                    textAlign="center"
+                    onPress={() => null}
+                  >
+                    Convidar conexões
+                  </Text>
+                </Stack>
+                <Center flex={1} alignItems="center">
+                  <Btn
+                    onPress={() => setIsInMatch(true)}
+                    minWidth={40}
+                    width={40}
+                    variant="solid"
+                    marginBottom={10}
+                    marginTop={7}
+                  >
+                    Concluir Partida
+                  </Btn>
+                </Center>
 
-        <View>
-          <Heading marginLeft={15} mb={2} color={"brand.600"} fontSize={"sm"}>
-            Sobre o jogo
-          </Heading>
-          <Text
-            marginLeft={15}
-            marginRight={15}
-            fontSize={11}
-            justifyContent={"center"}
-          >
-            Gloomhaven is a game of Euro-inspired tactical combat in a
-            persistent world of shifting motives. Players will take on the role
-            of a wandering adventurer with their own special set of skills and
-            their own reasons for traveling to this dark corner of the...
-          </Text>
-        </View>
-
-        {/*<BottomTab*/}
-        {/*  content={*/}
-        {/*    <>*/}
-        {/*      <Btn*/}
-        {/*        onPress={() => navigation.navigate("Chat")}*/}
-        {/*        variant="solid"*/}
-        {/*      >*/}
-        {/*        Chat*/}
-        {/*      </Btn>*/}
-        {/*      <Btn*/}
-        {/*        onPress={() => navigation.navigate("Utilities")}*/}
-        {/*        variant="solid"*/}
-        {/*      >*/}
-        {/*        Utilitários*/}
-        {/*      </Btn>*/}
-        {/*      <Btn onPress={() => setIsInMatch(false)} variant="solid">*/}
-        {/*        Deixar Sala*/}
-        {/*      </Btn>*/}
-        {/*    </>*/}
-        {/*  }*/}
-        {/*/>*/}
-
-        <View>
-          <Heading marginTop={10} paddingLeft={15} marginBottom={5}>
-            Jogadores
-          </Heading>
-          <HStack marginLeft={5} space={4}>
-            <Avatar
-              onTouchEnd={() => navigation.navigate("Profile")}
-              borderWidth={2}
-              borderColor={"yellow.300"}
-              size="lg"
-              source={require("../../assets/images/personas/persona4.png")}
-            ></Avatar>
-            <Avatar
-              borderWidth={2}
-              borderColor={"brand.300"}
-              size="lg"
-              source={require("../../assets/images/personas/persona3.png")}
-            ></Avatar>
-            <Avatar
-              borderWidth={2}
-              borderColor={"brand.300"}
-              size="lg"
-              source={require("../../assets/images/personas/persona1.png")}
-            ></Avatar>
-          </HStack>
-        </View>
-
-        <Flex flex={1} alignItems="center">
-          <Btn
-            onPress={() => navigation.navigate("CreateMatch")}
-            minWidth={40}
-            width={40}
-            variant="solid"
-            marginBottom={10}
-            marginTop={7}
-          >
-            Entrar
-          </Btn>
+                {/* Bottom Navigation Section */}
+                <BottomTab isInsideMatchroom={true} />
+              </>
+            ) : (
+              <Center flex={1} alignItems="center">
+                <Btn
+                  onPress={() => setIsInMatch(true)}
+                  minWidth={40}
+                  width={40}
+                  variant="solid"
+                >
+                  Entrar
+                </Btn>
+              </Center>
+            )}
+          </Box>
         </Flex>
       </ScrollView>
-    </Container>
+    </SafeAreaView>
   );
 };
 
 export default MatchRoomScreen;
-
-const styles = StyleSheet.create({
-  verticalAlign: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 7,
-  },
-});
