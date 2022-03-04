@@ -2,7 +2,11 @@ import React from "react";
 import { Pressable } from "react-native";
 
 import { Avatar, Box, Center, Flex, Heading, Icon, Text } from "native-base";
-import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  FontAwesome5,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 const ChooseCard: React.FC<{
   title: string;
@@ -43,16 +47,17 @@ const ChooseCard: React.FC<{
             />
           ) : null}
         </Center>
-        <Box>
-          <Heading fontSize="md" pb={text ? 1 : 0}>
+        <Box w="58%" mx={2}>
+          <Heading numberOfLines={2} fontSize="14" pb={text ? 1 : 0}>
             {title}
           </Heading>
           {text ? (
-            <Text fontSize="xs" color="gray.500">
+            <Text fontSize="10" numberOfLines={1} color="gray.500">
               {text}
             </Text>
           ) : null}
         </Box>
+        <Icon as={Feather} name="edit" color="lGreen.500" size={4} />
       </Flex>
     </Pressable>
   );

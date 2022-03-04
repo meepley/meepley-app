@@ -6,33 +6,32 @@ const meepleyDataStore = proxy<{
   error: string | null | undefined;
   isInMatchRoom: boolean;
   matchRooms: any[];
-  profile: {};
+  places: any[];
+  user: {};
+  fetchPlaces: () => Promise<void>;
   fetchMatchRooms: () => Promise<void>;
   fetchAddMatchRoom: (matchRoom: number) => Promise<void>;
-  fetchProfile: (id: number) => Promise<void>;
+  fetchUser: (name: string) => Promise<void>;
 }>({
   isLoading: false,
   error: null,
   isInMatchRoom: false,
   matchRooms: [],
-  profile: {},
+  places: [],
+  user: {},
+  fetchPlaces: async () => {
+    const places = await meepleyAPI.getPlaces();
+    meepleyDataStore.places = places;
+  },
   fetchMatchRooms: async () => {
-    try {
-      const matchRooms = await meepleyAPI.getMatchRooms();
-      meepleyDataStore.matchRooms = matchRooms;
-    } catch (err) {
-      if (err instanceof Error) meepleyDataStore.error = err?.message;
-    }
+    const matchRooms = await meepleyAPI.getMatchRooms();
+    meepleyDataStore.matchRooms = matchRooms;
+  },
+  fetchUser: async (name) => {
+    const userData = await meepleyAPI.getUserProfile(name);
+    meepleyDataStore.user = userData;
   },
   fetchAddMatchRoom: async (id) => {},
-  fetchProfile: async (id: number) => {
-    try {
-      const getProfile = await meepleyAPI.getUserProfile(id);
-      meepleyDataStore.profile = getProfile;
-    } catch (err) {
-      if (err instanceof Error) meepleyDataStore.error = err?.message;
-    }
-  },
 });
 
 export default meepleyDataStore;

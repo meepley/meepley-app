@@ -5,6 +5,7 @@ import {
   RefreshControl,
   Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   Avatar,
@@ -19,6 +20,8 @@ import {
   Center,
   Stack,
   useClipboard,
+  Toast,
+  useToast,
 } from "native-base";
 import {
   MaterialCommunityIcons,
@@ -32,13 +35,13 @@ import BottomTab from "@components/common/navigation/BottomTab";
 import TextWithIcon from "@components/common/TextWithIcon";
 
 import { MatchRoomProps } from "@ts/types/navigation/RootStack";
-import Container from "@components/common/Container";
-import { SafeAreaView } from "react-native-safe-area-context";
+import meepleyAPI from "@services/api/meepley";
 
 const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
   const { matchRoom } = route.params;
   const { height } = useWindowDimensions();
   const { value, onCopy } = useClipboard();
+  const toast = useToast();
 
   const [isInMatch, setIsInMatch] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -76,7 +79,12 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
     <SafeAreaView>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => null} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => null}
+            tintColor="#A69BEA"
+            colors={["#A69BEA"]}
+          />
         }
       >
         {/* Place Image Section + Transparent Header */}
@@ -146,13 +154,19 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
             </Box>
 
             <Box pt={8} pb={10}>
-              <Flex flexDirection="row">
-                <Heading pb={4}>Jogadores</Heading>
-                <Box ml={1} bgColor="lGreen.300" borderRadius="3xl">
-                  <Text color="lGreen.500" fontSize="8">
-                    {matchRoom?.users.length}/{matchRoom.max_players}
+              <Flex pb={4} alignItems="center" flexDirection="row">
+                <Heading pr={2}>Jogadores</Heading>
+                <Center
+                  w={12}
+                  h={6}
+                  ml={1}
+                  bgColor="lGreen.100"
+                  borderRadius="3xl"
+                >
+                  <Text color="lGreen.600" fontSize="10">
+                    {matchRoom?.users.length} / {matchRoom.max_players}
                   </Text>
-                </Box>
+                </Center>
               </Flex>
               <HStack space={4}>
                 {matchRoom?.users.map((following) => (
@@ -190,7 +204,15 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
                     underline
                     color="brand.600"
                     textAlign="center"
-                    onPress={() => onCopy(matchRoom.code)}
+                    onPress={() => {
+                      onCopy(matchRoom.code);
+                      toast.show({
+                        title: "Código copiado com sucesso!",
+                        status: "success",
+                        description:
+                          "Cuidado com quem partilhas o código da sala",
+                      });
+                    }}
                   >
                     Copiar código de convite
                   </Text>
@@ -205,12 +227,14 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
                 </Stack>
                 <Center flex={1} alignItems="center">
                   <Btn
-                    onPress={() => setIsInMatch(true)}
                     minWidth={40}
                     width={40}
                     variant="solid"
                     marginBottom={10}
                     marginTop={7}
+                    onPress={() =>
+                      meepleyAPI.updateMatchroom(matchRoom.id, "finish")
+                    }
                   >
                     Concluir Partida
                   </Btn>
@@ -222,7 +246,10 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
             ) : (
               <Center flex={1} alignItems="center">
                 <Btn
-                  onPress={() => setIsInMatch(true)}
+                  onPress={() => {
+                    meepleyAPI.updateMatchroom(matchRoom.id, "enter", {});
+                    setIsInMatch(true);
+                  }}
                   minWidth={40}
                   width={40}
                   variant="solid"

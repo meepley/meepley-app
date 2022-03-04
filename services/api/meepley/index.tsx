@@ -175,21 +175,21 @@ export let matchRooms = [
         id: 2,
         slug: "jorgeribass",
         username: "Jorge Ribas",
-        avatar: "persona1.png",
+        avatar: require("@assets/images/personas/persona1.png"),
         role: "admin",
       },
       {
         id: 3,
         slug: "beatriz_",
         username: "Beatriz_",
-        avatar: "persona2.png",
+        avatar: require("@assets/images/personas/persona2.png"),
         role: "player",
       },
       {
         id: 4,
         slug: "matiasousa",
         username: "Matias Sousa",
-        avatar: "persona3.png",
+        avatar: require("@assets/images/personas/persona3.png"),
         role: "player",
       },
     ],
@@ -227,7 +227,7 @@ export let matchRooms = [
         id: 2,
         slug: "jorgeribass",
         username: "Jorge Ribas",
-        avatar: "persona1.png",
+        avatar: require("@assets/images/personas/persona1.png"),
         role: "admin",
       },
     ],
@@ -260,7 +260,7 @@ export let matchRooms = [
         id: 3,
         slug: "beatriz_",
         username: "Beatriz_",
-        avatar: "persona2.png",
+        avatar: require("@assets/images/personas/persona2.png"),
         role: "admin",
       },
     ],
@@ -368,9 +368,9 @@ export let places = [
 ];
 
 const meepleyAPI = {
-  getUserProfile: (userId: number) => {
-    new Promise<IUser>((resolve, reject) => {
-      const user = users[userId];
+  getUserProfile: (name: string) => {
+    return new Promise<IUser>((resolve, reject) => {
+      const user = users.find((item) => item.username === name);
 
       if (!users) {
         return setTimeout(() => reject(new Error("User not found")), 250);
@@ -381,7 +381,7 @@ const meepleyAPI = {
   },
   updateUserProfile: () => {},
   getPlaces: () => {
-    new Promise<any[]>((resolve, reject) => {
+    return new Promise<any[]>((resolve, reject) => {
       if (!places) {
         return setTimeout(() => reject(new Error("Matchrooms not found")), 250);
       }
@@ -390,7 +390,7 @@ const meepleyAPI = {
     });
   },
   getMatchRooms: () => {
-    new Promise<IMatchRoom[]>((resolve, reject) => {
+    return new Promise<IMatchRoom[]>((resolve, reject) => {
       if (!matchRooms) {
         return setTimeout(() => reject(new Error("Matchrooms not found")), 250);
       }
@@ -399,7 +399,7 @@ const meepleyAPI = {
     });
   },
   getMatchRoom: (matchRoomId: number) => {
-    new Promise<IMatchRoom>((resolve, reject) => {
+    return new Promise<IMatchRoom>((resolve, reject) => {
       const matchRoom = matchRooms[matchRoomId];
 
       if (!matchRooms) {
@@ -416,10 +416,12 @@ const meepleyAPI = {
     date: string,
     hour: string
   ) => {
-    new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>((resolve, reject) => {
       if (!matchRooms) {
         return setTimeout(() => reject(new Error("Matchrooms not found")), 250);
       }
+
+      console.log("teste???");
 
       matchRooms.push({
         id: matchRooms.length,
@@ -431,7 +433,7 @@ const meepleyAPI = {
           },
         ],
         name: name,
-        img: "https://assets.dicebreaker.com/stella-dixit-universe-header-cards.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/stella-dixit-universe-header-cards.png",
+        img: "https://i0.wp.com/mundoekoa.com/wp-content/uploads/2020/02/dixitArtboard-2.png?resize=1024%2C581&ssl=1",
         users: [
           {
             id: 1,
@@ -459,7 +461,7 @@ const meepleyAPI = {
     });
   },
   updateMatchroom: (matchRoomId: number, action: string, payload?: any) => {
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const matchroom = matchRooms[matchRoomId];
 
       if (!matchroom) {
@@ -479,6 +481,7 @@ const meepleyAPI = {
           matchroom.isOn = true;
         case "finish":
           matchroom.isOn = false;
+          matchRooms = matchRooms.filter(({ id }) => id !== matchRoomId);
           break;
         default:
           break;
@@ -488,7 +491,7 @@ const meepleyAPI = {
     });
   },
   deleteMatchroom: (matchRoomId: number) => {
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const matchroom = matchRooms[matchRoomId];
 
       if (!matchroom) {

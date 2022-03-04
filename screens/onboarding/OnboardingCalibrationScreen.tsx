@@ -32,15 +32,15 @@ import Btn from "@components/common/buttons/Btn";
 import Emoji from "@components/common/Emoji";
 
 import { places } from "@services/api/meepley";
-import mapStyle from "@utils/config/googleMapsThemeConfig.json";
 import { _add } from "@utils/helpers/add";
+import mapStyle from "@utils/config/googleMapsThemeConfig.json";
 
 const steps: {
   label: string;
   title?: JSX.Element;
   description: JSX.Element;
   img?: ImageSourcePropType;
-  contents?: string[] | { name: string; emoji: JSX.Element }[];
+  contents?: (string | { name: string; emoji: JSX.Element })[];
   map?: boolean;
 }[] = [
   {
@@ -236,11 +236,8 @@ const OnboardingCalibrationScreen = () => {
 
                   {item?.contents && item.label === "experience" ? (
                     <HStack pt={4} space={2} justifyContent="space-between">
-                      {item.contents.map(
-                        (
-                          expItem: { name: string; emoji: JSX.Element },
-                          expI
-                        ) => {
+                      {item.contents.map((expItem, expI) => {
+                        if (typeof expItem !== "string") {
                           const isSelectedExp =
                             selectedFamiliarity === expItem.name;
                           return (
@@ -298,8 +295,10 @@ const OnboardingCalibrationScreen = () => {
                               </Text>
                             </Pressable>
                           );
+                        } else {
+                          return null;
                         }
-                      )}
+                      })}
                     </HStack>
                   ) : item?.contents && item.label === "genres" ? (
                     <Flex
@@ -308,17 +307,14 @@ const OnboardingCalibrationScreen = () => {
                       flexDirection="row"
                       justifyContent="space-between"
                     >
-                      {item.contents.map(
-                        (
-                          genItem: { name: string; emoji: JSX.Element },
-                          genI
-                        ) => {
+                      {item.contents.map((genItem, genI) => {
+                        if (typeof genItem !== "string") {
                           const isGenreSelected = selectedGenres.find(
-                            (genre) => genre === genItem.name
+                            (genre) => genre === genItem?.name
                           );
                           return (
                             <Pressable
-                              key={genItem.name}
+                              key={genItem?.name}
                               width="28%"
                               mb={
                                 item.contents && genI < item.contents.length - 4
@@ -329,12 +325,12 @@ const OnboardingCalibrationScreen = () => {
                                 isGenreSelected
                                   ? setSelectedGenres([
                                       ...selectedGenres.filter(
-                                        (item) => item !== genItem.name
+                                        (item) => item !== genItem?.name
                                       ),
                                     ])
                                   : setSelectedGenres([
                                       ...selectedGenres,
-                                      genItem.name,
+                                      genItem?.name,
                                     ])
                               }
                             >
@@ -372,7 +368,7 @@ const OnboardingCalibrationScreen = () => {
                                     />
                                   </Flex>
                                 )}
-                                {genItem.emoji}
+                                {genItem?.emoji}
                               </Flex>
                               <Text
                                 mt={2}
@@ -382,12 +378,14 @@ const OnboardingCalibrationScreen = () => {
                                   isGenreSelected ? "brand.500" : "gray.300"
                                 }
                               >
-                                {genItem.name}
+                                {genItem?.name}
                               </Text>
                             </Pressable>
                           );
+                        } else {
+                          return null;
                         }
-                      )}
+                      })}
                     </Flex>
                   ) : (
                     item?.contents &&
@@ -405,7 +403,11 @@ const OnboardingCalibrationScreen = () => {
                             item.contents && item.contents.length - 1;
                           return (
                             <>
-                              <Box key={dispI} mx="auto" width="70%">
+                              <Box
+                                key={`checkbox ${dispI}`}
+                                mx="auto"
+                                width="70%"
+                              >
                                 <Checkbox
                                   colorScheme="brand"
                                   value={
@@ -468,7 +470,7 @@ const OnboardingCalibrationScreen = () => {
 
                           return (
                             <Marker
-                              key={index}
+                              key={`marker ${index}`}
                               coordinate={place.latlng}
                               title={place.name}
                               description={place.name}
@@ -514,7 +516,7 @@ const OnboardingCalibrationScreen = () => {
                   <HStack pt={16} space={3} justifyContent="center">
                     {steps.map((_, dotKey) => (
                       <Pressable
-                        key={dotKey}
+                        key={`dot ${dotKey}`}
                         height="2.5"
                         width="2.5"
                         borderRadius="full"

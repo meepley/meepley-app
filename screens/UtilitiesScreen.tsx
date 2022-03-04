@@ -41,7 +41,7 @@ const UtilitiesScreen = () => {
               mt={3}
               w="45%"
               h="40"
-              bg="grays.light"
+              bg="gray.300"
               rounded="md"
               direction="column"
               justifyContent="center"

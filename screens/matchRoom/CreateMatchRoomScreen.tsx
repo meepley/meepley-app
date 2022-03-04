@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
@@ -9,148 +9,184 @@ import {
   Flex,
   Heading,
   ScrollView,
-  Text,
   VStack,
-  useClipboard,
-  useToast,
   FormControl,
   Input,
-  WarningOutlineIcon,
   Select,
   Radio,
-  CheckIcon,
   Stack,
-  Button,
   HStack,
+  Pressable,
+  Icon,
+  useToast,
 } from "native-base";
 
 import ChooseCard from "@components/screens/CreateMatchRoom/ChooseCard";
 import Btn from "@components/common/buttons/Btn";
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { Alert, BackHandler, useWindowDimensions } from "react-native";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
+import meepleyAPI from "@services/api/meepley";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@ts/types/navigation/RootStack";
 
 const CreateMatchRoomFormSchema = Yup.object().shape({
-  name: Yup.string().required(
-    "Necessita de inserir o seu email para realizar o login"
-  ),
-
-  password: Yup.string().required(
-    "Necessita de inserir a sua palavra-passe para realizar o login"
+  game: Yup.string().required("Precisas de selecionar um ou mais jogos"),
+  place: Yup.string().required("Precisas de selecionar um local"),
+  match_name: Yup.string()
+    .required("Tens de escrever um nome para a partida")
+    .min(4)
+    .max(70),
+  players_number: Yup.string().required("Precisas de uma data"),
+  date: Yup.string().required("Precisas de uma data"),
+  hour: Yup.string().required("Tens de escolher uma hora"),
+  match_privacy: Yup.string().required(
+    "É necessário especificar o tipo da partida"
   ),
 });
 
-const CreateMatchRoomScreen = () => {
+const CreateMatchRoomScreen: React.FC<
+  NativeStackScreenProps<RootStackParamList, "CreateMatch">
+> = ({ navigation }) => {
   const { height } = useWindowDimensions();
+  const toast = useToast();
+  // const [hourText, setHourText] = useState("");
+  const [didChoosePlace, setDidChoosePlace] = useState(false);
+  const [didChooseGame, setDidChooseGame] = useState(false);
+  const [didCreateRoom, setDidCreateRoom] = useState(false);
+  // const [pubPriv, setPubPriv] = React.useState("publico");
+  // const [numPessoas, setNumPessoas] = useState("");
+  // const [dataText, setDataText] = useState("");
 
-  //Nome Partida
-  let [nomePartida, setNomePartida] = React.useState("");
-
-  //Form Pessoas
-  let [numPessoas, setNumPessoas] = useState("");
-
-  //________________
-  //Form Data
-  const [dataText, setDataText] = useState("Dia");
-
+  const [isHourPickerVisible, setHourPickerVisibility] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
+  const _onCreateMatchRoomFormSubmit = async ({
+    match_name,
+    match_privacy,
+    players_number,
+    date,
+    hour,
+  }: {
+    match_name: string;
+    match_privacy: string;
+    players_number: string;
+    date: string;
+    hour: string;
+  }) => {
+    console.log("adeus");
+
+    await meepleyAPI.createMatchRoom(
+      match_name,
+      match_privacy,
+      parseInt(players_number),
+      date,
+      hour
+    );
+
+    console.log("olá");
+
+    toast.show({
+      title: "Partida criada com sucesso!",
+      status: "success",
+      description: "Bora lá aproveitar e jogar uns boardgames!",
+    });
+
+    navigation.navigate("Dashboard");
   };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
 
-  const handleConfirm = (date) => {
-    let data = date.toString();
-    setDataText(data);
-    hideDatePicker();
-  };
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
-  //_____________________
-  // Form Hora
-  const [hourText, setHourText] = useState("Hora");
-  const [isHourPickerVisible, setHourPickerVisibility] = useState(false);
-
-  const showHourPicker = () => {
-    setHourPickerVisibility(true);
-  };
-
-  const hideHourPicker = () => {
-    setHourPickerVisibility(false);
-  };
-
-  const hourConfirm = (hour) => {
-    let hora = hour.getHours() + ":" + hour.getMinutes();
-    setHourText(hora);
-    hideHourPicker();
-  };
-  //_____________________
-  //Publico/Privado
-  const [pubPriv, setPubPriv] = React.useState("publico");
-
-  //---------------------
-  const toast = useToast();
-  const { value, onCopy } = useClipboard();
-
-  const _onCreateMatchRoomFormSubmit = () => {};
-
-  //Change Local
-  let [didChoosePlace, setDidChoosePlace] = useState(false);
-  let [didChooseGame, setDidChooseGame] = useState(false);
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   return (
     <>
       <StatusBar backgroundColor="#FAFAFA" />
       <ScrollView>
-        <Box p={10} minHeight={height} backgroundColor="#FAFAFA">
-          <Stack space={4} pt={1} pb={6}>
-            <ChooseCard
-              onPressCard={() => setDidChoosePlace(!didChoosePlace)}
-              didChoose={didChoosePlace}
-              asset={
-                !didChoosePlace
-                  ? "map-marker-outline"
-                  : "https://www.eurodicas.com.br/wp-content/uploads/2021/07/universidade-de-aveiro-1200x675.jpg"
-              }
-              title={!didChoosePlace ? "Local" : "Universidade de Aveiro"}
-              text={!didChoosePlace ? "Escolhe o Local" : null}
-            />
-            <ChooseCard
-              onPressCard={() => setDidChooseGame(!didChooseGame)}
-              didChoose={didChooseGame}
-              asset={
-                !didChooseGame
-                  ? "dice-d20"
-                  : "https://www.continente.pt/on/demandware.static/-/Sites-col-master-catalog/default/dwd523a974/images/col/745/7454064-frente.jpg"
-              }
-              title={!didChooseGame ? "Jogo" : "Dixit"}
-              text={!didChooseGame ? "Escolhe um jogo para a partida" : null}
-            />
-          </Stack>
-          <Box>
-            <Heading pt={4} pb={6}>
-              Detalhes
-            </Heading>
+        <Formik
+          initialValues={{
+            place: "",
+            game: "",
+            match_name: "",
+            players_number: "",
+            date: "",
+            hour: "",
+            match_privacy: "publico",
+          }}
+          onSubmit={async (values, actions) => {
+            actions.setSubmitting(true);
+            setDidCreateRoom(true);
+            await _onCreateMatchRoomFormSubmit(values);
+          }}
+        >
+          {({
+            handleSubmit,
+            isSubmitting,
+            values,
+            errors,
+            setFieldValue,
+            handleBlur,
+          }) => {
+            return (
+              <Box p={10} minHeight={height} backgroundColor="#FAFAFA">
+                <Stack space={4} pt={1} pb={6}>
+                  {/*  <Field
+                    name="password"
+                    label="Password"
+                    type="password"
+                    component={PasswordInput}
+                    placeholder="insere a tua password"
+                  /> */}
 
-            <Formik
-              validationSchema={CreateMatchRoomFormSchema}
-              initialValues={{
-                match_name: "",
-                players_number: "",
-                date: "",
-                hour: "",
-                match_privacy: "",
-                match_difficulty: "",
-              }}
-              onSubmit={async (values, actions) => {
-                actions.setSubmitting(true);
-                await _onCreateMatchRoomFormSubmit();
-                actions.setSubmitting(false);
-              }}
-            >
-              {({ handleSubmit, isSubmitting, values }) => (
-                <>
+                  <ChooseCard
+                    onPressCard={() => {
+                      setDidChoosePlace(!didChoosePlace);
+                      setFieldValue(
+                        "place",
+                        didChooseGame ? "Universidade de Aveiro" : ""
+                      );
+                    }}
+                    didChoose={didChoosePlace}
+                    asset={
+                      !didChoosePlace
+                        ? "map-marker-outline"
+                        : "https://www.eurodicas.com.br/wp-content/uploads/2021/07/universidade-de-aveiro-1200x675.jpg"
+                    }
+                    title={!didChoosePlace ? "Local" : "Universidade de Aveiro"}
+                    text={!didChoosePlace ? "Escolhe o Local" : null}
+                  />
+
+                  <ChooseCard
+                    onPressCard={() => {
+                      setDidChooseGame(!didChooseGame);
+                      setFieldValue("game", didChooseGame ? "Dixit" : "");
+                    }}
+                    didChoose={didChooseGame}
+                    asset={
+                      !didChooseGame
+                        ? "dice-d20"
+                        : "https://www.continente.pt/on/demandware.static/-/Sites-col-master-catalog/default/dwd523a974/images/col/745/7454064-frente.jpg"
+                    }
+                    title={!didChooseGame ? "Jogo" : "Dixit"}
+                    text={
+                      !didChooseGame ? "Escolhe um jogo para a partida" : null
+                    }
+                  />
+                </Stack>
+                <Box>
+                  <Heading pt={4} pb={6}>
+                    Detalhes
+                  </Heading>
+
                   <VStack space={6} width="100%">
                     <FormControl isRequired w="100%">
                       <FormControl.Label fontWeight="bold">
@@ -158,41 +194,63 @@ const CreateMatchRoomScreen = () => {
                       </FormControl.Label>
                       <Input
                         px={4}
-                        variant={"rounded"}
-                        value={nomePartida}
-                        backgroundColor="white"
-                        onChangeText={(newValue) => setNomePartida(newValue)}
-                        isRequired={true}
                         type="text"
+                        variant="rounded"
+                        backgroundColor="white"
+                        value={values.match_name}
+                        isDisabled={isSubmitting}
+                        onBlur={() => handleBlur("match_name")}
                         placeholder="Nome da tua partida"
+                        onChangeText={(val) => setFieldValue("match_name", val)}
                       />
                     </FormControl>
 
                     <FormControl w="100%">
                       <FormControl.Label>
-                        <Heading fontSize={14}>Número de jogadores</Heading>
+                        <Heading fontSize={14}>Nrº máximo de jogadores</Heading>
                       </FormControl.Label>
                       <Select
-                        backgroundColor="white"
-                        variant={"rounded"}
-                        selectedValue={numPessoas}
                         px={4}
-                        accessibilityLabel="O número de jogadores"
-                        placeholder="Número de jogadores"
-                        _selectedItem={{
-                          bg: "brand.500",
-                          startIcon: <CheckIcon mr={2} size="4" />,
-                        }}
                         mt={1}
-                        onValueChange={(itemValue) => setNumPessoas(itemValue)}
+                        pr={10}
+                        variant="rounded"
+                        backgroundColor="white"
+                        isDisabled={isSubmitting}
+                        selectedValue={values.players_number}
+                        placeholder="Número de jogadores"
+                        accessibilityLabel="O número de jogadores"
+                        onValueChange={(itemValue) =>
+                          setFieldValue("players_number", itemValue)
+                        }
+                        _selectedItem={{
+                          color: "red.100",
+                          bg: "brand.500",
+                          startIcon: (
+                            <Icon mr={2} size={4} name="check" as={Feather} />
+                          ),
+                        }}
+                        dropdownIcon={
+                          <Icon
+                            mr={4}
+                            size={5}
+                            as={Ionicons}
+                            color="gray.300"
+                            name="chevron-down-outline"
+                          />
+                        }
                       >
-                        <Select.Item label="2" value="2" />
-                        <Select.Item label="3" value="3" />
-                        <Select.Item label="4" value="4" />
-                        <Select.Item label="5" value="5" />
-                        <Select.Item label="6" value="6" />
+                        {Array.from({ length: 7 }, (_, i) => i + 2).map(
+                          (item) => (
+                            <Select.Item
+                              key={item}
+                              label={`${item}`}
+                              value={`${item}`}
+                            />
+                          )
+                        )}
                       </Select>
                     </FormControl>
+
                     {/* <Field name="players_number" type="text" component={} /> */}
 
                     <Stack direction={"row"} mb={2.5} mt={1.5} space={3}>
@@ -200,52 +258,96 @@ const CreateMatchRoomScreen = () => {
                         <FormControl.Label textAlign={"center"}>
                           <Heading fontSize={14}>Data</Heading>
                         </FormControl.Label>
-                        <Button
-                          px={4}
-                          backgroundColor="white"
-                          variant={"ghost"}
-                          borderWidth={1}
-                          borderColor={"gray.200"}
-                          height={10}
-                          borderRadius={"3xl"}
-                          colorScheme="brand"
-                          onPress={showDatePicker}
+
+                        <Pressable
+                          onPress={() =>
+                            !isSubmitting
+                              ? setDatePickerVisibility(!isDatePickerVisible)
+                              : null
+                          }
                         >
-                          <DateTimePickerModal
-                            locale="pt_PT"
-                            isVisible={isDatePickerVisible}
-                            mode="date"
-                            onConfirm={handleConfirm}
-                            onCancel={hideDatePicker}
+                          <Input
+                            pr={4}
+                            variant="rounded"
+                            value={values.date}
+                            backgroundColor="white"
+                            isRequired={true}
+                            type="text"
+                            isReadOnly={true}
+                            placeholder="Dia da partida"
+                            InputLeftElement={
+                              <Icon
+                                ml={2}
+                                size={4}
+                                name="calendar"
+                                color="muted.300"
+                                as={MaterialCommunityIcons}
+                              />
+                            }
                           />
-                          <Text>{dataText}</Text>
-                        </Button>
+                        </Pressable>
+
+                        <DateTimePickerModal
+                          locale="pt_PT"
+                          isVisible={isDatePickerVisible}
+                          mode="date"
+                          onConfirm={(date) => {
+                            const parseDate = date.toLocaleDateString("pt-PT");
+                            setFieldValue("date", parseDate);
+                            setDatePickerVisibility(false);
+                          }}
+                          onCancel={() =>
+                            setDatePickerVisibility(!isDatePickerVisible)
+                          }
+                        />
                       </FormControl>
 
                       <FormControl width={"50%"}>
                         <FormControl.Label textAlign={"center"}>
                           <Heading fontSize={14}>Hora</Heading>
                         </FormControl.Label>
-                        <Button
-                          px={4}
-                          backgroundColor="white"
-                          variant={"ghost"}
-                          borderWidth={1}
-                          borderColor={"gray.200"}
-                          height={10}
-                          borderRadius={"3xl"}
-                          colorScheme="brand"
-                          onPress={showHourPicker}
+
+                        <Pressable
+                          onPress={() =>
+                            !isSubmitting
+                              ? setHourPickerVisibility(!isHourPickerVisible)
+                              : null
+                          }
                         >
-                          <DateTimePickerModal
-                            locale="pt_PT"
-                            isVisible={isHourPickerVisible}
-                            mode="time"
-                            onConfirm={hourConfirm}
-                            onCancel={hideHourPicker}
+                          <Input
+                            pr={4}
+                            type="text"
+                            isReadOnly={true}
+                            isRequired={true}
+                            variant="rounded"
+                            value={values.hour}
+                            backgroundColor="white"
+                            placeholder="Hora da partida"
+                            InputLeftElement={
+                              <Icon
+                                ml={2}
+                                size={4}
+                                color="muted.300"
+                                name="clock-outline"
+                                as={MaterialCommunityIcons}
+                              />
+                            }
                           />
-                          <Text>{hourText}</Text>
-                        </Button>
+                        </Pressable>
+
+                        <DateTimePickerModal
+                          mode="time"
+                          locale="pt_PT"
+                          onConfirm={(hour) => {
+                            const parseHour = `${hour.getHours()} : ${hour.getMinutes()}`;
+                            setFieldValue("hour", parseHour);
+                            setHourPickerVisibility(false);
+                          }}
+                          isVisible={isHourPickerVisible}
+                          onCancel={() =>
+                            setHourPickerVisibility(!isHourPickerVisible)
+                          }
+                        />
                       </FormControl>
                     </Stack>
 
@@ -256,62 +358,52 @@ const CreateMatchRoomScreen = () => {
                         <Heading fontSize={14}>Tipo de Partida</Heading>
                       </FormControl.Label>
                       <Radio.Group
-                        name="tipoPartida"
+                        name="match_privacy"
                         accessibilityLabel="tipo de partida"
-                        defaultValue={"publico"}
-                        onChange={(newValue) => setPubPriv(newValue)}
-                        value={pubPriv}
+                        defaultValue="publico"
+                        onChange={(newValue) =>
+                          setFieldValue("match_privacy", newValue)
+                        }
+                        value={values.match_privacy}
                       >
                         <HStack mt={2} space={4} w="100%">
-                          <Radio size="sm" colorScheme="brand" value="publico">
+                          <Radio
+                            size="sm"
+                            colorScheme="brand"
+                            value="publico"
+                            isDisabled={isSubmitting}
+                          >
                             Pública
                           </Radio>
-                          <Radio size="sm" colorScheme="brand" value="privado">
+                          <Radio
+                            size="sm"
+                            colorScheme="brand"
+                            value="privado"
+                            isDisabled={isSubmitting}
+                          >
                             Privada
                           </Radio>
                         </HStack>
                       </Radio.Group>
                     </FormControl>
-
-                    {/* <Field name="match_privacy" type="text" component={} /> */}
-                    {/* <Field name="match_difficulty" type="text" component={} /> */}
                   </VStack>
 
-                  <Stack py={6} space={2}>
-                    <Text
-                      underline
-                      color="brand.600"
-                      textAlign="center"
-                      onPress={() => onCopy("asd")}
-                    >
-                      Copiar código de convite
-                    </Text>
-                    <Text
-                      underline
-                      color="brand.600"
-                      textAlign="center"
-                      onPress={() => null}
-                    >
-                      Convidar conexões
-                    </Text>
-                  </Stack>
-                  <Flex direction="row" justifyContent="center">
+                  <Flex pt={10} direction="row" justifyContent="center">
                     <Btn
                       minWidth={40}
                       width={40}
                       variant="solid"
-                      isDisabled={isSubmitting}
                       isLoading={isSubmitting}
-                      onPress={() => handleSubmit}
+                      onPress={handleSubmit as (values: any) => void}
                     >
                       Criar Partida
                     </Btn>
                   </Flex>
-                </>
-              )}
-            </Formik>
-          </Box>
-        </Box>
+                </Box>
+              </Box>
+            );
+          }}
+        </Formik>
       </ScrollView>
     </>
   );

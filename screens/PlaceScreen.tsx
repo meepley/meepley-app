@@ -34,7 +34,12 @@ const PlaceScreen: React.FC<PlaceProps> = ({ route, navigation }) => {
     <SafeAreaView>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => null} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => null}
+            tintColor="#A69BEA"
+            colors={["#A69BEA"]}
+          />
         }
       >
         {/* Place Image Section + Transparent Header */}
@@ -48,10 +53,10 @@ const PlaceScreen: React.FC<PlaceProps> = ({ route, navigation }) => {
         </Box>
 
         <Flex
+          mt="-20"
           bgColor="white"
           borderTopRadius="50"
           minHeight={height * 0.6}
-          mt="-20"
         >
           {/* Place Details Section */}
           <Box p={10}>

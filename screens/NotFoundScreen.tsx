@@ -1,16 +1,17 @@
-import * as React from "react";
-import { ScrollView } from "native-base";
+import React from "react";
+import { Box, ScrollView } from "native-base";
 
-import Container from "@components/common/Container";
 import Error from "@components/feedback/Error";
+import { useWindowDimensions } from "react-native";
 
 const NotFoundScreen = () => {
+  const { height } = useWindowDimensions();
   return (
-    <Container>
-      <ScrollView>
+    <ScrollView>
+      <Box bg="white" minH={height}>
         <Error type="400" />
-      </ScrollView>
-    </Container>
+      </Box>
+    </ScrollView>
   );
 };
 

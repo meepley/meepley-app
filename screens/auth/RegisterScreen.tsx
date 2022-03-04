@@ -18,6 +18,7 @@ import {
   Flex,
   VStack,
   Image,
+  Center,
 } from "native-base";
 
 import Container from "@components/common/Container";

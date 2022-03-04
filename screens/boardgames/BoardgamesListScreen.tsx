@@ -48,7 +48,12 @@ const BoardgamesListScreen = () => {
 
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => null} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => null}
+            tintColor="#A69BEA"
+            colors={["#A69BEA"]}
+          />
         }
       >
         <Box minHeight={height} backgroundColor="#FAFAFA">

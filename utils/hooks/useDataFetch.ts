@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const useApiRequest = (req: () => Promise<void>, onMount: boolean) => {
+const useDataFetch = (req: (() => Promise<void>)[], onMount: boolean) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -10,7 +10,9 @@ const useApiRequest = (req: () => Promise<void>, onMount: boolean) => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        await req();
+        for (const item of req) {
+          await item();
+        }
         setIsLoading(false);
       } catch (err) {
         setIsLoading(false);
@@ -26,7 +28,14 @@ const useApiRequest = (req: () => Promise<void>, onMount: boolean) => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      await req();
+      console.log("TESTE");
+
+      console.log(req);
+
+      for (const item of req) {
+        await item();
+      }
+
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
@@ -39,4 +48,4 @@ const useApiRequest = (req: () => Promise<void>, onMount: boolean) => {
   return { error, isLoading, fetchData } as const;
 };
 
-export default useApiRequest;
+export default useDataFetch;

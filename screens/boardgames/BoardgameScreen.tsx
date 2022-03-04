@@ -5,9 +5,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@ts/types/navigation/RootStack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MotiView, AnimatePresence } from "moti";
+import { WebView } from "react-native-webview";
+import { useSnapshot } from "valtio";
 
 import {
   Box,
+  Divider,
   Flex,
   Heading,
   HStack,
@@ -17,14 +20,15 @@ import {
   ScrollView,
   Text,
 } from "native-base";
-import { EvilIcons } from "@expo/vector-icons";
+import { EvilIcons, Ionicons } from "@expo/vector-icons";
 
 import Btn from "@components/common/buttons/Btn";
 import TextWithIcon from "@components/common/TextWithIcon";
 import TransparentHeader from "@components/common/navigation/TransparentHeader";
+import Emoji from "@components/common/Emoji";
+
 import openUrl from "@utils/helpers/openUrl";
 import { regexHtml } from "@utils/helpers/regex";
-import { useSnapshot } from "valtio";
 import authStore from "@services/store/authStore";
 
 type TBoardgameScreenProps = NativeStackScreenProps<
@@ -35,7 +39,7 @@ type TBoardgameScreenProps = NativeStackScreenProps<
 const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
   const { height } = useWindowDimensions();
   const { boardgameId, boardgame, boardgameGenres } = route.params;
-  const { isAuth } = useSnapshot(authStore);
+  const { isAuth, user } = useSnapshot(authStore);
   const [section, setSection] = useState("Detalhes");
 
   const genres = [
@@ -119,7 +123,19 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                   size="sm"
                   rounded="full"
                   backgroundColor="gray.100"
-                  icon={<Icon as={EvilIcons} name="heart" color="lRed.400" />}
+                  icon={
+                    <Icon
+                      as={Ionicons}
+                      name={
+                        user?.favorite_games.find(
+                          (item) => item === boardgame.name
+                        )
+                          ? "heart-outline"
+                          : "heart"
+                      }
+                      color="lRed.400"
+                    />
+                  }
                 />
               ) : null}
 
@@ -130,14 +146,14 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                   backgroundColor="gray.100"
                   icon={<Icon as={EvilIcons} name="external-link" />}
                   onPress={() =>
-                    boardgame.official_url && openUrl(boardgame.official_url)
+                    boardgame?.official_url && openUrl(boardgame.official_url)
                   }
                 />
               ) : null}
             </HStack>
 
             <HStack pt={4} pb={8} space={2}>
-              {["Detalhes", "FAQ / Regras"].map((item, i) => (
+              {["Detalhes", "Regras / FAQ"].map((item, i) => (
                 <Btn
                   key={i}
                   height={10}
@@ -209,17 +225,46 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                   </Box>
                 ) : (
                   <Box>
-                    {boardgame.rules_url && (
+                    {boardgame?.rules_url ? (
                       <Btn
+                        variant="solid"
+                        colorScheme="brand"
                         onPress={() =>
                           boardgame.rules_url && openUrl(boardgame.rules_url)
                         }
                       >
-                        Podes verificar as regras detalhadamente ao carregar
-                        aqui
+                        Ficheiro com regras
                       </Btn>
+                    ) : (
+                      <Text>
+                        Este jogo de tabuleiro não tem nenhum externo que remete
+                        para as suas regras <Emoji size={14}>😥</Emoji>
+                      </Text>
                     )}
-                    {boardgame.faq && boardgame.faq}
+
+                    <Divider my={8} />
+
+                    <Heading mb={2}>FAQ</Heading>
+                    {boardgame?.faq ? (
+                      <WebView
+                        originWhitelist={["*"]}
+                        source={{
+                          html: boardgame.faq,
+                        }}
+                      />
+                    ) : (
+                      <Text>
+                        Este jogo de tabuleiro não possuí uma secção de FAQ{" "}
+                        <Emoji size={14}>😥</Emoji>
+                      </Text>
+                    )}
+
+                    <Divider mb={8} />
+
+                    {/* 
+                    <Heading>Vídeos</Heading>
+                    <Box></Box> 
+                    */}
                   </Box>
                 )}
               </MotiView>
