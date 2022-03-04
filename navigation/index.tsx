@@ -1,29 +1,37 @@
-/**
- * If you are not familiar with React Navigation, refer to the "Fundamentals" guide:
- * https://reactnavigation.org/docs/getting-started
- *
- */
-import { FontAwesome } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import React from "react";
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
-import LinkingConfiguration from './LinkingConfiguration';
+import { NavigationContainer } from "@react-navigation/native";
+import { getHeaderTitle } from "@react-navigation/elements";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useSnapshot } from "valtio";
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+import LinkingConfiguration from "./LinkingConfiguration";
+import { RootStackParamList } from "@ts/types/navigation/RootStack";
+
+/* screens */
+import PlaceScreen from "@screens/PlaceScreen";
+import ChatScreen from "@screens/ChatScreen";
+import LoginScreen from "@screens/auth/LoginScreen";
+import RegisterScreen from "@screens/auth/RegisterScreen";
+import ProfileScreen from "@screens/ProfileScreen";
+import BoardgamesListScreen from "@screens/boardgames/BoardgamesListScreen";
+import CreateMatchRoomScreen from "@screens/matchRoom/CreateMatchRoomScreen";
+import BoardgameScreen from "@screens/boardgames/BoardgameScreen";
+import OnboardingCalibration from "@screens/onboarding/OnboardingCalibrationScreen";
+import OnboardingInitial from "@screens/onboarding/OnboardingInitialScreen";
+import UtilitiesScreen from "@screens/UtilitiesScreen";
+import SettingsScreen from "@screens/SettingsScreen";
+import NotFoundScreen from "@screens/NotFoundScreen";
+import DashboardScreen from "@screens/DashboardScreen";
+import MatchRoomScreen from "@screens/matchRoom/MatchRoomScreen";
+
+import LogoTitle from "@components/common/LogoTitle";
+import AppHeader from "@components/common/navigation/Header";
+import authStore from "@services/store/authStore";
+
+export default function Navigation() {
   return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <NavigationContainer linking={LinkingConfiguration}>
       <RootNavigator />
     </NavigationContainer>
   );
@@ -36,72 +44,129 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-    </Stack.Navigator>
-  );
-}
-
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
-
-function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
+  const { isAuth, user } = useSnapshot(authStore);
 
   return (
-    <BottomTab.Navigator
-      initialRouteName="TabOne"
+    <Stack.Navigator
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
-      <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
-      />
-      <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        header: ({ navigation, route, options, back }) => {
+          const title = getHeaderTitle(options, route.name);
+
+          return (
+            <AppHeader
+              navigation={navigation}
+              options={options}
+              back={back}
+              title={title}
+              isAuth={isAuth}
+            />
+          );
+        },
+      }}
+    >
+      {isAuth ? (
+        // Screens for logged in users
+        <Stack.Group>
+          {!user?.did_finish_calibration ? (
+            <Stack.Screen
+              name="CalibrationOnboarding"
+              component={OnboardingCalibration}
+              options={{
+                headerTitle: (props) => <LogoTitle />,
+              }}
+            />
+          ) : null}
+
+          <Stack.Screen
+            name="Dashboard"
+            component={DashboardScreen}
+            options={{
+              headerBackVisible: false,
+              headerTitle: (props) => <LogoTitle />,
+            }}
+          />
+          <Stack.Screen
+            name="Place"
+            component={PlaceScreen}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="CreateMatch"
+            component={CreateMatchRoomScreen}
+            options={{ title: "Criar partida", headerBackVisible: true }}
+          />
+          <Stack.Screen
+            name="MatchRoom"
+            component={MatchRoomScreen}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{ title: "@martasilva95", headerBackVisible: true }}
+          />
+          <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={{ title: "Chat", headerBackVisible: true }}
+          />
+          <Stack.Screen
+            name="Settings"
+            component={SettingsScreen}
+            options={{ title: "Definições", headerBackVisible: true }}
+          />
+          {/* <Stack.Group screenOptions={{ presentation: "modal" }}></Stack.Group> */}
+        </Stack.Group>
+      ) : (
+        // Auth screens
+        <Stack.Group screenOptions={{ headerShown: false }}>
+          <Stack.Screen
+            name="InitialOnboarding"
+            component={OnboardingInitial}
+          />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+        </Stack.Group>
+      )}
+
+      <Stack.Screen
+        name="BoardgamesList"
+        component={BoardgamesListScreen}
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerTitle: () => <LogoTitle />,
+          headerBackVisible: true,
         }}
       />
-    </BottomTab.Navigator>
-  );
-}
+      <Stack.Screen
+        name="Boardgame"
+        component={BoardgameScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Utilities"
+        component={UtilitiesScreen}
+        options={{
+          headerTitle: () => <LogoTitle />,
+          headerBackVisible: true,
+        }}
+      />
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+      <Stack.Screen
+        name="NotFound"
+        component={NotFoundScreen}
+        options={{ title: "Oops!" }}
+      />
+
+      {/* Common modal screens */}
+      {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
+        <Stack.Screen name="Modal" component={ModalScreen} />
+      </Stack.Group> */}
+    </Stack.Navigator>
+  );
 }
