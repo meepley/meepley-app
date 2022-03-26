@@ -64,8 +64,10 @@ const DashboardScreen = () => {
       >
         {/* Matchroom Section */}
         <Box px={10} pt={8} pb={4}>
-          <Heading pb={2}>Partidas abertas</Heading>
-          <Text fontSize={13}>
+          <Heading accessibilityRole="header" pb={2}>
+            Partidas abertas
+          </Heading>
+          <Text accessibilityRole="text" fontSize={13}>
             Começa já a jogar ao encontrar uma partida ideal para ti!{" "}
             <Emoji size={15}>🎲</Emoji>
           </Text>
@@ -81,7 +83,9 @@ const DashboardScreen = () => {
 
         {/* Map with Places Section */}
         <Box px={10} pb={40} pt={8}>
-          <Heading pb={2}>Locais para jogar</Heading>
+          <Heading accessibilityRole="header" pb={2}>
+            Locais para jogar
+          </Heading>
 
           {isLoading ? (
             <Loading />
@@ -89,7 +93,7 @@ const DashboardScreen = () => {
             <Error type="500" />
           ) : (
             <>
-              <Text fontSize={13}>
+              <Text accessibilityRole="text" fontSize={13}>
                 Explora a seleção de locais de referência para jogares em
                 Aveiro! <Emoji size={15}>🗺️</Emoji>
               </Text>
@@ -154,7 +158,7 @@ const DashboardScreen = () => {
                   })}
                 </MapView>
               </Box>
-              <Text fontSize={13} pt={8}>
+              <Text accessibilityRole="text" fontSize={13} pt={8}>
                 Sabias que ao jogar boardgames em Aveiro estás a ajudar a cidade
                 para a sua candidatura a Capital Europeia da Cultura em 2027?{" "}
                 <Emoji size={15}>😊</Emoji>{" "}
@@ -164,6 +168,8 @@ const DashboardScreen = () => {
                   fontSize={11}
                   color="brand.600"
                   textAlign="center"
+                  accessibilityRole="link"
+                  accessibilityHint="Abre o link da página da Capital de Cultura de Aveiro de 2027"
                 >
                   (saber mais)
                 </Text>

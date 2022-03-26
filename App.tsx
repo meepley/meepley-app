@@ -19,11 +19,11 @@ import {
 import AppLoading from "expo-app-loading";
 import { NativeBaseProvider } from "native-base";
 
-import Navigation from "@navigation/index";
 import { nbConfig } from "@utils/config/nativeBaseConfig";
 import theme from "@theme/index";
 import { useSnapshot } from "valtio";
 import authStore from "@services/store/authStore";
+import Navigation from "@navigation/";
 
 export default function App() {
   const { hydrateState, hydrated } = useSnapshot(authStore);

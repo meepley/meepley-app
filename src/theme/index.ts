@@ -98,7 +98,7 @@ const theme = extendTheme({
     Input: {
       baseStyle: {
         _focus: {
-          borderColor: "#A7C957",
+          borderColor: "lGreen.500",
         },
       },
     },

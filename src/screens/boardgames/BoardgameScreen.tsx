@@ -60,6 +60,8 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
           <Box height={height * 0.4}>
             <TransparentHeader />
             <Image
+              accessibilityRole="image"
+              accessibilityLabel="image"
               source={{
                 uri: boardgame.image_url,
               }}

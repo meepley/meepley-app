@@ -40,13 +40,15 @@ const BoardgameCard: React.FC<{
     >
       <Box>
         <Image
+          w="full"
+          h="40"
+          accessibilityRole="image"
+          accessibilityLabel="image"
+          alt={`${name} Image`}
+          resizeMode="cover"
           source={{
             uri: img,
           }}
-          alt={`${name} Image`}
-          w="full"
-          resizeMode="cover"
-          h="40"
         />
       </Box>
       <Stack p={6} space={3}>

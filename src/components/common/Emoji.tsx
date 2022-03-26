@@ -22,6 +22,8 @@ const Emoji: React.VFC<TextProps & TwemojiTextProps> = ({
       <Image
         key={`emoji-${i}`}
         testID={emoji}
+        accessibilityRole="image"
+        accessibilityLabel="image"
         style={{
           width: size ?? 14,
           height: size ?? 14,

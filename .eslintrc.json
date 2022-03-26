@@ -19,6 +19,18 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "path": ["src"],
+        "extensions": [".ts", ".tsx"]
+      },
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+      // 'babel-module': {},
+    }
+  },
   "rules": {
     "import/no-unresolved": 0,
     "react/jsx-filename-extension": [

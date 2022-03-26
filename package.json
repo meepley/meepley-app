@@ -57,7 +57,7 @@
     "react-native-svg": "12.1.1",
     "react-native-web": "0.17.1",
     "react-native-webview": "11.15.0",
-    "react-query": "^3.34.12",
+    "react-query": "^3.34.16",
     "react-string-replace": "^0.4.4",
     "twemoji": "^13.1.0",
     "valtio": "^1.2.11",

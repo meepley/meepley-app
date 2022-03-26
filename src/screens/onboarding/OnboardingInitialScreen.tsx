@@ -127,6 +127,8 @@ const OnboardingInitialScreen = () => {
                 >
                   <Box h="100%" zIndex="-1">
                     <ImageBackground
+                      accessibilityRole="image"
+                      accessibilityLabel="image"
                       resizeMode="cover"
                       style={{ width: "100%", height: "100%" }}
                       source={item.img}

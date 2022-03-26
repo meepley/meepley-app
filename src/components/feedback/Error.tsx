@@ -63,7 +63,11 @@ const Error: React.FC<{ type: string }> = ({ type }) => {
       alignItems="center"
       _text={{ textAlign: "center" }}
     >
-      <Image source={errorImgs[randomImg]} />
+      <Image
+        accessibilityRole="image"
+        accessibilityLabel="image"
+        source={errorImgs[randomImg]}
+      />
       <Heading pb={4}>Ops!</Heading>
       <Text pb={4}>{err.text}</Text>
       <Text pb={6}>{err.subText}</Text>

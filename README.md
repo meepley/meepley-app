@@ -19,9 +19,13 @@ O MeePley tem como objetivo estimular o crescimento da comunidade de boardgames 
 
 ### Installing and executing app
 
+You need node.js and yarn on your machine. Also expo-cli, if you don't have expo-cli - npm i -g expo-cli
+
+```bash
+$ yarn install && expo start
 ```
-yarn install && expo start
-```
+
+Then install Expo App in your phone and scan the QRCode presented on the console
 
 ## Authors
 

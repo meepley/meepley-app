@@ -41,6 +41,8 @@ const MatchRoomCard: React.FC<{
           w="full"
           alt={item.name}
           borderTopRadius="40"
+          accessibilityRole="image"
+          accessibilityLabel="image"
           source={{
             uri: item.img,
           }}

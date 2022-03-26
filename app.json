@@ -4,11 +4,11 @@
     "slug": "meepley-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/branding/logo-compact.png",
+    "icon": "./src/assets/images/branding/logo-compact.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/branding/splash.png",
+      "image": "./src/assets/images/branding/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -21,12 +21,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/branding/logo-compact.png",
+        "foregroundImage": "./src/assets/images/branding/logo-compact.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/images/branding/favicon.png"
+      "favicon": "./src/assets/images/branding/favicon.png"
     },
     "packagerOpts": {
       "sourceExts": ["cjs"]
