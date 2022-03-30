@@ -1,6 +1,6 @@
 # MeePley
 
-![MeePley](/assets/images/branding/logo-w-slogan.png)
+![MeePley](/src/assets/images/branding/logo-w-slogan.png)
 
 Meepley é uma aplicação de encontro e marcação de partidas de jogos de tabuleiro em Aveiro
 
