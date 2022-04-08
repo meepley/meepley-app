@@ -16,11 +16,12 @@ const EmailInput: React.FC<FieldProps> = (props) => {
         isInvalid={feedbackInvalid}
         type="email"
         variant="underlined"
-        placeholder="insere o teu email"
+        placeholder="o teu email"
         keyboardType="email-address"
         textContentType="emailAddress"
         autoCompleteType="email"
         autoCapitalize="none"
+        fontSize="sm"
       />
 
       {feedbackInvalid && (

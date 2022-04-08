@@ -19,13 +19,13 @@ const Achievement: React.FC<{
       bgColor="white"
       marginBottom={4}
       borderColor="gray.100"
+      onPress={() => openAchievementCallback()}
       style={{
         elevation: 5,
         height: 90,
         borderRadius: 35,
         shadowColor: "rgba(40,40,40,0.78)",
       }}
-      onPress={() => openAchievementCallback()}
     >
       <Flex
         w="100%"
@@ -38,15 +38,10 @@ const Achievement: React.FC<{
           <Icon size="6" name="staro" color="white" as={AntDesign} />
         </Center>
         <Box w="72%">
-          <Heading pb="0.5" fontSize={16} numberOfLines={1}>
+          <Text fontSize="lg" fontWeight="bold" numberOfLines={1}>
             {title}
-          </Heading>
-          <Text
-            fontSize="xs"
-            color="gray.400"
-            fontWeight="light"
-            numberOfLines={1}
-          >
+          </Text>
+          <Text color="gray.400" fontWeight="light" numberOfLines={1}>
             {text}
           </Text>
         </Box>

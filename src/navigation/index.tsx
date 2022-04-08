@@ -25,8 +25,8 @@ import NotFoundScreen from "@screens/NotFoundScreen";
 import DashboardScreen from "@screens/DashboardScreen";
 import MatchRoomScreen from "@screens/matchRoom/MatchRoomScreen";
 
-import LogoTitle from "@components/common/LogoTitle";
-import AppHeader from "@components/common/navigation/Header";
+import LogoTitle from "@components/common/nav/LogoTitleHeader";
+import AppHeader from "@components/common/nav/Header";
 import authStore from "@services/store/authStore";
 
 export default function Navigation() {

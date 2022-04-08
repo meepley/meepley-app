@@ -27,13 +27,14 @@ const PasswordInput: React.FC<PasswordInputProps> = (props) => {
         placeholder={props?.placeholder}
         onChangeText={props?.form.handleChange(props?.field.name)}
         onBlur={props?.form.handleBlur(props?.field.name)}
+        fontSize="sm"
         InputRightElement={
           <Icon
-            onPress={handleClick}
-            as={<MaterialIcons name="visibility-off" />}
-            size={5}
             mr="2"
+            size={5}
             color="muted.400"
+            onPress={handleClick}
+            as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />}
           />
         }
       />

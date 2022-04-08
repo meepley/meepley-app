@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useWindowDimensions } from "react-native";
 
-import { widthPer } from "@utils/helpers/wp";
+import { widthPer } from "@utils/helpers/misc/widthPercentage";
 import MatchRoomCard from "@components/common/MatchRoomCard";
 import { IMatchRoom } from "@ts/interfaces/IMatchRoom";
 
@@ -18,7 +18,8 @@ const MatchRoomCarousel: React.FC<{
   const slideWidth = widthPer(55, viewportWidth);
   const itemHorizontalMargin = widthPer(2, viewportWidth);
   const sliderWidth = viewportWidth;
-  const itemWidth = slideWidth + itemHorizontalMargin * 2;
+  const itemWidth = 250;
+  console.log(slideWidth + itemHorizontalMargin * 2);
   let sliderRef;
 
   return (
@@ -41,12 +42,9 @@ const MatchRoomCarousel: React.FC<{
         }}
         sliderWidth={sliderWidth}
         itemWidth={itemWidth}
-        hasParallaxImages={true}
         firstItem={1}
         inactiveSlideScale={0.8}
         inactiveSlideOpacity={0.4}
-        loop={true}
-        loopClonesPerSide={2}
         autoplay={false}
         onSnapToItem={(index) => setSliderActiveItem(index)}
       />
@@ -58,7 +56,12 @@ const MatchRoomCarousel: React.FC<{
           dotColor="#A69BEA"
           inactiveDotColor="rgba(78, 78, 78, 0.92)"
           inactiveDotOpacity={0.4}
-          inactiveDotScale={0.6}
+          inactiveDotScale={0.8}
+          dotStyle={{
+            width: 20,
+            height: 20,
+            borderRadius: 20,
+          }}
           carouselRef={sliderRef}
           tappableDots={!!sliderRef}
         />

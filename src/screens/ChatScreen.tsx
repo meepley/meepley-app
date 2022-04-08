@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex, Heading } from "native-base";
 
-import BottomTab from "@components/common/navigation/BottomTab";
+import BottomTab from "@components/common/nav/BottomTab";
 import Emoji from "@components/common/Emoji";
 
 const ChatScreen = () => {

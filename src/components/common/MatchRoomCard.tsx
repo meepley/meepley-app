@@ -17,25 +17,13 @@ const MatchRoomCard: React.FC<{
 
   return (
     <Pressable
+      my="4"
       key={index}
-      mx={1}
+      height="330"
+      accessibilityRole="button"
       onPress={() => navigation.navigate("MatchRoom", { matchRoom: item })}
     >
-      <Box
-        my={4}
-        borderRadius="40"
-        bgColor={bgColor}
-        style={
-          isActive
-            ? {
-                elevation: 5,
-                shadowRadius: 5,
-                shadowColor: "#000",
-                shadowOffset: { width: 4, height: 4 },
-              }
-            : null
-        }
-      >
+      <Box height="full" borderRadius="40" bgColor={bgColor}>
         <Image
           h="170"
           w="full"
@@ -50,7 +38,6 @@ const MatchRoomCard: React.FC<{
         <Box px={6} pt={4} pb={6}>
           <Text
             pb={2}
-            fontSize={13}
             color="white"
             fontWeight={700}
             numberOfLines={1}
@@ -67,13 +54,13 @@ const MatchRoomCard: React.FC<{
               as={Ionicons}
               name="location-outline"
             />
-            <Text fontSize={11} color="white" style={styles.textWithShadow}>
+            <Text color="white" style={styles.textWithShadow}>
               {item.place.name}
             </Text>
           </Flex>
 
           <Flex flexDirection="row">
-            <Text pr={1} pb={2} fontSize={11} style={styles.textWithShadow}>
+            <Text pr={1} pb={2} style={styles.textWithShadow}>
               <Icon
                 size="4"
                 color="white"
@@ -81,7 +68,7 @@ const MatchRoomCard: React.FC<{
                 name="calendar-blank-outline"
               />
             </Text>
-            <Text fontSize={11} color="white" style={styles.textWithShadow}>
+            <Text color="white" style={styles.textWithShadow}>
               {item.date + " às " + item.hour}
             </Text>
           </Flex>

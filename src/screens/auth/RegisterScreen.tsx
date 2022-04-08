@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Field, Formik } from "formik";
-import * as Yup from "yup";
 
 import {
   Box,
@@ -26,22 +25,7 @@ import Btn from "@components/common/buttons/Btn";
 import PasswordInput from "@components/common/forms/PasswordInput";
 import EmailInput from "@components/common/forms/EmailInput";
 import SpeechBubbleBtn from "@components/common/buttons/SpeechBubbleBtn";
-
-const RegisterSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Email inválido")
-    .required("Necessitas de inserir o seu email para realizar o registo"),
-  password: Yup.string()
-    .required(
-      "Necessitas de inserir a sua palavra-passe para realizar o registo"
-    )
-    .min(8, "A tua password tem de ter pelo menos oito caracteres"),
-  passwordConfirmation: Yup.string()
-    .required(
-      "Necessitas de inserir a sua password novamente para realizar o registo"
-    )
-    .oneOf([Yup.ref("password"), null], "As passwords têm de ser iguais"),
-});
+import registerSchema from "@utils/helpers/validation/registerSchema";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -68,7 +52,7 @@ const RegisterScreen = () => {
   return (
     <Container>
       <ScrollView>
-        <Box position="absolute" top="5" left="250">
+        <Box position="absolute" top="4" left="320">
           <Image
             alt="First Meeple"
             resizeMode="contain"
@@ -87,7 +71,7 @@ const RegisterScreen = () => {
             source={require("@assets/images/meeples/meeple.png")}
           />
         </Box>
-        <Box position="absolute" top="250" left="280">
+        <Box position="absolute" top="280" left="280">
           <Image
             alt="Third Meeple"
             resizeMode="contain"
@@ -99,7 +83,7 @@ const RegisterScreen = () => {
           />
         </Box>
         <Flex
-          p={16}
+          p="12"
           h="500"
           w="full"
           direction="column"
@@ -128,7 +112,7 @@ const RegisterScreen = () => {
             <Image
               alt="Aveiro 2027 Logo"
               resizeMode="contain"
-              style={{ width: 100, height: 60 }}
+              style={{ width: 120, height: 60 }}
               source={require("@assets/images/branding/aveiro-full-white.png")}
             />
           </Center>
@@ -143,7 +127,7 @@ const RegisterScreen = () => {
           <Box p={12}>
             <Heading pb={6}>Registo</Heading>
             <Formik
-              validationSchema={RegisterSchema}
+              validationSchema={registerSchema}
               initialValues={{
                 email: "",
                 password: "",
@@ -250,7 +234,11 @@ const RegisterScreen = () => {
             <SpeechBubbleBtn
               color="lYellow.500"
               direction="left"
-              onNavigate={() => navigation.navigate("BoardgamesList")}
+              onNavigate={() =>
+                navigation.navigate("BoardgamesList", {
+                  previousRoute: "Login",
+                })
+              }
             >
               <FontAwesome5 name="dice-d20" size={24} color="white" />
               <Text textAlign="center" pt={2} color="white">

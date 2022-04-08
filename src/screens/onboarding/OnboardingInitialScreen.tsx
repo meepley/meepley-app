@@ -18,7 +18,7 @@ import {
 import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
 import Emoji from "@components/common/Emoji";
-import openUrl from "@utils/helpers/openUrl";
+import openUrl from "@utils/helpers/misc/openUrl";
 
 const steps = [
   {
@@ -78,16 +78,17 @@ const steps = [
       <>
         Joga connosco boardgames e partilha a candidatura de Aveiro a Capital
         Europeia da Cultura em 2027! <Emoji>🌟</Emoji>{" "}
-        <Text
-          mt={2}
-          underline
-          fontSize={11}
-          color="brand.600"
-          textAlign="center"
-          onPress={async () => await openUrl("https://aveiro2027.pt")}
-        >
-          (saber mais)
-        </Text>
+        <Pressable onPress={async () => await openUrl("https://aveiro2027.pt")}>
+          <Text
+            mt={2}
+            underline
+            fontSize={14}
+            color="brand.600"
+            textAlign="center"
+          >
+            (saber mais)
+          </Text>
+        </Pressable>
       </>
     ),
     img: require("@assets/images/onboarding/gt6.jpg"),
@@ -141,8 +142,8 @@ const OnboardingInitialScreen = () => {
                     {steps.map((_, dotKey) => (
                       <Pressable
                         key={dotKey}
-                        height="2.5"
-                        width="2.5"
+                        height="3.5"
+                        width="3.5"
                         borderRadius="full"
                         backgroundColor={
                           dotKey === key ? "brand.500" : "gray.300"

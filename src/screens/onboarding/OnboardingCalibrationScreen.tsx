@@ -32,7 +32,7 @@ import Btn from "@components/common/buttons/Btn";
 import Emoji from "@components/common/Emoji";
 
 import { places } from "@services/api/meepley";
-import { _add } from "@utils/helpers/add";
+import { _add } from "@utils/helpers/main/add";
 import mapStyle from "@utils/config/googleMapsThemeConfig.json";
 
 const steps: {
@@ -56,7 +56,7 @@ const steps: {
         <Text textAlign="left">
           Vamos fazer-te algumas perguntas para podermos personalizar o MeePley
           tendo em conta as tuas preferências.{"\n"} Os dados guardados das tuas
-          preferência não serão visivéis para ninguém
+          preferências não serão visivéis para ninguém
         </Text>
       </>
     ),
@@ -82,15 +82,15 @@ const steps: {
     ),
     description: <>Seleciona os teus géneros de jogos favoritos!</>,
     contents: [
-      { name: "Ação", emoji: <Emoji size={30}>⚔️</Emoji> },
-      { name: "Clássico", emoji: <Emoji size={30}>♟️</Emoji> },
-      { name: "Fantasia", emoji: <Emoji size={30}>🦄</Emoji> },
-      { name: "Magia", emoji: <Emoji size={30}>🔮</Emoji> },
-      { name: "Medieval", emoji: <Emoji size={30}>👑</Emoji> },
-      { name: "Mistério", emoji: <Emoji size={30}>🔍</Emoji> },
-      { name: "Cooperativo", emoji: <Emoji size={30}>🤝</Emoji> },
-      { name: "Ficção", emoji: <Emoji size={30}>🧬</Emoji> },
-      { name: "Horror", emoji: <Emoji size={30}>👻</Emoji> },
+      { name: "Ação", emoji: <Emoji size={40}>⚔️</Emoji> },
+      { name: "Clássico", emoji: <Emoji size={40}>♟️</Emoji> },
+      { name: "Fantasia", emoji: <Emoji size={40}>🦄</Emoji> },
+      { name: "Magia", emoji: <Emoji size={40}>🔮</Emoji> },
+      { name: "Medieval", emoji: <Emoji size={40}>👑</Emoji> },
+      { name: "Mistério", emoji: <Emoji size={40}>🔍</Emoji> },
+      { name: "Cooperativo", emoji: <Emoji size={40}>🤝</Emoji> },
+      { name: "Ficção", emoji: <Emoji size={40}>🧬</Emoji> },
+      { name: "Horror", emoji: <Emoji size={40}>👻</Emoji> },
     ],
   },
   {
@@ -289,7 +289,6 @@ const OnboardingCalibrationScreen = () => {
                               </Flex>
                               <Text
                                 pt={2}
-                                fontSize="12"
                                 textAlign="center"
                                 color={isSelectedExp ? "brand.500" : "gray.300"}
                               >
@@ -317,7 +316,7 @@ const OnboardingCalibrationScreen = () => {
                           return (
                             <Pressable
                               key={genItem?.name}
-                              width="28%"
+                              width="43.5%"
                               mb={
                                 item.contents && genI < item.contents.length - 4
                                   ? 4
@@ -340,7 +339,7 @@ const OnboardingCalibrationScreen = () => {
                                 justifyContent="center"
                                 alignItems="center"
                                 borderRadius="30"
-                                height="24"
+                                height="32"
                                 borderWidth="1"
                                 position="relative"
                                 borderColor={
@@ -375,7 +374,7 @@ const OnboardingCalibrationScreen = () => {
                               <Text
                                 mt={2}
                                 textAlign="center"
-                                fontSize="12"
+                                fontSize="16"
                                 color={
                                   isGenreSelected ? "brand.500" : "gray.300"
                                 }
@@ -406,27 +405,27 @@ const OnboardingCalibrationScreen = () => {
                           return (
                             <>
                               <Box
+                                h={16}
+                                width="100%"
                                 key={`checkbox ${dispI}`}
-                                mx="auto"
-                                width="70%"
+                                justifyContent="center"
                               >
                                 <Checkbox
+                                  my={2}
                                   colorScheme="brand"
                                   value={
                                     typeof dispItem === "string"
                                       ? dispItem.toLowerCase()
                                       : `${dispI}`
                                   }
-                                  my={2}
                                   style={{
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    width: 18,
-                                    height: 18,
+                                    width: 20,
+                                    height: 20,
                                     marginRight: 20,
                                   }}
                                   _text={{
-                                    fontSize: "11",
                                     color: "gray.400",
                                     textAlign: "center",
                                   }}
@@ -515,12 +514,12 @@ const OnboardingCalibrationScreen = () => {
                       </MapView>
                     </Box>
                   )}
-                  <HStack pt={16} space={3} justifyContent="center">
+                  <HStack pt={10} space={3} justifyContent="center">
                     {steps.map((_, dotKey) => (
                       <Pressable
                         key={`dot ${dotKey}`}
-                        height="2.5"
-                        width="2.5"
+                        height="3.5"
+                        width="3.5"
                         borderRadius="full"
                         backgroundColor={
                           dotKey === key ? "brand.500" : "gray.300"
@@ -548,36 +547,19 @@ const OnboardingCalibrationScreen = () => {
           isOpen={modalVisible}
           onClose={() => setModalVisible(false)}
           justifyContent="center"
-          bottom="4"
           size="lg"
         >
-          <AlertDialog.Content p={5}>
+          <AlertDialog.Content px="6" py="8">
             {/* Header of the Dialog */}
-            <Flex
-              flexDirection="row"
-              justifyContent="space-between"
-              alignItems="center"
-              pb={4}
-            >
-              <Heading fontSize="16">Cancelar Calibração</Heading>
-              <IconButton
-                onPress={() => setModalVisible(false)}
-                icon={
-                  <Icon
-                    as={EvilIcons}
-                    name="close"
-                    size="6"
-                    color="brand.500"
-                  />
-                }
-              />
-            </Flex>
+
+            <Heading fontSize="xl" pb="4">
+              Cancelar calibração?
+            </Heading>
 
             {/* Dialog Content */}
             <Text pb={6}>
               Sem concluires este processo o MeePley não conseguirá dar-te uma
-              experiência e sugestões de salas personalizadas tendo em conta as
-              tuas características.
+              experiência e sugestões de partidas personalizadas para ti.
             </Text>
 
             {/* Dialog Footer */}

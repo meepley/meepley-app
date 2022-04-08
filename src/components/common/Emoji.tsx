@@ -25,8 +25,8 @@ const Emoji: React.VFC<TextProps & TwemojiTextProps> = ({
         accessibilityRole="image"
         accessibilityLabel="image"
         style={{
-          width: size ?? 14,
-          height: size ?? 14,
+          width: size ?? 18,
+          height: size ?? 18,
         }}
         source={{
           uri: `https://twemoji.maxcdn.com/v/13.1.0/72x72/${twemoji.convert.toCodePoint(

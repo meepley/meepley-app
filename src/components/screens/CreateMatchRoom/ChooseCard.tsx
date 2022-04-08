@@ -48,16 +48,16 @@ const ChooseCard: React.FC<{
           ) : null}
         </Center>
         <Box w="58%" mx={2}>
-          <Heading numberOfLines={2} fontSize="14" pb={text ? 1 : 0}>
+          <Heading numberOfLines={2} fontSize="lg" pb={text ? 1 : 0}>
             {title}
           </Heading>
           {text ? (
-            <Text fontSize="10" numberOfLines={1} color="gray.500">
+            <Text numberOfLines={1} color="gray.500">
               {text}
             </Text>
           ) : null}
         </Box>
-        <Icon as={Feather} name="edit" color="lGreen.500" size={4} />
+        <Icon as={Feather} name="edit" color="lGreen.500" size={6} />
       </Flex>
     </Pressable>
   );

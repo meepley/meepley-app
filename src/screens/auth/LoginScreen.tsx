@@ -3,7 +3,6 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Field, Formik } from "formik";
 import { useSnapshot } from "valtio";
-import * as Yup from "yup";
 
 import {
   Box,
@@ -29,15 +28,7 @@ import EmailInput from "@components/common/forms/EmailInput";
 import SpeechBubbleBtn from "@components/common/buttons/SpeechBubbleBtn";
 
 import authStore from "@services/store/authStore";
-
-const LogInSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Email inválido")
-    .required("Necessita de inserir o seu email para realizar o login"),
-  password: Yup.string().required(
-    "Necessita de inserir a sua palavra-passe para realizar o login"
-  ),
-});
+import logInSchema from "@utils/helpers/validation/logInSchema";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -88,7 +79,7 @@ const LoginScreen = () => {
           />
         </Box>
         <Flex
-          p={16}
+          p="12"
           h="500"
           w="full"
           direction="column"
@@ -109,7 +100,7 @@ const LoginScreen = () => {
             style={{ width: 250, height: 100 }}
             source={require("@assets/images/branding/logo-w-slogan-white.png")}
           />
-          <Text color="white" pt={4} textAlign="center">
+          <Text color="white" pt={4}>
             Diversão nos tabuleiros de Aveiro para todos os{" "}
             <Text fontStyle="italic">boardgamers</Text>
           </Text>
@@ -117,7 +108,7 @@ const LoginScreen = () => {
             <Image
               alt="Aveiro 2027 Logo"
               resizeMode="contain"
-              style={{ width: 100, height: 60 }}
+              style={{ width: 120, height: 60 }}
               source={require("@assets/images/branding/aveiro-full-white.png")}
             />
           </Center>
@@ -132,7 +123,7 @@ const LoginScreen = () => {
           <Box p={12}>
             <Heading pb={6}>Log in</Heading>
             <Formik
-              validationSchema={LogInSchema}
+              validationSchema={logInSchema}
               initialValues={{
                 email: "",
                 password: "",
@@ -150,7 +141,7 @@ const LoginScreen = () => {
                     label="Password"
                     type="password"
                     component={PasswordInput}
-                    placeholder="insere a tua password"
+                    placeholder="a tua password"
                   />
 
                   <Flex direction="row" justifyContent="center" pb={6}>
@@ -202,9 +193,11 @@ const LoginScreen = () => {
             </Text>
             <HStack justifyContent="center" space={2}>
               <IconButton
+                size="lg"
                 bgColor="blue.400"
                 borderRadius="full"
-                size="lg"
+                accessibilityRole="button"
+                accessibilityLabel="Botão de registo Facebook"
                 _icon={{
                   as: FontAwesome5,
                   name: "facebook",
@@ -213,15 +206,17 @@ const LoginScreen = () => {
                 }}
               />
               <IconButton
+                size="lg"
+                bgColor="red.400"
+                borderRadius="full"
+                accessibilityRole="button"
+                accessibilityLabel="Botão de registo Google"
                 _icon={{
                   as: FontAwesome5,
                   name: "google",
                   color: "white",
                   size: 7,
                 }}
-                bgColor="red.400"
-                borderRadius="full"
-                size="lg"
               />
             </HStack>
           </Box>
@@ -230,7 +225,11 @@ const LoginScreen = () => {
             <SpeechBubbleBtn
               color="lYellow.500"
               direction="left"
-              onNavigate={() => navigation.navigate("BoardgamesList")}
+              onNavigate={() =>
+                navigation.navigate("BoardgamesList", {
+                  previousRoute: "Login",
+                })
+              }
             >
               <FontAwesome5 name="dice-d20" size={24} color="white" />
               <Text textAlign="center" pt={2} color="white">
@@ -258,7 +257,7 @@ const LoginScreen = () => {
             bottom="4"
             size="lg"
           >
-            <Modal.Content p={4} shadow={0}>
+            <Modal.Content p={6} shadow={0}>
               <Modal.CloseButton />
               <Heading fontSize="lg" py={4} px={3} borderBottomWidth={0}>
                 Recuperar Password
@@ -266,14 +265,14 @@ const LoginScreen = () => {
               <Modal.Body>
                 Escreve o teu email no input abaixo para nós te pudermos enviar
                 instruções para recuperares a tua password
-                <FormControl mt="3">
-                  <FormControl.Label>Email</FormControl.Label>
+                <Box pt="4" pb="3">
                   <Input
                     type="email"
                     variant="underlined"
+                    fontSize="sm"
                     placeholder="insere o teu email"
                   />
-                </FormControl>
+                </Box>
               </Modal.Body>
               <Modal.Footer bg="white">
                 <Btn

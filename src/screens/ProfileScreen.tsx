@@ -26,7 +26,7 @@ import Achievement from "@components/common/buttons/Achievement";
 
 import authStore from "@services/store/authStore";
 import { ProfileProps } from "@ts/types/navigation/RootStack";
-import openUrl from "@utils/helpers/openUrl";
+import openUrl from "@utils/helpers/misc/openUrl";
 import useDataFetch from "@utils/hooks/useDataFetch";
 import meepleyDataStore from "@services/store/meepleyStore";
 import Loading from "@components/feedback/Loading";
@@ -179,11 +179,7 @@ const ProfileScreen: React.FC<ProfileProps> = ({ route, navigation }) => {
                 <Heading textAlign="center">
                   {userProfile?.matchs_played}
                 </Heading>
-                <Text
-                  fontSize="xs"
-                  textAlign="center"
-                  color="rgba(187,186,186,0.97)"
-                >
+                <Text textAlign="center" color="rgba(187,186,186,0.97)">
                   Partidas
                 </Text>
               </View>
@@ -194,11 +190,7 @@ const ProfileScreen: React.FC<ProfileProps> = ({ route, navigation }) => {
               {/* Number of Followers */}
               <Box>
                 <Heading textAlign="center">{userProfile?.followers}</Heading>
-                <Text
-                  fontSize="xs"
-                  textAlign="center"
-                  color="rgba(187,186,186,0.97)"
-                >
+                <Text textAlign="center" color="rgba(187,186,186,0.97)">
                   Seguidores
                 </Text>
               </Box>
@@ -314,12 +306,7 @@ const ProfileScreen: React.FC<ProfileProps> = ({ route, navigation }) => {
                     />
                   </Center>
 
-                  <Heading
-                    pt={30}
-                    fontSize="lg"
-                    width="full"
-                    textAlign="center"
-                  >
+                  <Heading pt={30} width="full" textAlign="center">
                     {openAchievement?.title}
                   </Heading>
                   <Divider my={5} w="80%" alignSelf="center" />
@@ -360,7 +347,6 @@ const ProfileScreen: React.FC<ProfileProps> = ({ route, navigation }) => {
                     <Text
                       mt={2}
                       underline
-                      fontSize={11}
                       color="brand.600"
                       textAlign="center"
                       onPress={async () =>

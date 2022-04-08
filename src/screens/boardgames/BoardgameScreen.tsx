@@ -23,12 +23,12 @@ import {
 import { EvilIcons, Ionicons } from "@expo/vector-icons";
 
 import Btn from "@components/common/buttons/Btn";
-import TextWithIcon from "@components/common/TextWithIcon";
-import TransparentHeader from "@components/common/navigation/TransparentHeader";
+import TextWithIcon from "@components/common/IconWithText";
+import TransparentHeader from "@components/common/nav/TransparentHeader";
 import Emoji from "@components/common/Emoji";
 
-import openUrl from "@utils/helpers/openUrl";
-import { regexHtml } from "@utils/helpers/regex";
+import openUrl from "@utils/helpers/misc/openUrl";
+import { regexHtml } from "@utils/helpers/misc/htmlRegex";
 import authStore from "@services/store/authStore";
 
 type TBoardgameScreenProps = NativeStackScreenProps<
@@ -86,22 +86,26 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
               <TextWithIcon
                 w="50%"
                 iconName="clock"
+                accLabel="Duração estimada de partida"
                 text={`${boardgame.min_playtime}min - ${boardgame.max_playtime}min`}
               />
               <TextWithIcon
                 w="50%"
                 iconName="user"
+                accLabel="Número de jogadores recomendado"
                 text={`${boardgame.min_players} - ${boardgame.max_players} Jogadores`}
               />
               <TextWithIcon
                 w="50%"
                 iconName="calendar"
+                accLabel="Ano lançado"
                 text={`Lançado em ${boardgame.year_published}`}
               />
 
               <TextWithIcon
                 w="50%"
                 iconName="star"
+                accLabel="Dificuldade"
                 text={
                   boardgame.num_user_complexity_votes > 100
                     ? "Jogo Difícil"
@@ -112,6 +116,7 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                 <TextWithIcon
                   w="100%"
                   iconName="star"
+                  accLabel="Géneros"
                   text={genresString}
                   fontStyle="italic"
                 />
@@ -195,20 +200,24 @@ const BoardgameScreen = ({ route, navigation }: TBoardgameScreenProps) => {
                     <TextWithIcon
                       w="50%"
                       iconName="clock"
+                      accLabel="Editoras"
                       text={`Publisher: ${boardgame.primary_publisher.name}`}
                     />
                     <TextWithIcon
                       w="100%"
+                      accLabel="Preços base"
                       iconName="clock"
                       text={`Preços: ${boardgame.price}$, ${boardgame.price_uk}£, ${boardgame.price}$`}
                     />
                     <TextWithIcon
                       w="50%"
+                      accLabel="Criadores"
                       iconName="clock"
                       text={`Designer: ${boardgame.primary_designer.name}`}
                     />
                     {boardgame.artists && (
                       <TextWithIcon
+                        accLabel="Artistas"
                         w="50%"
                         iconName="clock"
                         text={`Artista(s): ${boardgame.artists?.map(

@@ -17,10 +17,10 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 
-import TransparentHeader from "@components/common/navigation/TransparentHeader";
+import TransparentHeader from "@components/common/nav/TransparentHeader";
 import Btn from "@components/common/buttons/Btn";
 import MatchRoomCarousel from "@components/common/MatchRoomCarousel";
-import TextWithIcon from "@components/common/TextWithIcon";
+import TextWithIcon from "@components/common/IconWithText";
 import Emoji from "@components/common/Emoji";
 
 import { PlaceProps } from "@ts/types/navigation/RootStack";
@@ -68,18 +68,21 @@ const PlaceScreen: React.FC<PlaceProps> = ({ route, navigation }) => {
             <VStack space={1}>
               <TextWithIcon
                 w="100%"
+                accLabel="Localização"
                 iconName="location-outline"
                 iconLibrary={Ionicons}
                 text={place.address}
               />
               <TextWithIcon
                 w="100%"
+                accLabel="Horário de funcionamento"
                 iconName="clock-outline"
                 iconLibrary={MaterialCommunityIcons}
                 text={`${place.daysOpen} - ${place.hoursOpen}`}
               />
               <TextWithIcon
                 w="100%"
+                accLabel="Características"
                 iconName="storefront-outline"
                 iconLibrary={MaterialCommunityIcons}
                 text={place.type.filter((item) => item).join(", ")}
@@ -88,6 +91,7 @@ const PlaceScreen: React.FC<PlaceProps> = ({ route, navigation }) => {
                 <TextWithIcon
                   w="100%"
                   iconName="attach-money"
+                  accLabel="Consumo minímo"
                   iconLibrary={MaterialIcons}
                   text={`${place.minimum_consumption}€ consumo mínimo no local`}
                 />

@@ -13,7 +13,7 @@ import { Box, Center, Flex, Icon, Pressable, Text } from "native-base";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 import authStore from "@services/store/authStore";
-import { getPath } from "@utils/helpers/getPath";
+import { getPath } from "@utils/helpers/misc/getPath";
 
 const BottomTab: React.FC<{ isInsideMatchroom?: boolean }> = ({
   isInsideMatchroom = false,
@@ -42,6 +42,8 @@ const BottomTab: React.FC<{ isInsideMatchroom?: boolean }> = ({
             <View style={[styles.row, { height: height }]}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityLabel="Ir para perfil do utilizador"
                   onPress={() =>
                     user?.username &&
                     navigation.navigate("Profile", {
@@ -59,7 +61,7 @@ const BottomTab: React.FC<{ isInsideMatchroom?: boolean }> = ({
                     color="#979797"
                     name="person-circle-outline"
                   />
-                  <Text mt={1} fontSize={12} color="#979797">
+                  <Text mt={1} color="#979797">
                     Perfil
                   </Text>
                 </TouchableOpacity>
@@ -68,12 +70,14 @@ const BottomTab: React.FC<{ isInsideMatchroom?: boolean }> = ({
 
             <Pressable
               style={{
-                top: -45.5,
-                width: 80,
-                height: 80,
+                top: -42.5,
+                width: 75,
+                height: 75,
                 elevation: 8,
                 borderRadius: 35,
               }}
+              accessibilityRole="button"
+              accessibilityLabel="Criar partida"
               onPress={() => navigation.navigate("CreateMatch")}
             >
               <Center
@@ -96,7 +100,13 @@ const BottomTab: React.FC<{ isInsideMatchroom?: boolean }> = ({
             <View style={[styles.row, { height: height }]}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("BoardgamesList")}
+                  accessibilityRole="button"
+                  accessibilityLabel="Ir para lista de jogos de tabuleiro"
+                  onPress={() =>
+                    navigation.navigate("BoardgamesList", {
+                      previousRoute: "Dashboard",
+                    })
+                  }
                   style={{
                     flex: 1,
                     alignItems: "center",
@@ -104,7 +114,7 @@ const BottomTab: React.FC<{ isInsideMatchroom?: boolean }> = ({
                   }}
                 >
                   <FontAwesome5 name="dice-d20" size={25} color="#979797" />
-                  <Text mt={1} fontSize={12} color="#979797">
+                  <Text mt={1} color="#979797">
                     Jogos
                   </Text>
                 </TouchableOpacity>

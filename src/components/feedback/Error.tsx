@@ -6,7 +6,7 @@ import { useSnapshot } from "valtio";
 
 import Btn from "@components/common/buttons/Btn";
 
-import { rnd } from "@utils/helpers/random";
+import { rnd } from "@utils/helpers/main/random";
 import authStore from "@services/store/authStore";
 
 interface ISpecificError {

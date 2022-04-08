@@ -1,6 +1,7 @@
 import React from "react";
 import { Flex, Icon, Text } from "native-base";
 import { EvilIcons } from "@expo/vector-icons";
+import { AccessibilityRole } from "react-native";
 
 const TextWithIcon: React.FC<{
   w: string;
@@ -8,7 +9,15 @@ const TextWithIcon: React.FC<{
   text: (string | undefined)[] | string;
   fontStyle?: string;
   iconLibrary?: any;
-}> = ({ iconName, text, w, fontStyle = "normal", iconLibrary = EvilIcons }) => {
+  accLabel: string;
+}> = ({
+  iconName,
+  text,
+  w,
+  fontStyle = "normal",
+  iconLibrary = EvilIcons,
+  accLabel,
+}) => {
   return (
     <Flex width={w} flexDirection="row" alignItems="center">
       <Icon
@@ -16,11 +25,11 @@ const TextWithIcon: React.FC<{
         color="brand.500"
         as={iconLibrary}
         name={iconName}
+        accessibilityLabel={accLabel}
+        accessibilityRole="image"
         mr={1}
       />
-      <Text fontSize="11" fontStyle={fontStyle}>
-        {text}
-      </Text>
+      <Text fontStyle={fontStyle}>{text}</Text>
     </Flex>
   );
 };
