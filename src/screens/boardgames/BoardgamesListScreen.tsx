@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { useSnapshot } from "valtio";
 
+
 import {
   Text,
   Heading,
@@ -24,12 +25,15 @@ import BoardgameCard from "@components/common/BoardgameCard";
 import { IBoardgame } from "@ts/interfaces/IBoardgame";
 import Btn from "@components/common/buttons/Btn";
 import Loading from "@components/feedback/Loading";
+import { BoardgamesListProps, RootStackParamList } from "@ts/types/navigation/RootStack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 const colors = ["lYellow.500", "brand.500", "lGreen.500"];
 
-const BoardgamesListScreen = () => {
+const BoardgamesListScreen: React.FC<BoardgamesListProps
+> = ({navigation, route}) => {
   const { height } = useWindowDimensions();
-  const navigation = useNavigation();
+  const { previousRoute } = route.params;
   const [showFilter, setShowFilter] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -151,6 +155,9 @@ const BoardgamesListScreen = () => {
                         players={`${bg.min_players} - ${bg.max_players} jogadores`}
                         bgColor={bgColor}
                         mt={marginTop}
+                        addButton={
+                          previousRoute === "createMatch" 
+                        }
                       />
                     </Pressable>
                   );

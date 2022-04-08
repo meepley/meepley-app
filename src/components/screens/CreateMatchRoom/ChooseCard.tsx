@@ -13,8 +13,8 @@ const ChooseCard: React.FC<{
   text: string | null;
   asset: string;
   onPressCard: () => void;
-  didChoose: boolean;
-}> = ({ title, text, asset, onPressCard, didChoose }) => {
+
+}> = ({ title, text, asset, onPressCard}) => {
   return (
     <Pressable onPress={onPressCard}>
       <Flex
@@ -32,20 +32,15 @@ const ChooseCard: React.FC<{
           borderRadius="full"
           backgroundColor="brand.500"
         >
-          {!didChoose ? (
             <Icon
-              as={title === "Jogo" ? FontAwesome5 : MaterialCommunityIcons}
+              as={FontAwesome5}
               name={asset}
               color="white"
               size="6"
+              ml = { title === "Local" ? 1 : 0}
             />
-          ) : didChoose ? (
-            <Avatar
-              source={{
-                uri: asset,
-              }}
-            />
-          ) : null}
+            
+
         </Center>
         <Box w="58%" mx={2}>
           <Heading numberOfLines={2} fontSize="14" pb={text ? 1 : 0}>

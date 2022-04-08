@@ -19,7 +19,7 @@ const BoardgameCard: React.FC<{
   addButton?: boolean;
   bgColor?: string;
   mt?: number;
-}> = ({ name, img, genres, players, bgColor = "", mt }) => {
+}> = ({ name, img, genres, players, bgColor = "", addButton, mt }) => {
   const genresString = genres.map((genre, i) =>
     i === genres.length - 1 ? genre : `${genre}, `
   );
@@ -94,6 +94,9 @@ const BoardgameCard: React.FC<{
           >
             {players}
           </Text>
+          {addButton ?
+          <Icon as={FontAwesome5} name="Local" color="white" size="6" />:<></>
+}
         </HStack>
       </Stack>
     </Box>
@@ -101,3 +104,4 @@ const BoardgameCard: React.FC<{
 };
 
 export default BoardgameCard;
+

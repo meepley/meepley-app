@@ -96,7 +96,9 @@ const BottomTab: React.FC<{ isInsideMatchroom?: boolean }> = ({
             <View style={[styles.row, { height: height }]}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("BoardgamesList")}
+                  onPress={() => navigation.navigate("BoardgamesList", {
+                  previousRoute: 'jogos',
+                  })}
                   style={{
                     flex: 1,
                     alignItems: "center",

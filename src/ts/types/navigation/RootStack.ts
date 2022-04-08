@@ -40,7 +40,9 @@ export type RootStackParamList = {
   InitialOnboarding: undefined;
   Login: undefined;
   Register: undefined;
-  BoardgamesList: undefined;
+  BoardgamesList: {
+    previousRoute: string;
+  };
   Boardgame: {
     boardgameId: string;
     boardgame: IBoardgame;
@@ -63,4 +65,9 @@ export type BoardgameProps = NativeStackScreenProps<
 export type MatchRoomProps = NativeStackScreenProps<
   RootStackParamList,
   "MatchRoom"
+>;
+
+export type BoardgamesListProps = NativeStackScreenProps<
+  RootStackParamList,
+  "BoardgamesList"
 >;

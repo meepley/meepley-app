@@ -26,7 +26,7 @@ const steps = [
     description: (
       <>
         Aqui poderás marcar partidas de jogos de tabuleiro em locais públicos e
-        comerciais de referência de Aveiro <Emoji>🤩</Emoji>
+        comerciais de referência de Aveiro <Emoji accessibilityLabel={"Feliz"}>🤩</Emoji>
       </>
     ),
     img: require("@assets/images/onboarding/gt1.png"),
@@ -36,7 +36,7 @@ const steps = [
     description: (
       <>
         Vê os locais disponíveis de referência para jogar boardgames e desfrutar
-        em Aveiro <Emoji>🗺️</Emoji>
+        em Aveiro <Emoji accessibilityLabel={"Paisagem"}>🗺️</Emoji>
       </>
     ),
 
@@ -47,7 +47,7 @@ const steps = [
     description: (
       <>
         Fica a conhecer novos jogos de tabuleiro para poderes experimentar com
-        outros jogadores <Emoji>🎲</Emoji>
+        outros jogadores <Emoji accessibilityLabel={"Dados"}>🎲</Emoji>
       </>
     ),
     img: require("@assets/images/onboarding/gt3.png"),
@@ -57,7 +57,7 @@ const steps = [
     description: (
       <>
         Combina todos os pormenores da partida com os outros jogadores através
-        do nosso chat integrado <Emoji>😊</Emoji>
+        do nosso chat integrado <Emoji accessibilityLabel={"Contente"}>😊</Emoji>
       </>
     ),
     img: require("@assets/images/onboarding/gt4.png"),

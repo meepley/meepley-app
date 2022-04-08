@@ -3,6 +3,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import { StatusBar } from "expo-status-bar";
+import { useNavigation } from "@react-navigation/native";
+
 
 import {
   Box,
@@ -47,17 +49,16 @@ const CreateMatchRoomFormSchema = Yup.object().shape({
 
 const CreateMatchRoomScreen: React.FC<
   NativeStackScreenProps<RootStackParamList, "CreateMatch">
-> = ({ navigation }) => {
+> = ({ navigation}) => {
   const { height } = useWindowDimensions();
   const toast = useToast();
   // const [hourText, setHourText] = useState("");
-  const [didChoosePlace, setDidChoosePlace] = useState(false);
-  const [didChooseGame, setDidChooseGame] = useState(false);
   const [didCreateRoom, setDidCreateRoom] = useState(false);
   // const [pubPriv, setPubPriv] = React.useState("publico");
   // const [numPessoas, setNumPessoas] = useState("");
   // const [dataText, setDataText] = useState("");
 
+  const navig = useNavigation();
   const [isHourPickerVisible, setHourPickerVisibility] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -148,38 +149,19 @@ const CreateMatchRoomScreen: React.FC<
                   /> */}
 
                   <ChooseCard
-                    onPressCard={() => {
-                      setDidChoosePlace(!didChoosePlace);
-                      setFieldValue(
-                        "place",
-                        didChooseGame ? "Universidade de Aveiro" : ""
-                      );
-                    }}
-                    didChoose={didChoosePlace}
-                    asset={
-                      !didChoosePlace
-                        ? "map-marker-outline"
-                        : "https://www.eurodicas.com.br/wp-content/uploads/2021/07/universidade-de-aveiro-1200x675.jpg"
-                    }
-                    title={!didChoosePlace ? "Local" : "Universidade de Aveiro"}
-                    text={!didChoosePlace ? "Escolhe o Local" : null}
+                    onPressCard ={() => navig.navigate("BoardgamesList", {
+                      previousRoute: 'createMatch',
+                      })}
+                    asset={"map-marker"}
+                    title="Local"
+                    text="Escolhe o local"
                   />
 
                   <ChooseCard
-                    onPressCard={() => {
-                      setDidChooseGame(!didChooseGame);
-                      setFieldValue("game", didChooseGame ? "Dixit" : "");
-                    }}
-                    didChoose={didChooseGame}
-                    asset={
-                      !didChooseGame
-                        ? "dice-d20"
-                        : "https://www.continente.pt/on/demandware.static/-/Sites-col-master-catalog/default/dwd523a974/images/col/745/7454064-frente.jpg"
-                    }
-                    title={!didChooseGame ? "Jogo" : "Dixit"}
-                    text={
-                      !didChooseGame ? "Escolhe um jogo para a partida" : null
-                    }
+                    onPressCard={() => {}}
+                    asset={"dice-d20"}
+                    title={"Jogo"}
+                    text={"Escolhe um jogo para a partida"}
                   />
                 </Stack>
                 <Box>
