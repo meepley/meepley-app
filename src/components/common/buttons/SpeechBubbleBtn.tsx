@@ -8,17 +8,19 @@ const SpeechBubbleBtn: React.FC<{
   onNavigate: () => void;
 }> = ({ children, direction, color, onNavigate }) => {
   return (
-    <Pressable onPress={onNavigate}>
+    <Pressable
+      accessibilityLabel=""
+      accessibilityRole="button"
+      onPress={onNavigate}
+    >
       <Flex
+        shadow="5"
         bgColor={color}
         flexDir="column"
         justifyContent="center"
         alignItems="center"
         borderTopRadius="full"
-        w="24"
-        h="24"
-        m="1"
-        shadow="5"
+        style={{ width: 110, height: 110 }}
         borderBottomLeftRadius={direction === "left" ? "none" : "full"}
         borderBottomRightRadius={direction === "right" ? "none" : "full"}
       >

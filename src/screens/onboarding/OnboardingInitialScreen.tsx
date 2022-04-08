@@ -18,7 +18,7 @@ import {
 import Container from "@components/common/Container";
 import Btn from "@components/common/buttons/Btn";
 import Emoji from "@components/common/Emoji";
-import openUrl from "@utils/helpers/openUrl";
+import openUrl from "@utils/helpers/misc/openUrl";
 
 const steps = [
   {
@@ -26,7 +26,7 @@ const steps = [
     description: (
       <>
         Aqui poderás marcar partidas de jogos de tabuleiro em locais públicos e
-        comerciais de referência de Aveiro <Emoji accessibilityLabel={"Feliz"}>🤩</Emoji>
+        comerciais de referência de Aveiro <Emoji>🤩</Emoji>
       </>
     ),
     img: require("@assets/images/onboarding/gt1.png"),
@@ -36,7 +36,7 @@ const steps = [
     description: (
       <>
         Vê os locais disponíveis de referência para jogar boardgames e desfrutar
-        em Aveiro <Emoji accessibilityLabel={"Paisagem"}>🗺️</Emoji>
+        em Aveiro <Emoji>🗺️</Emoji>
       </>
     ),
 
@@ -47,7 +47,7 @@ const steps = [
     description: (
       <>
         Fica a conhecer novos jogos de tabuleiro para poderes experimentar com
-        outros jogadores <Emoji accessibilityLabel={"Dados"}>🎲</Emoji>
+        outros jogadores <Emoji>🎲</Emoji>
       </>
     ),
     img: require("@assets/images/onboarding/gt3.png"),
@@ -57,7 +57,7 @@ const steps = [
     description: (
       <>
         Combina todos os pormenores da partida com os outros jogadores através
-        do nosso chat integrado <Emoji accessibilityLabel={"Contente"}>😊</Emoji>
+        do nosso chat integrado <Emoji>😊</Emoji>
       </>
     ),
     img: require("@assets/images/onboarding/gt4.png"),
@@ -78,16 +78,17 @@ const steps = [
       <>
         Joga connosco boardgames e partilha a candidatura de Aveiro a Capital
         Europeia da Cultura em 2027! <Emoji>🌟</Emoji>{" "}
-        <Text
-          mt={2}
-          underline
-          fontSize={11}
-          color="brand.600"
-          textAlign="center"
-          onPress={async () => await openUrl("https://aveiro2027.pt")}
-        >
-          (saber mais)
-        </Text>
+        <Pressable onPress={async () => await openUrl("https://aveiro2027.pt")}>
+          <Text
+            mt={2}
+            underline
+            fontSize={14}
+            color="brand.600"
+            textAlign="center"
+          >
+            (saber mais)
+          </Text>
+        </Pressable>
       </>
     ),
     img: require("@assets/images/onboarding/gt6.jpg"),
@@ -141,8 +142,8 @@ const OnboardingInitialScreen = () => {
                     {steps.map((_, dotKey) => (
                       <Pressable
                         key={dotKey}
-                        height="2.5"
-                        width="2.5"
+                        height="3.5"
+                        width="3.5"
                         borderRadius="full"
                         backgroundColor={
                           dotKey === key ? "brand.500" : "gray.300"

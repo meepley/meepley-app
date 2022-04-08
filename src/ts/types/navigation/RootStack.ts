@@ -67,7 +67,7 @@ export type MatchRoomProps = NativeStackScreenProps<
   "MatchRoom"
 >;
 
-export type BoardgamesListProps = NativeStackScreenProps<
+export type BoardgameListProps = NativeStackScreenProps<
   RootStackParamList,
   "BoardgamesList"
 >;

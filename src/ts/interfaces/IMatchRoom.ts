@@ -1,3 +1,5 @@
+import { ImageSourcePropType } from "react-native";
+
 export interface IMatchRoom {
   id: number;
   games: {
@@ -10,7 +12,7 @@ export interface IMatchRoom {
     id: number;
     slug: string;
     username: string;
-    avatar: string;
+    avatar: ImageSourcePropType | undefined;
     role: string;
   }[];
   required_level: string;

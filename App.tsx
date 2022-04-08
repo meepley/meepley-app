@@ -23,7 +23,7 @@ import { nbConfig } from "@utils/config/nativeBaseConfig";
 import theme from "@theme/index";
 import { useSnapshot } from "valtio";
 import authStore from "@services/store/authStore";
-import Navigation from "@navigation/";
+import Navigation from "@navigation/index";
 
 export default function App() {
   const { hydrateState, hydrated } = useSnapshot(authStore);

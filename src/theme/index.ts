@@ -83,6 +83,9 @@ const theme = extendTheme({
     body: "Poppins",
     mono: "Poppins",
   },
+  fontSizes: {
+    sm: 16,
+  },
   components: {
     Text: {
       variants: {

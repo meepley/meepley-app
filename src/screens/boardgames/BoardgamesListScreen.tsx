@@ -20,7 +20,7 @@ import {
 import { EvilIcons, FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 import bgaStore from "@services/store/bgaStore";
-import { _add } from "@utils/helpers/add";
+import { _add } from "@utils/helpers/main/add";
 import BoardgameCard from "@components/common/BoardgameCard";
 import { IBoardgame } from "@ts/interfaces/IBoardgame";
 import Btn from "@components/common/buttons/Btn";
@@ -73,6 +73,7 @@ const BoardgamesListScreen: React.FC<BoardgamesListProps
               variant="rounded"
               backgroundColor="white"
               borderColor="transparent"
+              fontSize="md"
               placeholder="Procurar jogo..."
               InputLeftElement={
                 <Icon

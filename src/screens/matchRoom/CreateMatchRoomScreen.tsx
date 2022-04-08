@@ -32,21 +32,6 @@ import meepleyAPI from "@services/api/meepley";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@ts/types/navigation/RootStack";
 
-const CreateMatchRoomFormSchema = Yup.object().shape({
-  game: Yup.string().required("Precisas de selecionar um ou mais jogos"),
-  place: Yup.string().required("Precisas de selecionar um local"),
-  match_name: Yup.string()
-    .required("Tens de escrever um nome para a partida")
-    .min(4)
-    .max(70),
-  players_number: Yup.string().required("Precisas de uma data"),
-  date: Yup.string().required("Precisas de uma data"),
-  hour: Yup.string().required("Tens de escolher uma hora"),
-  match_privacy: Yup.string().required(
-    "É necessário especificar o tipo da partida"
-  ),
-});
-
 const CreateMatchRoomScreen: React.FC<
   NativeStackScreenProps<RootStackParamList, "CreateMatch">
 > = ({ navigation}) => {
@@ -172,11 +157,12 @@ const CreateMatchRoomScreen: React.FC<
                   <VStack space={6} width="100%">
                     <FormControl isRequired w="100%">
                       <FormControl.Label fontWeight="bold">
-                        <Heading fontSize={14}>Nome da partida</Heading>
+                        <Heading fontSize="lg">Nome da partida</Heading>
                       </FormControl.Label>
                       <Input
                         px={4}
                         type="text"
+                        fontSize="sm"
                         variant="rounded"
                         backgroundColor="white"
                         value={values.match_name}
@@ -189,12 +175,13 @@ const CreateMatchRoomScreen: React.FC<
 
                     <FormControl w="100%">
                       <FormControl.Label>
-                        <Heading fontSize={14}>Nrº máximo de jogadores</Heading>
+                        <Heading fontSize="lg">Nrº máximo de jogadores</Heading>
                       </FormControl.Label>
                       <Select
                         px={4}
                         mt={1}
                         pr={10}
+                        fontSize="sm"
                         variant="rounded"
                         backgroundColor="white"
                         isDisabled={isSubmitting}
@@ -238,7 +225,7 @@ const CreateMatchRoomScreen: React.FC<
                     <Stack direction={"row"} mb={2.5} mt={1.5} space={3}>
                       <FormControl width={"50%"}>
                         <FormControl.Label textAlign={"center"}>
-                          <Heading fontSize={14}>Data</Heading>
+                          <Heading fontSize="lg">Data</Heading>
                         </FormControl.Label>
 
                         <Pressable
@@ -250,6 +237,7 @@ const CreateMatchRoomScreen: React.FC<
                         >
                           <Input
                             pr={4}
+                            fontSize="sm"
                             variant="rounded"
                             value={values.date}
                             backgroundColor="white"
@@ -286,7 +274,7 @@ const CreateMatchRoomScreen: React.FC<
 
                       <FormControl width={"50%"}>
                         <FormControl.Label textAlign={"center"}>
-                          <Heading fontSize={14}>Hora</Heading>
+                          <Heading fontSize="lg">Hora</Heading>
                         </FormControl.Label>
 
                         <Pressable
@@ -299,6 +287,7 @@ const CreateMatchRoomScreen: React.FC<
                           <Input
                             pr={4}
                             type="text"
+                            fontSize="sm"
                             isReadOnly={true}
                             isRequired={true}
                             variant="rounded"
@@ -337,7 +326,7 @@ const CreateMatchRoomScreen: React.FC<
 
                     <FormControl>
                       <FormControl.Label>
-                        <Heading fontSize={14}>Tipo de Partida</Heading>
+                        <Heading fontSize="lg">Tipo de Partida</Heading>
                       </FormControl.Label>
                       <Radio.Group
                         name="match_privacy"
@@ -350,7 +339,7 @@ const CreateMatchRoomScreen: React.FC<
                       >
                         <HStack mt={2} space={4} w="100%">
                           <Radio
-                            size="sm"
+                            size="lg"
                             colorScheme="brand"
                             value="publico"
                             isDisabled={isSubmitting}
@@ -358,7 +347,7 @@ const CreateMatchRoomScreen: React.FC<
                             Pública
                           </Radio>
                           <Radio
-                            size="sm"
+                            size="lg"
                             colorScheme="brand"
                             value="privado"
                             isDisabled={isSubmitting}

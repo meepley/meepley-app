@@ -4,7 +4,7 @@ import LottieView from "lottie-react-native";
 
 import { Center, Heading } from "native-base";
 
-import { rnd } from "@utils/helpers/random";
+import { rnd } from "@utils/helpers/main/random";
 
 const loadingMessages = [
   "A carregar estratégias...",
@@ -32,7 +32,7 @@ const Loading: React.FC<{
             : require("@assets/animations/dice-animation-gray.json")
         }
       />
-      <Heading fontSize="20">{randomMessage}</Heading>
+      <Heading fontSize="16">{randomMessage}</Heading>
     </Center>
   );
 };

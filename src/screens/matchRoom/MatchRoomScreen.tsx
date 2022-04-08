@@ -29,10 +29,10 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 
-import TransparentHeader from "@components/common/navigation/TransparentHeader";
+import TransparentHeader from "@components/common/nav/TransparentHeader";
 import Btn from "@components/common/buttons/Btn";
-import BottomTab from "@components/common/navigation/BottomTab";
-import TextWithIcon from "@components/common/TextWithIcon";
+import BottomTab from "@components/common/nav/BottomTab";
+import TextWithIcon from "@components/common/IconWithText";
 
 import { MatchRoomProps } from "@ts/types/navigation/RootStack";
 import meepleyAPI from "@services/api/meepley";
@@ -116,12 +116,14 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
                   iconName="calendar"
                   iconLibrary={MaterialCommunityIcons}
                   text={`${matchRoom.date} - ${matchRoom.hour}`}
+                  accLabel="Horário"
                 />
                 <TextWithIcon
                   w="45%"
                   iconName="clock-outline"
                   iconLibrary={MaterialCommunityIcons}
                   text={`${matchRoom.estimated_duration}`}
+                  accLabel="Duração estimada"
                 />
               </HStack>
 
@@ -130,6 +132,7 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
                 iconName="location-outline"
                 iconLibrary={Ionicons}
                 text={matchRoom.place.name}
+                accLabel="Localização"
               />
               {matchRoom.place.minimum_consumption ? (
                 <TextWithIcon
@@ -137,20 +140,16 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
                   iconName="attach-money"
                   iconLibrary={MaterialIcons}
                   text={`${matchRoom.place.minimum_consumption}€ consumo mínimo no local`}
+                  accLabel="Consumo minímo"
                 />
               ) : null}
             </VStack>
 
             <Box pt={8}>
-              <Heading
-                mb={2}
-                fontSize="sm"
-                color="brand.500"
-                textTransform="uppercase"
-              >
+              <Heading mb={2} color="brand.500">
                 Sobre o jogo
               </Heading>
-              <Text fontSize={11} justifyContent="center" numberOfLines={8}>
+              <Text justifyContent="center" numberOfLines={8}>
                 {matchRoom.games[0].description}
               </Text>
             </Box>
@@ -159,13 +158,13 @@ const MatchRoomScreen: React.FC<MatchRoomProps> = ({ route, navigation }) => {
               <Flex pb={4} alignItems="center" flexDirection="row">
                 <Heading pr={2}>Jogadores</Heading>
                 <Center
-                  w={12}
-                  h={6}
+                  w={16}
+                  h={8}
                   ml={1}
                   bgColor="lGreen.100"
                   borderRadius="3xl"
                 >
-                  <Text color="lGreen.600" fontSize="10">
+                  <Text color="lGreen.600">
                     {matchRoom?.users.length} / {matchRoom.max_players}
                   </Text>
                 </Center>

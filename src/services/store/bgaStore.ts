@@ -2,7 +2,7 @@ import { proxy } from "valtio";
 
 import bgaAPI from "@services/api/bga";
 import { IBoardgame } from "@ts/interfaces/IBoardgame";
-import { _add } from "@utils/helpers/add";
+import { _add } from "@utils/helpers/main/add";
 
 const bgaStore = proxy<{
   boardgames: {

@@ -26,6 +26,7 @@ const Btn = ({
       startIcon={startIcon ? startIcon : undefined}
       minWidth={props?.minWidth || props?.minW || "1/2"}
       shadow={props?.variant === "solid" ? "4" : "none"}
+      fontSize="2xl"
       _text={
         props?.variant === "solid"
           ? {
